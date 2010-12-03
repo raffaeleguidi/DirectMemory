@@ -49,23 +49,42 @@ public class DirectCache {
 
 		byte b[] = serializeObject(obj);
 		
-		if (b.length > buf.remaining() && b.length <= garbageSize)
-			throw new Exception("Non implementato - riusare garbage");
-
 		if (b.length > remaining()) {
-			throw new Exception("Memoria esaurita");
+			throw new Exception("DirectCache full");
 		}
 
-		
-//		System.out.println("size of the object: " + b.length);
-//		System.out.println("position: " + buf.position());
-//		System.out.println("size of the buffer: " + buf.remaining());
-
-		
+		if (b.length > buf.remaining() && b.length <= garbageSize) {
+			return storeReusingGarbage(key, b);
+		} else {
+			// best case - it won't happen too often
+			return storeAtTheEnd(key, b);			
+		}
+	}
+	
+	private CacheDescriptor storeReusingGarbage(String key, byte[] b) throws Exception {
+		//throw new Exception("Garbage reuse not yet implemented");
+		for (CacheDescriptor trashed : garbage) {
+			if (trashed.size >= b.length) {
+				CacheDescriptor desc = new CacheDescriptor(key, b.length, trashed.position);
+				index.put(key, desc);
+				trashed.size -= b.length;
+				garbageSize -= b.length;
+				trashed.position += b.length;
+				if (trashed.size == 0) 
+					garbage.remove(trashed);
+				int oldPos = buf.position();
+				buf.position(desc.position);
+				buf.put(b, 0, desc.size);
+				buf.position(oldPos);
+				return desc;
+			}
+		}
+		throw new Exception("Buffer too fragmented");
+	}
+	private CacheDescriptor storeAtTheEnd(String key, byte[] b) {
 		CacheDescriptor descr = new CacheDescriptor(key, b.length, buf.position());
 		buf.put(b);
 		index.put(key,descr);
-						
 		return descr;
 	} 	
 	
@@ -83,7 +102,7 @@ public class DirectCache {
 		return obj;
 	}
 
-	public void removeObject(String key) {
+	public CacheDescriptor removeObject(String key) {
 		CacheDescriptor desc = index.get(key);
 		byte[] b = new byte[desc.size];
 		int pos = buf.position();
@@ -93,6 +112,7 @@ public class DirectCache {
 		index.remove(key);
 		garbage.add(desc);
 		garbageSize += desc.size;
+		return desc;
 	}
 	
 	private int garbageSize = 0;
