@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
-import org.directcache.CacheDescriptor;
+import org.directcache.CacheEntry;
 import org.directcache.DirectCache;
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class BaseTest {
 		for (int i = 0; i < objectsToStore; i++) {
 			DummyObject p = new DummyObject("test #" + i);
 			p.obj = new Object[objectsSize*generator.nextInt(5)];
-			CacheDescriptor desc = cache.storeObject(p.getName(), p);
+			CacheEntry desc = cache.storeObject(p.getName(), p);
 			size += desc.getSize();
 			objects++;
 			//System.out.println("adding object of size " + desc.getSize());
@@ -63,9 +63,9 @@ public class BaseTest {
 	
 	@Test
 	public void objectsAreThere() throws IOException, ClassNotFoundException {
-		Iterator<CacheDescriptor> index = cache.getIndex().values().iterator();
+		Iterator<CacheEntry> index = cache.getIndex().values().iterator();
 		while (index.hasNext()) {
-			CacheDescriptor desc = index.next();
+			CacheEntry desc = index.next();
 			DummyObject p = (DummyObject)cache.retrieveObject(desc.getKey());
 			assertNotNull(p);
 			assertEquals(desc.getKey(), p.getName());
@@ -75,11 +75,11 @@ public class BaseTest {
 
 	@Test
 	public void removeAllObjects() {
-		Iterator<CacheDescriptor> index = cache.getIndex().values().iterator();
-		Vector<CacheDescriptor> temp = new Vector<CacheDescriptor>();
+		Iterator<CacheEntry> index = cache.getIndex().values().iterator();
+		Vector<CacheEntry> temp = new Vector<CacheEntry>();
 		while (index.hasNext()) temp.add(index.next());
-		for (CacheDescriptor desc : temp) {
-			CacheDescriptor trashed = cache.removeObject(desc.getKey());
+		for (CacheEntry desc : temp) {
+			CacheEntry trashed = cache.removeObject(desc.getKey());
 			assertNotNull(trashed);
 			assertEquals(trashed.getKey(), desc.getKey());
 			size -= desc.getSize();
@@ -100,7 +100,7 @@ public class BaseTest {
 		for (int i = 0; i < objectsToStore/2; i++) {
 			DummyObject p = new DummyObject("obj #" + i);
 			p.obj = new Object[objectsSize*generator.nextInt(5)];
-			CacheDescriptor desc = cache.storeObject(p.getName(), p);
+			CacheEntry desc = cache.storeObject(p.getName(), p);
 			assertNotNull(desc);
 			size += desc.getSize();
 			//System.out.println("adding object of size " + desc.getSize());

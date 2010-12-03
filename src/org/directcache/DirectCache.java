@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Vector;
 
 public class DirectCache {
-	private Map<String, CacheDescriptor> index = new HashMap();
-	private List<CacheDescriptor> garbage = new Vector<CacheDescriptor>();
+	private Map<String, CacheEntry> index = new HashMap();
+	private List<CacheEntry> garbage = new Vector<CacheEntry>();
 	private int sizeInMb;
 	public DirectCache() {
 		// default 50mb
@@ -28,7 +28,14 @@ public class DirectCache {
 	}
 
 	private ByteBuffer buf;
+	private int defaultDuration=0;
 
+	public int getDefaultDuration() {
+		return defaultDuration;
+	}
+	public void setDefaultDuration(int defaultDuration) {
+		this.defaultDuration = defaultDuration;
+	}
 	public Map getIndex() {
 		return index;
 	}
@@ -45,7 +52,11 @@ public class DirectCache {
 		return b;		
 	}
 
-	public CacheDescriptor storeObject(String key, Serializable obj) throws Exception {
+	public CacheEntry storeObject(String key, Serializable obj) throws Exception {
+		return storeObject(key, obj, defaultDuration);
+	}
+	
+	public CacheEntry storeObject(String key, Serializable obj, int duration) throws Exception {
 
 		byte b[] = serializeObject(obj);
 		
@@ -54,42 +65,42 @@ public class DirectCache {
 		}
 
 		if (b.length > buf.remaining() && b.length <= garbageSize) {
-			return storeReusingGarbage(key, b);
+			return storeReusingGarbage(key, b, duration);
 		} else {
 			// best case - it won't happen too often
-			return storeAtTheEnd(key, b);			
+			return storeAtTheEnd(key, b, duration);			
 		}
 	}
 	
-	private CacheDescriptor storeReusingGarbage(String key, byte[] b) throws Exception {
+	private CacheEntry storeReusingGarbage(String key, byte[] b, int duration) throws Exception {
 		//throw new Exception("Garbage reuse not yet implemented");
-		for (CacheDescriptor trashed : garbage) {
+		for (CacheEntry trashed : garbage) {
 			if (trashed.size >= b.length) {
-				CacheDescriptor desc = new CacheDescriptor(key, b.length, trashed.position);
-				index.put(key, desc);
+				CacheEntry entry = new CacheEntry(key, b.length, trashed.position, duration);
+				index.put(key, entry);
 				trashed.size -= b.length;
 				garbageSize -= b.length;
 				trashed.position += b.length;
 				if (trashed.size == 0) 
 					garbage.remove(trashed);
 				int oldPos = buf.position();
-				buf.position(desc.position);
-				buf.put(b, 0, desc.size);
+				buf.position(entry.position);
+				buf.put(b, 0, entry.size);
 				buf.position(oldPos);
-				return desc;
+				return entry;
 			}
 		}
 		throw new Exception("Buffer too fragmented");
 	}
-	private CacheDescriptor storeAtTheEnd(String key, byte[] b) {
-		CacheDescriptor descr = new CacheDescriptor(key, b.length, buf.position());
+	private CacheEntry storeAtTheEnd(String key, byte[] b, int duration) {
+		CacheEntry descr = new CacheEntry(key, b.length, buf.position(), duration);
 		buf.put(b);
 		index.put(key,descr);
 		return descr;
 	} 	
 	
 	public Serializable retrieveObject(String key) throws IOException, ClassNotFoundException {
-		CacheDescriptor desc = index.get(key);
+		CacheEntry desc = index.get(key);
 		byte[] b = new byte[desc.size];
 		int pos = buf.position();
 		buf.position(desc.position);
@@ -102,8 +113,8 @@ public class DirectCache {
 		return obj;
 	}
 
-	public CacheDescriptor removeObject(String key) {
-		CacheDescriptor desc = index.get(key);
+	public CacheEntry removeObject(String key) {
+		CacheEntry desc = index.get(key);
 		byte[] b = new byte[desc.size];
 		int pos = buf.position();
 		buf.position(desc.position);
