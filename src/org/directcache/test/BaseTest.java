@@ -110,7 +110,7 @@ public class BaseTest {
 	}
 
 	@Test
-	public void objectsAreAgainThere() throws IOException, ClassNotFoundException {
+	public void objectsAreThereAgain() throws IOException, ClassNotFoundException {
 		objectsAreThere();
 	}
 

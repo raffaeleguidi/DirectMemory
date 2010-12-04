@@ -1,1 +1,1 @@
-DirectCache - an off-heap cache implementation
+DirectCache - an off-heap cache implementation (a-la BigMemory) to enable serialization in memory of a large number of java objects without degrading jvm performance avoiding garbage collection
