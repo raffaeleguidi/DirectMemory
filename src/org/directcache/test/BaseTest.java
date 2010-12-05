@@ -1,6 +1,7 @@
 package org.directcache.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,9 +10,6 @@ import java.util.Vector;
 
 import org.directcache.CacheEntry;
 import org.directcache.DirectCache;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -49,13 +47,13 @@ public class BaseTest {
 	public void sizeCountAndCapacityAreOk() {
 		System.out.println("counting...");
 		System.out.println("-----------------------------");
-		System.out.println("items in cache: " + cache.getIndex().size());
+		System.out.println("items in cache: " + cache.getAllocationTable().size());
 		System.out.println("capacity (mb): " + cache.capacity()/1024/1024);
 		System.out.println("size (mb): " + cache.size()/1024/1024);
 		System.out.println("remaining (mb): " + cache.remaining()/1024/1024);
 		System.out.println("-----------------------------");
 
-		assertEquals (cache.getIndex().size(), objects);
+		assertEquals (cache.getAllocationTable().size(), objects);
 		assertEquals (cache.capacity(), mb2use*1024*1024);
 		assertEquals (cache.size(), size);
 		assertEquals (cache.remaining(), cache.capacity() - size);		
@@ -63,7 +61,7 @@ public class BaseTest {
 	
 	@Test
 	public void objectsAreThere() throws IOException, ClassNotFoundException {
-		Iterator<CacheEntry> index = cache.getIndex().values().iterator();
+		Iterator<CacheEntry> index = cache.getAllocationTable().values().iterator();
 		while (index.hasNext()) {
 			CacheEntry desc = index.next();
 			DummyObject p = (DummyObject)cache.retrieveObject(desc.getKey());
@@ -75,7 +73,7 @@ public class BaseTest {
 
 	@Test
 	public void removeAllObjects() {
-		Iterator<CacheEntry> index = cache.getIndex().values().iterator();
+		Iterator<CacheEntry> index = cache.getAllocationTable().values().iterator();
 		Vector<CacheEntry> temp = new Vector<CacheEntry>();
 		while (index.hasNext()) temp.add(index.next());
 		for (CacheEntry desc : temp) {
