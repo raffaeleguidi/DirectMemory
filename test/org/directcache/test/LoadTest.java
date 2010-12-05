@@ -80,7 +80,7 @@ public class LoadTest {
 	}
 
 	@Test
-    @PerfTest(duration = 300000, threads = 10)
+    @PerfTest(duration = 3000, threads = 10)
     @Required(max = 500, average = 2.5F)
     public void fourReadsOneWriteForSomeMinutes() throws Exception { 	
     	try {
