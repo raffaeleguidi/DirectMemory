@@ -57,20 +57,19 @@ public class DirectCache {
 
 		byte b[] = serializeObject(obj);
 		
-		if (b.length > remaining()) {
-			throw new Exception("DirectCache full");
-		}
-
-		if (b.length > buf.remaining() && b.length <= garbageSize) {
-			return storeReusingGarbage(key, b, duration);
-		} else {
-			// best case - it won't happen too often
-			return storeAtTheEnd(key, b, duration);			
+		synchronized (buf) {
+			if (b.length > remaining()) {
+				throw new Exception("DirectCache full");
+			}
+			if (b.length > buf.remaining() && b.length <= garbageSize) {
+				return storeReusingGarbage(key, b, duration);
+			} else {
+				return storeAtTheEnd(key, b, duration);
+			}
 		}
 	}
 	
 	private CacheEntry storeReusingGarbage(String key, byte[] b, int duration) throws Exception {
-
 		for (CacheEntry trashed : garbage) {
 			if (trashed.size >= b.length) {
 				CacheEntry entry = new CacheEntry(key, b.length, trashed.position, duration);
@@ -90,37 +89,41 @@ public class DirectCache {
 		throw new BufferTooFragmentedException("Buffer too fragmented");
 	}
 	private CacheEntry storeAtTheEnd(String key, byte[] b, int duration) {
-		CacheEntry descr = new CacheEntry(key, b.length, buf.position(), duration);
+		CacheEntry entry = new CacheEntry(key, b.length, buf.position(), duration);
 		buf.put(b);
-		allocationTable.put(key,descr);
-		return descr;
+		allocationTable.put(key,entry);
+		return entry;
 	} 	
 	
 	public Serializable retrieveObject(String key) throws IOException, ClassNotFoundException {
-		CacheEntry desc = allocationTable.get(key);
-		byte[] b = new byte[desc.size];
-		int pos = buf.position();
-		buf.position(desc.position);
-		buf.get(b);
-		buf.position(pos);
-		ByteArrayInputStream bis = new ByteArrayInputStream(b);
-		ObjectInputStream ois = new ObjectInputStream(bis);
-		Serializable obj = (Serializable) ois.readObject();
-		ois.close();
-		return obj;
+		CacheEntry entry = allocationTable.get(key);
+		if (entry == null)
+			return null;
+		byte[] b = new byte[entry.size];
+		synchronized (buf) {
+			int pos = buf.position();
+			buf.position(entry.position);
+			buf.get(b);
+			buf.position(pos);
+			ByteArrayInputStream bis = new ByteArrayInputStream(b);
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			Serializable obj = (Serializable) ois.readObject();
+			ois.close();
+			return obj;
+		}
 	}
 
 	public CacheEntry removeObject(String key) {
-		CacheEntry desc = allocationTable.get(key);
-		byte[] b = new byte[desc.size];
-		int pos = buf.position();
-		buf.position(desc.position);
-		buf.put(b);
-		buf.position(pos);
-		allocationTable.remove(key);
-		garbage.add(desc);
-		garbageSize += desc.size;
-		return desc;
+		synchronized (buf) {
+			CacheEntry entry = allocationTable.get(key);
+			if (entry == null) 
+				return null;
+			byte[] b = new byte[entry.size];
+			allocationTable.remove(key);
+			garbage.add(entry);
+			garbageSize += entry.size;
+			return entry;
+		}
 	}
 	
 	private int garbageSize = 0;
@@ -138,13 +141,19 @@ public class DirectCache {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append("DirectCache\r\n" );
-		sb.append("-----------------------------\r\n");
-		sb.append("items in cache: " + getAllocationTable().size() + "\r\n");
-		sb.append("capacity (mb): " + capacity()/1024/1024 + "\r\n");
-		sb.append("size (mb): " + size()/1024/1024 + "\r\n");
-		sb.append("remaining (mb): " + remaining()/1024/1024 + "\r\n");
-		sb.append("-----------------------------\r\n");
+		sb.append("DirectCache {" );
+		sb.append("items: ");
+		sb.append(getAllocationTable().size());
+		sb.append(", ");
+		sb.append("capacity (mb): ");
+		sb.append(capacity()/1024/1024);
+		sb.append(", ");
+		sb.append("size (mb): ");
+		sb.append(size()/1024/1024);
+		sb.append(", ");
+		sb.append("remaining (mb): ");
+		sb.append(remaining()/1024/1024);
+		sb.append("}");
 		
 		return sb.toString();
 	}
