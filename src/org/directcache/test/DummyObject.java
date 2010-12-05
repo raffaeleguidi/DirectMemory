@@ -24,4 +24,6 @@ public class DummyObject implements Serializable {
 	}
 
 	public Object[] obj;
+	
+	public byte[] PayLoad;
 } 

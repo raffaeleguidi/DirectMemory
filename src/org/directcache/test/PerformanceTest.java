@@ -25,9 +25,9 @@ public class PerformanceTest {
 	static DirectCache cache = null;
 	static int size = 0;
 	static int objects = 0;
-	static int objectsToStore = 45000;
-	static int objectsSize = 2500;
-	static int mb2use = 400;
+	static int objectsToStore = 100000;
+	static int objectsSize = 500;
+	static int mb2use = 500;
 	static Random generator = new Random();
 	
 	public static void allocateMemory() {
@@ -90,7 +90,7 @@ public class PerformanceTest {
     }
 
     @Test
-    @PerfTest(invocations = 10000, threads = 1)
+    @PerfTest(invocations = 10000, threads = 10)
     @Required(max = 40, average = 0.2F)
     public void oneReadOneWrite() throws Exception { 	
     	try {
@@ -105,7 +105,7 @@ public class PerformanceTest {
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 1)
+    @PerfTest(invocations = 10000, threads = 10)
     @Required(max = 35, average = 0.4F)
     public void twoReadsOneWrite() throws Exception { 	
     	try {
@@ -121,7 +121,7 @@ public class PerformanceTest {
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 1)
+    @PerfTest(invocations = 10000, threads = 10)
     @Required(max = 90, average = 1.5F)
     public void fourReadsOneWrite() throws Exception { 	
     	try {
@@ -139,7 +139,7 @@ public class PerformanceTest {
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 1)
+    @PerfTest(invocations = 10000, threads = 10)
     @Required(max = 30, average = 0.006F)
     public void onlyRead() throws Exception { 	
     	try {
@@ -151,9 +151,9 @@ public class PerformanceTest {
     }
 
     @Test
-    @PerfTest(duration = 180000, threads = 20)
+    @PerfTest(duration = 300000, threads = 10)
     @Required(max = 500, average = 2.5F)
-    public void fourReadsOneWriteFor3Minutes() throws Exception { 	
+    public void fourReadsOneWriteForSomeMinutes() throws Exception { 	
     	try {
         	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
         	randomPick = (DummyObject)cache.retrieveObject(randomKey());

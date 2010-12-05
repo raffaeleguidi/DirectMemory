@@ -27,15 +27,17 @@ public class DirectCache {
 	public DirectCache() {
 		// default 50mb
 		this.sizeInMb = 50;
-		buf = ByteBuffer.allocateDirect(sizeInMb);
+		buf = ByteBuffer.allocateDirect(1024*1024*sizeInMb);
 		logger.info("DirectCache allocated with the default " + sizeInMb + "mb buffer");
 	}
 	public DirectCache(int sizeInMb) {
 		super();
 		this.sizeInMb = sizeInMb;
+		//off-heap allocation
 		buf = ByteBuffer.allocateDirect(1024*1024*sizeInMb);
-		logger.finest("DirectCache allocated with " + sizeInMb + "mb buffer");
-		logger.fine("DirectCache allocated with " + sizeInMb + "mb buffer");
+		//heap allocation
+		//buf = ByteBuffer.allocate(1024*1024*sizeInMb);
+		logger.warning("DirectCache allocated with " + sizeInMb + "mb buffer");
 		logger.info("DirectCache allocated with " + sizeInMb + "mb buffer");
 	}
 

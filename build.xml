@@ -80,6 +80,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
+            <test name="org.directcache.test.LoadTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
             <jvmarg line="-Xmx1024m -Djava.util.logging.config.file=logging.properties"/>
             <classpath refid="DirectCache.classpath"/>
@@ -90,7 +91,16 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xmx1024m -Djava.util.logging.config.file=logging.properties"/>
+            <jvmarg line="-Xms1024m -Xmx1024m -Djava.util.logging.config.file=logging.properties"/>
+            <classpath refid="DirectCache.classpath"/>
+        </junit>
+    </target>
+    <target name="LoadTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.directcache.test.LoadTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Xmx1024m"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
