@@ -2,7 +2,6 @@ package org.directcache.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.Random;
 import java.util.logging.Logger;
@@ -27,8 +26,8 @@ public class LoadTest {
 	static int size = 0;
 	static int objects = 0;
 	static int objectsToStore = 4500;
-	static int objectsSize = 5000;
-	static int mb2use = 400;
+	static int objectsSize = 2500;
+	static int mb2use = 200;
 	static Random generator = new Random();
 	
 	private static Logger logger=Logger.getLogger("org.directcache.test");	

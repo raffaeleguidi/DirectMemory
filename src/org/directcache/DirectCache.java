@@ -6,43 +6,42 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.directcache.buffer.ThreadSafeDirectBuffer;
+import org.directcache.exceptions.BufferTooFragmentedException;
+import org.directcache.exceptions.DirectCacheFullException;
+
 public class DirectCache {
 
 	private static Logger logger=Logger.getLogger("org.directcache");
 	
+	private ThreadSafeDirectBuffer buffer;
 	private Map<String, CacheEntry> allocationTable = new Hashtable<String, CacheEntry>();
 	private List<CacheEntry> garbage = new Vector<CacheEntry>();
+
 	private int sizeInMb;
-//	private int largestTrashedItem = 0;
 	private int totalGarbageSize = 0;
+	private int defaultDuration=0;
+
 	
 	
 	public DirectCache() {
-		// default 50mb
+		// defaults to 50mb
 		this.sizeInMb = 50;
-		buf = ByteBuffer.allocateDirect(1024*1024*sizeInMb);
+		buffer = new ThreadSafeDirectBuffer(1024*1024*sizeInMb);
 		logger.info("DirectCache allocated with the default " + sizeInMb + "mb buffer");
 	}
 	public DirectCache(int sizeInMb) {
 		super();
 		this.sizeInMb = sizeInMb;
-		//off-heap allocation
-		buf = ByteBuffer.allocateDirect(1024*1024*sizeInMb);
-		//heap allocation
-		//buf = ByteBuffer.allocate(1024*1024*sizeInMb);
-		logger.warning("DirectCache allocated with " + sizeInMb + "mb buffer");
+		buffer = new ThreadSafeDirectBuffer(1024*1024*sizeInMb);
 		logger.info("DirectCache allocated with " + sizeInMb + "mb buffer");
 	}
-
-	private ByteBuffer buf;
-	private int defaultDuration=0;
 
 	public int getDefaultDuration() {
 		return defaultDuration;
@@ -76,13 +75,13 @@ public class DirectCache {
 		
 		logger.info("object with key '" + key + "' serialized (" + b.length + ") bytes");
 
-		synchronized (buf) {
-			logger.info("buffer size is " + buf.remaining() + " garbage size is " + totalGarbageSize);
+		synchronized (buffer) {
+			logger.info("buffer size is " + buffer.remaining() + " garbage size is " + totalGarbageSize);
 			if (b.length > remaining()) {
 				logger.warning("throwing DirectCache full exception");
 				throw new DirectCacheFullException("DirectCache full");
 			}
-			if (b.length > buf.remaining() && b.length <= totalGarbageSize) {
+			if (b.length > buffer.remaining() && b.length <= totalGarbageSize) {
 				logger.info("object with key '" + key + "' doesn't fit in buffer but fits in garbage");
 				return storeReusingGarbage(key, b, duration);
 			} else {
@@ -101,20 +100,20 @@ public class DirectCache {
 				trashed.size -= b.length;
 				totalGarbageSize -= b.length;
 				trashed.position += b.length;
+				buffer.put(b, entry.position);
+				
+				// not really an optimized garbage collection algorythm but...
 				if (trashed.size == 0) 
 					garbage.remove(trashed);
-				int oldPos = buf.position();
-				buf.position(entry.position);
-				buf.put(b, 0, entry.size);
-				buf.position(oldPos);
+
 				return entry;
 			}
 		}
 		throw new BufferTooFragmentedException("Buffer too fragmented");
 	}
 	private CacheEntry storeAtTheEnd(String key, byte[] b, int duration) {
-		CacheEntry entry = new CacheEntry(key, b.length, buf.position(), duration);
-		buf.put(b);
+		CacheEntry entry = new CacheEntry(key, b.length, buffer.position(), duration);
+		buffer.append(b);
 		allocationTable.put(key,entry);
 		return entry;
 	} 	
@@ -130,27 +129,27 @@ public class DirectCache {
 			return null;
 		}
 
-		byte[] b = new byte[entry.size];
-
-		synchronized (buf) {
-			int pos = buf.position();
-			buf.position(entry.position);
-			buf.get(b);
-			buf.position(pos);
-			ByteArrayInputStream bis = new ByteArrayInputStream(b);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-			Serializable obj = (Serializable) ois.readObject();
-			ois.close();
-			logger.info("retrieved object with key '" + key + "' (" + b.length + " bytes)");
-			return obj;
-		}
+		byte[] b = buffer.get(entry.position, entry.size);
+		Serializable obj = deserialize(b);
+		
+		logger.info("retrieved object with key '" + key + "' (" + b.length + " bytes)");
+		
+		return obj;
+	}
+	
+	private Serializable deserialize(byte[] b) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream bis = new ByteArrayInputStream(b);
+		ObjectInputStream ois = new ObjectInputStream(bis);
+		Serializable obj = (Serializable) ois.readObject();
+		ois.close();
+		return obj;
 	}
 
 	public CacheEntry removeObject(String key) {
 
 		logger.info("looking for object with key '" + key + "'");
 		
-		synchronized (buf) {
+		synchronized (buffer) {
 			CacheEntry entry = allocationTable.get(key);
 			if (entry == null) {
 				logger.info("could not find object with key '" + key + "'");
@@ -166,13 +165,13 @@ public class DirectCache {
 	}
 	
 	public int remaining() {
-		return buf.remaining()+totalGarbageSize;
+		return buffer.remaining()+totalGarbageSize;
 	}
 	public int size() {
-		return (buf.capacity()-remaining());
+		return (buffer.capacity()-remaining());
 	}
 	public int capacity() {
-		return buf.capacity();
+		return buffer.capacity();
 	}
 	@Override
 	public String toString() {

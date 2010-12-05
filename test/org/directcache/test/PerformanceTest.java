@@ -25,9 +25,9 @@ public class PerformanceTest {
 	static DirectCache cache = null;
 	static int size = 0;
 	static int objects = 0;
-	static int objectsToStore = 100000;
-	static int objectsSize = 500;
-	static int mb2use = 500;
+	static int objectsToStore = 10000;
+	static int objectsSize = 2500;
+	static int mb2use = 100;
 	static Random generator = new Random();
 	
 	public static void allocateMemory() {
@@ -90,38 +90,30 @@ public class PerformanceTest {
     }
 
     @Test
-    @PerfTest(invocations = 10000, threads = 10)
+    @PerfTest(invocations = 2000, threads = 10)
     @Required(max = 40, average = 0.2F)
     public void oneReadOneWrite() throws Exception { 	
-    	try {
-        	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	DummyObject object2add = randomObject();
-        	cache.removeObject(object2add.getName());
-        	cache.storeObject(object2add.getName(), object2add);
-        	assertNotNull(randomPick.getName());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	DummyObject object2add = randomObject();
+    	cache.removeObject(object2add.getName());
+    	cache.storeObject(object2add.getName(), object2add);
+    	assertNotNull(randomPick.getName());
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 10)
+    @PerfTest(invocations = 2000, threads = 10)
     @Required(max = 35, average = 0.4F)
     public void twoReadsOneWrite() throws Exception { 	
-    	try {
-        	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	DummyObject object2add = randomObject();
-        	cache.removeObject(object2add.getName());
-        	cache.storeObject(object2add.getName(), object2add);
-        	assertNotNull(randomPick.getName());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	DummyObject object2add = randomObject();
+    	cache.removeObject(object2add.getName());
+    	cache.storeObject(object2add.getName(), object2add);
+    	assertNotNull(randomPick.getName());
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 10)
+    @PerfTest(invocations = 2000, threads = 10)
     @Required(max = 90, average = 1.5F)
     public void fourReadsOneWrite() throws Exception { 	
     	try {
@@ -139,21 +131,17 @@ public class PerformanceTest {
     }
     
     @Test
-    @PerfTest(invocations = 10000, threads = 10)
+    @PerfTest(invocations = 2000, threads = 10)
     @Required(max = 30, average = 0.006F)
     public void onlyRead() throws Exception { 	
-    	try {
-        	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	assertNotNull(randomPick.getName());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	assertNotNull(randomPick.getName());
     }
 
     @Test
-    @PerfTest(duration = 300000, threads = 10)
+    @PerfTest(duration = 60000, threads = 10)
     @Required(max = 500, average = 2.5F)
-    public void fourReadsOneWriteForSomeMinutes() throws Exception { 	
+    public void fourReadsOneWriteForSomeTime() throws Exception { 	
     	try {
         	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
         	randomPick = (DummyObject)cache.retrieveObject(randomKey());

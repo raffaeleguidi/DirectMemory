@@ -1,4 +1,4 @@
-package org.directcache;
+package org.directcache.exceptions;
 
 public class DirectCacheFullException extends Exception {
 
