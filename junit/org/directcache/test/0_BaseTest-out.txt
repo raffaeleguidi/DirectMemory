@@ -1,0 +1,30 @@
+allocated 400 mb
+storing some objects... done
+counting...
+-----------------------------
+items in cache: 10000
+capacity (mb): 400
+size (mb): 385
+remaining (mb): 14
+-----------------------------
+checked 10000 objects
+removed all objects
+counting again
+counting...
+-----------------------------
+items in cache: 0
+capacity (mb): 400
+size (mb): 0
+remaining (mb): 400
+-----------------------------
+going to add again
+stored some objects again
+checked 5000 objects
+counting...
+-----------------------------
+items in cache: 5000
+capacity (mb): 400
+size (mb): 190
+remaining (mb): 209
+-----------------------------
+

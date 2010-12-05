@@ -1,0 +1,53 @@
+allocated 400 mb
+org.directcache.test.PerformanceTest.firstAndLargestItem
+cache size is 2656 bytes
+
+DirectCache
+-----------------------------
+items in cache: 1
+capacity (mb): 400
+size (mb): 0
+remaining (mb): 399
+-----------------------------
+
+samples: 1
+max:     16
+average: 16.0
+median:  16
+org.directcache.test.PerformanceTest.fillUpCache
+storing some objects... done
+
+samples: 1
+max:     8236
+average: 8236.0
+median:  8236
+org.directcache.test.PerformanceTest.oneReadOneWrite
+samples: 10000
+max:     29
+average: 0.0193
+median:  0
+org.directcache.test.PerformanceTest.twoReadsOneWrite
+samples: 10000
+max:     34
+average: 0.2518
+median:  0
+org.directcache.test.PerformanceTest.fourReadsOneWrite
+samples: 10000
+max:     33
+average: 0.8685
+median:  1
+org.directcache.test.PerformanceTest.onlyRead
+samples: 10000
+max:     20
+average: 0.0093
+median:  0
+
+DirectCache
+-----------------------------
+items in cache: 45000
+capacity (mb): 400
+size (mb): 221
+remaining (mb): 178
+-----------------------------
+
+

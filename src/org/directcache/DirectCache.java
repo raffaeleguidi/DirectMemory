@@ -118,7 +118,6 @@ public class DirectCache {
 			CacheEntry entry = allocationTable.get(key);
 			if (entry == null) 
 				return null;
-			byte[] b = new byte[entry.size];
 			allocationTable.remove(key);
 			garbage.add(entry);
 			garbageSize += entry.size;
