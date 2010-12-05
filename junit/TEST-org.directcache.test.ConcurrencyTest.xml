@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="0" failures="0" hostname="PO042D9417" name="org.directcache.test.ConcurrencyTest" tests="3" time="12.172" timestamp="2010-12-05T15:02:28">
+<testsuite errors="0" failures="0" hostname="PO042D9417" name="org.directcache.test.ConcurrencyTest" tests="3" time="11.141" timestamp="2010-12-05T17:03:10">
   <properties>
     <property name="java.vendor" value="Sun Microsystems Inc." />
     <property name="env.VS90COMNTOOLS" value="C:\Programmi\Microsoft Visual Studio 9.0\Common7\Tools\" />
@@ -68,7 +68,7 @@
     <property name="java.specification.vendor" value="Sun Microsystems Inc." />
     <property name="env.CLASSPATH" value="C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar" />
     <property name="env.NUMBER_OF_PROCESSORS" value="2" />
-    <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\" />
+    <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\" />
     <property name="java.vendor.url" value="http://java.sun.com/" />
     <property name="env.USERDNSDOMAIN" value="DIP.BANCA.BNL.IT" />
     <property name="java.vm.vendor" value="Sun Microsystems Inc." />
@@ -104,7 +104,7 @@
 " />
     <property name="java.vm.name" value="Java HotSpot(TM) Client VM" />
     <property name="env.PATHEXT" value=".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH" />
-    <property name="env.Path" value="C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\" />
+    <property name="env.Path" value="C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\" />
     <property name="basedir" value="C:\Development\directcache" />
     <property name="ant.java.version" value="1.6" />
     <property name="ant.core.lib" value="C:\Programmi\apache-ant-1.8.0\lib\ant.jar" />
@@ -119,27 +119,27 @@
     <property name="ant.project.invoked-targets" value="DirectCache" />
     <property name="env.PROCESSOR_LEVEL" value="6" />
   </properties>
-  <testcase classname="org.directcache.test.ConcurrencyTest" name="InsertItem" time="5.219" />
-  <testcase classname="org.directcache.test.ConcurrencyTest" name="OverWriteItem" time="1.781" />
-  <testcase classname="org.directcache.test.ConcurrencyTest" name="removeItem" time="5.0" />
+  <testcase classname="org.directcache.test.ConcurrencyTest" name="InsertItem" time="5.156" />
+  <testcase classname="org.directcache.test.ConcurrencyTest" name="OverWriteItem" time="1.656" />
+  <testcase classname="org.directcache.test.ConcurrencyTest" name="removeItem" time="4.141" />
   <system-out><![CDATA[allocated 100 mb
 org.directcache.test.ConcurrencyTest.InsertItem
-samples: 8119
-max:     699
-average: 30.368395122552037
-median:  15
+samples: 7711
+max:     399
+average: 32.15199066268966
+median:  22
 org.directcache.test.ConcurrencyTest.OverWriteItem
 samples: 10000
-max:     23
-average: 0.0128
+max:     1
+average: 5.0E-4
 median:  0
 org.directcache.test.ConcurrencyTest.removeItem
 samples: 20000
-max:     1374
-average: 23.35165
+max:     1230
+average: 19.701
 median:  0
 
-DirectCache {items: 48, capacity (mb): 100, size (mb): 54, remaining (mb): 45}
+DirectCache {items: 42, capacity (mb): 100, size (mb): 52, remaining (mb): 47}
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
