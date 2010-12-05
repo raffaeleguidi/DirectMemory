@@ -27,6 +27,13 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="config">
+                <include name="*.properties"/>
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
     </target>
     <target name="clean">
         <delete dir="bin"/>
@@ -38,6 +45,11 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
+            <classpath refid="DirectCache.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="config"/>
+            <include name="*.properties"/>
             <classpath refid="DirectCache.classpath"/>
         </javac>
     </target>
@@ -55,13 +67,21 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
+    <target name="ConcurrencyTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
+            <classpath refid="DirectCache.classpath"/>
+        </junit>
+    </target>
     <target name="DirectCache">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms1024m -Xmx1024m"/>
+            <jvmarg line="-Xmx1024m -Djava.util.logging.config.file=logging.properties"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
@@ -70,15 +90,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms1024m -Xmx1024m"/>
-            <classpath refid="DirectCache.classpath"/>
-        </junit>
-    </target>
-    <target name="ConcurrencyTest">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Xmx1024m -Djava.util.logging.config.file=logging.properties"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>

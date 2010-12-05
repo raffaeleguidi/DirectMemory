@@ -31,7 +31,7 @@ public class ConcurrencyTest {
 	static Random generator = new Random();
 	
 	public static void allocateMemory() {
-		cache = new DirectCache(1024*1024*mb2use);
+		cache = new DirectCache(mb2use);
 		System.out.println("allocated " + mb2use + " mb");
 	}
 	
@@ -69,15 +69,13 @@ public class ConcurrencyTest {
     	cache.storeObject(key, obj);
     	DummyObject retrievedObj = (DummyObject)cache.retrieveObject(key);
     	assertNotNull(retrievedObj);
-//    	System.out.println(obj.getName());
-//    	System.out.println(retrievedObj.getName());
     	assertEquals(obj.getName(), retrievedObj.getName());
     	assertEquals(obj.obj.length, retrievedObj.obj.length);
     }
 
     @Test
     @PerfTest(invocations = 10000, threads = 1)
-    @Required(average = 0.002F)
+    @Required(average = 0.3F)
     public void OverWriteItem() throws Exception { 	
     	DummyObject obj = new DummyObject("test", generator.nextInt(objectsSize));
     	String key = obj.getName();

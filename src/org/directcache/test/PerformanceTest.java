@@ -31,7 +31,7 @@ public class PerformanceTest {
 	static Random generator = new Random();
 	
 	public static void allocateMemory() {
-		cache = new DirectCache(1024*1024*mb2use);
+		cache = new DirectCache(mb2use);
 		System.out.println("allocated " + mb2use + " mb");
 	}
 	
@@ -122,7 +122,7 @@ public class PerformanceTest {
     
     @Test
     @PerfTest(invocations = 10000, threads = 1)
-    @Required(max = 45, average = 1.5F)
+    @Required(max = 90, average = 1.5F)
     public void fourReadsOneWrite() throws Exception { 	
     	try {
         	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
@@ -152,7 +152,7 @@ public class PerformanceTest {
 
     @Test
     @PerfTest(duration = 180000, threads = 20)
-    @Required(max = 45, average = 2.5F)
+    @Required(max = 500, average = 2.5F)
     public void fourReadsOneWriteFor3Minutes() throws Exception { 	
     	try {
         	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
