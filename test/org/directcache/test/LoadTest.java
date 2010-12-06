@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
@@ -27,10 +28,10 @@ public class LoadTest {
 	static int objects = 0;
 	static int objectsToStore = 4500;
 	static int objectsSize = 2500;
-	static int mb2use = 200;
+	static int mb2use = 100;
 	static Random generator = new Random();
 	
-	private static Logger logger=Logger.getLogger("org.directcache.test");	
+	private static Logger logger=LoggerFactory.getLogger("org.directcache.test");	
 	
 	public static void allocateMemory() {
 		cache = new DirectCache(mb2use);
@@ -66,7 +67,7 @@ public class LoadTest {
 	@Test
     //@Required(average = 10F)
     public void FillUpCache() throws Exception { 	
-		logger.warning("entering fillup cache");
+		logger.warn("entering fillup cache");
 		int n=0;
 		while (cache.remaining() > objectsSize) {
 	    	DummyObject obj = randomObject();
@@ -76,12 +77,12 @@ public class LoadTest {
 	    	n++;
 		}
 		objects = cache.getAllocationTable().size();
-		logger.warning("exiting fillup cache with remaining=" + cache.remaining());
+		logger.warn("exiting fillup cache with remaining=" + cache.remaining());
 	}
 
 	@Test
     @PerfTest(duration = 3000, threads = 10)
-    @Required(max = 500, average = 2.5F)
+    @Required(max = 900, average = 5F)
     public void fourReadsOneWriteForSomeMinutes() throws Exception { 	
     	try {
         	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());

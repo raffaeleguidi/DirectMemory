@@ -64,7 +64,7 @@ public class BaseTest {
 		DummyObject dummy = new DummyObject(key, objectsSize*generator.nextInt(5));
 		return dummy;
 	}
-
+    
     @Test
     public void firstAndLargestItem() throws Exception { 	
     	DummyObject firstObject = new DummyObject("key0", objectsSize);

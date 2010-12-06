@@ -10,7 +10,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.directcache.buffer.ThreadSafeDirectBuffer;
 import org.directcache.exceptions.BufferTooFragmentedException;
@@ -18,7 +19,7 @@ import org.directcache.exceptions.DirectCacheFullException;
 
 public class DirectCache {
 
-	private static Logger logger=Logger.getLogger("org.directcache");
+	private static Logger logger=LoggerFactory.getLogger("org.directcache");
 	
 	private ThreadSafeDirectBuffer buffer;
 	private Map<String, CacheEntry> allocationTable = new Hashtable<String, CacheEntry>();
@@ -59,7 +60,7 @@ public class DirectCache {
 		oos.writeObject(obj);
 		oos.close();
 		byte[] b = baos.toByteArray();
-		logger.fine("object serialized");
+		logger.debug("object serialized");
 		return b;		
 	}
 
@@ -78,7 +79,7 @@ public class DirectCache {
 		synchronized (buffer) {
 			logger.info("buffer size is " + buffer.remaining() + " garbage size is " + totalGarbageSize);
 			if (b.length > remaining()) {
-				logger.warning("throwing DirectCache full exception");
+				logger.warn("throwing DirectCache full exception");
 				throw new DirectCacheFullException("DirectCache full");
 			}
 			if (b.length > buffer.remaining() && b.length <= totalGarbageSize) {

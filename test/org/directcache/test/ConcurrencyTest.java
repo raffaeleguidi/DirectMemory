@@ -63,7 +63,7 @@ public class ConcurrencyTest {
     @Test
     @PerfTest(duration = 5000, threads = 50)
     //@Required(average = 10F)
-    public void InsertItem() throws Exception { 	
+    public void insertItem() throws Exception { 	
     	DummyObject obj = randomObject();
     	String key = obj.getName();
     	cache.storeObject(key, obj);
@@ -76,7 +76,7 @@ public class ConcurrencyTest {
     @Test
     @PerfTest(invocations = 10000, threads = 1)
     @Required(average = 0.3F)
-    public void OverWriteItem() throws Exception { 	
+    public void overWriteItem() throws Exception { 	
     	DummyObject obj = new DummyObject("test", generator.nextInt(objectsSize));
     	String key = obj.getName();
     	cache.storeObject(key, obj);
