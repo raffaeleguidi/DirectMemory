@@ -9,7 +9,7 @@ public class CacheEntry {
 	int size;
 	int position;
 	Date timeStamp = Calendar.getInstance().getTime();
-	int duration = 0;
+	int duration = -1;
 
 	public int getDuration() {
 		return duration;
@@ -51,5 +51,13 @@ public class CacheEntry {
 	}
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+	
+	public boolean expired() {
+		if (duration==-1) 
+			return false;
+		Date expiryTime = new Date(duration + timeStamp.getTime());
+		boolean result = new Date().after(expiryTime);
+		return result;
 	}
 }

@@ -1,8 +1,8 @@
 package org.directcache.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import org.databene.contiperf.PerfTest;
@@ -15,16 +15,18 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PerformanceTest {
 	
-    @Rule
+	private static Logger logger=LoggerFactory.getLogger("org.directcache");
+
+	@Rule
     public ContiPerfRule i = new ContiPerfRule(new EmptyExecutionLogger());
     
 	static DirectCache cache = null;
-	static int size = 0;
-	static int objects = 0;
 	static int objectsToStore = 10000;
 	static int objectsSize = 2500;
 	static int mb2use = 100;
@@ -32,32 +34,10 @@ public class PerformanceTest {
 	
 	public static void allocateMemory() {
 		cache = new DirectCache(mb2use);
+		cache.setDefaultDuration(1);
 		System.out.println("allocated " + mb2use + " mb");
 	}
-	
-	public static void storeObjects() throws Exception {
-		System.out.print("storing some objects... ");
-		for (int i = 1; i < objectsToStore; i++) {
-			DummyObject p = new DummyObject("key" + i);
-			p.obj = new Object[objectsSize*generator.nextInt(5)];
-			CacheEntry desc = cache.storeObject(p.getName(), p);
-			size += desc.getSize();
-			objects++;
-		}
-		System.out.println("done");
-		System.out.println();
-	}
-	
-	public static void sizeCountAndCapacityAreOk() {
-
-		System.out.println(cache.toString());
-
-		assertEquals (cache.getAllocationTable().size(), objects);
-		assertEquals (cache.capacity(), mb2use*1024*1024);
-		assertEquals (cache.size(), size);
-		assertEquals (cache.remaining(), cache.capacity() - size);		
-	}
-	
+		
 	@BeforeClass
 	public static void setup() throws Exception {
 		allocateMemory();
@@ -69,9 +49,39 @@ public class PerformanceTest {
 
 	public DummyObject randomObject() {
     	String key = randomKey();
-		DummyObject dummy = new DummyObject(key, objectsSize*generator.nextInt(5));
+		DummyObject dummy = new DummyObject(key);
+		dummy.PayLoad = new byte[objectsSize*generator.nextInt(5)];
 		return dummy;
 	}
+	
+    @Test
+    public void fillUpAndTestAll() throws Exception {
+    	
+		while (size < cache.capacity() / 2) {
+			DummyObject dummy = new DummyObject("key" + objects);
+			dummy.obj = new Object[objectsSize*generator.nextInt(5)];
+			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
+			size += entry.getSize();
+			objects++;
+		}
+		
+		logger.debug("cache size=" + size + " for " + objects + " objects");
+		
+		Iterator<CacheEntry> iter = cache.getAllocationTable().values().iterator();
+		
+		while (iter.hasNext()) {
+			CacheEntry entry = iter.next();
+			DummyObject dummy = (DummyObject) cache.retrieveObject(entry.getKey());
+			assertNotNull(dummy);
+			assertEquals(entry.getKey(), dummy.getName());
+		}
+		
+		logger.debug("all objects checked");
+		
+		allocateMemory();
+		
+    }
+	
 
     @Test
     @Required(max = 30)
@@ -83,77 +93,62 @@ public class PerformanceTest {
 		System.out.println(cache.toString());
     }
     
-    @Test
-    @Required(max = 10000)
-    public void fillUpCache() throws Exception {
-    	storeObjects();
+	static int size = 0;
+	static int objects = 0;
+
+	@Test
+    public void fillUpHalfCache() throws Exception {		
+		while (size < cache.capacity() / 2) {
+			DummyObject dummy = new DummyObject("key" + i);
+			dummy.obj = new Object[objectsSize*generator.nextInt(5)];
+			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
+			size += entry.getSize();
+		}
     }
 
     @Test
-    @PerfTest(invocations = 2000, threads = 10)
-    @Required(max = 40, average = 0.2F)
-    public void oneReadOneWrite() throws Exception { 	
-    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 150, average = 7)
+    public void oneReadOneWriteOneDelete() throws Exception { 	
+    	@SuppressWarnings("unused")
+		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     	DummyObject object2add = randomObject();
-    	cache.removeObject(object2add.getName());
     	cache.storeObject(object2add.getName(), object2add);
-    	assertNotNull(randomPick.getName());
+    	cache.removeObject(randomKey());
     }
     
     @Test
-    @PerfTest(invocations = 2000, threads = 10)
-    @Required(max = 35, average = 0.4F)
-    public void twoReadsOneWrite() throws Exception { 	
-    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 150, average = 7)
+    public void twoReadsOneWriteOneDelete() throws Exception { 	
+    	@SuppressWarnings("unused")
+		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     	randomPick = (DummyObject)cache.retrieveObject(randomKey());
     	DummyObject object2add = randomObject();
-    	cache.removeObject(object2add.getName());
     	cache.storeObject(object2add.getName(), object2add);
-    	assertNotNull(randomPick.getName());
+    	cache.removeObject(randomKey());
     }
     
     @Test
-    @PerfTest(invocations = 2000, threads = 10)
-    @Required(max = 90, average = 1.5F)
-    public void fourReadsOneWrite() throws Exception { 	
-    	try {
-        	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	DummyObject object2add = randomObject();
-        	cache.removeObject(object2add.getName());
-        	cache.storeObject(object2add.getName(), object2add);
-        	assertNotNull(randomPick.getName());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 120, average = 10.5)
+    public void fourReadsOneWriteOneDelete() throws Exception { 	
+    	@SuppressWarnings("unused")
+		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);
+    	cache.removeObject(randomKey());
     }
     
     @Test
-    @PerfTest(invocations = 2000, threads = 10)
-    @Required(max = 30, average = 0.006F)
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 150, average = 2.5)
     public void onlyRead() throws Exception { 	
-    	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	assertNotNull(randomPick.getName());
-    }
-
-    @Test
-    @PerfTest(duration = 3000, threads = 10)
-    @Required(max = 500, average = 2.5F)
-    public void fourReadsOneWriteForSomeTime() throws Exception { 	
-    	try {
-        	DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-        	DummyObject object2add = randomObject();
-        	cache.removeObject(object2add.getName());
-        	cache.storeObject(object2add.getName(), object2add);
-        	assertNotNull(randomPick.getName());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+    	@SuppressWarnings("unused")
+		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     }
     
     @AfterClass

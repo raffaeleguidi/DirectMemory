@@ -1,5 +1,6 @@
 package org.directcache.buffer;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 public class ThreadSafeDirectBuffer  {
@@ -7,7 +8,7 @@ public class ThreadSafeDirectBuffer  {
 	private ByteBuffer buffer;
 	
 	public ThreadSafeDirectBuffer(int capacity) {
-		buffer = ByteBuffer.allocate(capacity);
+		buffer = ByteBuffer.allocateDirect(capacity);
 	}
 
 	public byte[] get(int offset, int length) {
@@ -32,7 +33,7 @@ public class ThreadSafeDirectBuffer  {
 	
 	public void append(byte[] source) {
 		synchronized (buffer) {
-			buffer.put(source, 0, source.length);
+			buffer.put(source);
 		}
 	}
 	

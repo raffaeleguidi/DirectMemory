@@ -1,9 +1,13 @@
 package org.directcache.exceptions;
 
-public class DirectCacheFullException extends Exception {
+public class DirectCacheFullException extends DirectCacheException {
 
 	public DirectCacheFullException(String error) {
 		super(error);
+	}
+
+	public DirectCacheFullException(String string, int length) {
+		super(string, length);
 	}
 
 	/**

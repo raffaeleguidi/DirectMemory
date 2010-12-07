@@ -26,7 +26,7 @@ public class LoadTest {
 	static DirectCache cache = null;
 	static int size = 0;
 	static int objects = 0;
-	static int objectsToStore = 4500;
+	static int objectsToStore = 45000;
 	static int objectsSize = 2500;
 	static int mb2use = 100;
 	static Random generator = new Random();
@@ -35,6 +35,7 @@ public class LoadTest {
 	
 	public static void allocateMemory() {
 		cache = new DirectCache(mb2use);
+		cache.setDefaultDuration(1);
 		System.out.println("allocated " + mb2use + " mb");
 	}
 	
