@@ -43,9 +43,9 @@ public class LoadTest {
 
 		System.out.println(cache.toString());
 
-		assertEquals (cache.getAllocationTable().size(), objects);
+		assertEquals (cache.entries().size(), objects);
 		assertEquals (cache.capacity(), mb2use*1024*1024);
-		assertEquals (cache.size(), size);
+		assertEquals (cache.usedMemory(), size);
 		assertEquals (cache.remaining(), cache.capacity() - size);		
 	}
 	
@@ -77,7 +77,7 @@ public class LoadTest {
 	    	cache.storeObject(key, obj);
 	    	n++;
 		}
-		objects = cache.getAllocationTable().size();
+		objects = cache.entries().size();
 		logger.warn("exiting fillup cache with remaining=" + cache.remaining());
 	}
 

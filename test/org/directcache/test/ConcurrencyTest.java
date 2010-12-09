@@ -39,9 +39,9 @@ public class ConcurrencyTest {
 
 		System.out.println(cache.toString());
 
-		assertEquals (cache.getAllocationTable().size(), objects);
+		assertEquals (cache.entries().size(), objects);
 		assertEquals (cache.capacity(), mb2use*1024*1024);
-		assertEquals (cache.size(), size);
+		assertEquals (cache.usedMemory(), size);
 		assertEquals (cache.remaining(), cache.capacity() - size);		
 	}
 	

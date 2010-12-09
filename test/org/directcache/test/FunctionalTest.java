@@ -171,7 +171,7 @@ public class FunctionalTest {
     
     @After
     public void checkBuffer() throws IOException, ClassNotFoundException {
-		Iterator<CacheEntry> iter = cache.getAllocationTable().values().iterator();
+		Iterator<CacheEntry> iter = cache.entries().values().iterator();
 		
 		while (iter.hasNext()) {
 			CacheEntry entry = iter.next();
@@ -180,7 +180,7 @@ public class FunctionalTest {
 			assertEquals(entry.getKey(), dummy.getName());
 		}
 		
-		logger.info("all " + cache.getAllocationTable().size() + " objects checked");
+		logger.info("all " + cache.entries().size() + " objects checked");
 		logger.info(cache.toString());
    }
 

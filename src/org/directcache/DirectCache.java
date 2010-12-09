@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.directcache.buffer.ThreadSafeDirectBuffer;
-import org.directcache.exceptions.BufferTooFragmentedException;
-import org.directcache.exceptions.DirectCacheFullException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,24 +25,24 @@ public class DirectCache {
 	private static Logger logger=LoggerFactory.getLogger(DirectCache.class);
 	
 	private ThreadSafeDirectBuffer buffer;
-	private Map<String, CacheEntry> allocationTable = new Hashtable<String, CacheEntry>();
-	private List<CacheEntry> garbage = new Vector<CacheEntry>();
+	private Map<String, CacheEntry> entries = new Hashtable<String, CacheEntry>();
+	private List<CacheEntry> garbagedEntries = new Vector<CacheEntry>();
 
-	private int sizeInMb;
-	private int totalGarbageSize = 0;
+	private int capacity;
+	private int usedMemory;
+	private int garbageSize = 0;
 	private int defaultDuration=-1;
 		
 	public DirectCache() {
 		// defaults to 50mb
-		this.sizeInMb = 50;
-		buffer = new ThreadSafeDirectBuffer(1024*1024*sizeInMb);
-		logger.info("DirectCache allocated with the default " + sizeInMb + "mb buffer");
+		this.capacity = 50*1024*1024;
+		buffer = new ThreadSafeDirectBuffer(1024*1024*capacity);
+		logger.info("DirectCache allocated with the default " + capacity + "mb buffer");
 	}
-	public DirectCache(int sizeInMb) {
-		super();
-		this.sizeInMb = sizeInMb;
-		buffer = new ThreadSafeDirectBuffer(1024*1024*sizeInMb);
-		logger.info("DirectCache allocated with " + sizeInMb + "mb buffer");
+	public DirectCache(int capacity) {
+		this.capacity = capacity;
+		buffer = new ThreadSafeDirectBuffer(capacity);
+		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
 	}
 
 	public int getDefaultDuration() {
@@ -53,8 +51,8 @@ public class DirectCache {
 	public void setDefaultDuration(int defaultDuration) {
 		this.defaultDuration = defaultDuration;
 	}
-	public Map<String, CacheEntry> getAllocationTable() {
-		return allocationTable;
+	public Map<String, CacheEntry> entries() {
+		return entries;
 	}
 
 	private byte[] serializeObject(Serializable obj) throws IOException {
@@ -73,62 +71,112 @@ public class DirectCache {
 	
 	public CacheEntry storeObject(String key, Serializable obj, int duration) throws Exception {
 
+		logger.info("attempting to remove object with key '" + key + "' - just in case");
+
+		removeObject(key);
+		
 		logger.info("serializing object with key '" + key + "'");
 
-		byte b[] = serializeObject(obj);
+		byte source[] = serializeObject(obj);
 		
-		logger.info("object with key '" + key + "' serialized (" + b.length + ") bytes");
-		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + totalGarbageSize);
+		logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
+		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + garbageSize);
 
 		synchronized (buffer) {
-			if (b.length > remaining()) {
-				logger.warn("throwing DirectCache full exception");
-				throw new DirectCacheFullException("DirectCache full", b.length);
+			if (source.length > remaining()) {
+				collectExpired();
 			}
-
-			// remaining non va bene
-			// definire la finestra corrente, ovvero quanti byte liberi ho davanti
+			if (source.length > remaining()) {
+				logger.warn("DirectCache full");
+				return null;
+			}
 			
-			if (b.length <= buffer.remaining() &! endReached) {   
+			CacheEntry storedEntry = null;
+			
+			if (source.length <= buffer.remaining() &! endReached) {   
 				logger.info("object with key '" + key + "' fits in buffer");
-				return storeAtTheEnd(key, b, duration);
-			} else if (b.length <= totalGarbageSize) {
+				storedEntry = storeAtTheEnd(key, source, duration);
+			} else if (source.length <= garbageSize) {
 				logger.info("object with key '" + key + "' doesn't fit in buffer but fits in garbage");
-				return storeReusingGarbage(key, b, duration);	
+				storedEntry = storeReusingGarbage(key, source, duration);	
 			}
-			return null;
+			if (storedEntry != null) {
+				usedMemory+=storedEntry.size;
+			}
+			return storedEntry;
 		}
 	}
 	
 	private boolean endReached = false;
-	
-	private CacheEntry storeReusingGarbage(String key, byte[] b, int duration) throws Exception {
+
+	private CacheEntry storeReusingGarbage(String key, byte[] source, int duration) throws Exception {
 		endReached = true;
+
+		logger.info("storing object with key '" + key + "'");
+
+//		logger.warn("Executing lambda query for objects larger than " + source.length);
+//
+//		List<CacheEntry> entriesThatFit =
+//			sort(
+//				filter(
+//					having( 
+//							on(
+//									CacheEntry.class).size, 
+//									greaterThan(source.length) 
+//							), 
+//					garbagedEntries
+//				)
+//				,
+//				on(CacheEntry.class).size
+//			);
+//		
+//		logger.warn("Finished lambda query");
+//
+//		if (entriesThatFit.size() >= 1) {
+//			logger.warn("Obtained " + entriesThatFit.size() + " entries - using the first");
+//			CacheEntry trashed = entriesThatFit.get(1);
+//			CacheEntry entry = new CacheEntry(key, source.length, trashed.position, duration);
+//			entries.put(key, entry);
+//			trashed.size -= source.length;
+//			garbageSize -= source.length;
+//			trashed.position += source.length;
+//			buffer.put(source, entry.position);
+//			logger.warn("Reusing entry " + key);
+//			return entry;
+//		} else {
+//			logger.warn("Buffer too fragmented for entry " + key);
+//			return null;
+//		}
 		
 		// a volte va in overflow - capire perchè
 		// rifare la query con lambdaj
-		for (CacheEntry trashed : garbage) {
-			if (trashed.size >= b.length) {
-				CacheEntry entry = new CacheEntry(key, b.length, trashed.position, duration);
-				allocationTable.put(key, entry);
-				trashed.size -= b.length;
-				totalGarbageSize -= b.length;
-				trashed.position += b.length;
-				buffer.put(b, entry.position);
+
+		for (CacheEntry trashed : garbagedEntries) {
+			if (trashed.size >= source.length) {
+				CacheEntry entry = new CacheEntry(key, source.length, trashed.position, duration);
+				entries.put(key, entry);
+				trashed.size -= source.length;
+				garbageSize -= source.length;
+				trashed.position += source.length;
+				buffer.put(source, entry.position);
 				
 				// not really an optimized garbage collection algorythm but...
 				if (trashed.size == 0) 
-					garbage.remove(trashed);
+					garbagedEntries.remove(trashed);
+
+				logger.info("Reusing entry " + key);
 
 				return entry;
 			}
 		}
-		throw new BufferTooFragmentedException("Buffer too fragmented", b.length);
+		logger.warn("Buffer too fragmented for entry " + key);
+		return null;
 	}
-	private CacheEntry storeAtTheEnd(String key, byte[] b, int duration) {
-		CacheEntry entry = new CacheEntry(key, b.length, buffer.position(), duration);
-		allocationTable.put(key, entry);
-		buffer.append(b);
+	private CacheEntry storeAtTheEnd(String key, byte[] bsource, int duration) {
+		logger.info("storing object with key '" + key + "'");
+		CacheEntry entry = new CacheEntry(key, bsource.length, buffer.position(), duration);
+		entries.put(key, entry);
+		buffer.append(bsource);
 		return entry;
 	} 	
 	
@@ -136,21 +184,27 @@ public class DirectCache {
 
 		logger.info("looking for object with key '" + key + "'");
 		
-		CacheEntry entry = allocationTable.get(key);
+		CacheEntry entry = entries.get(key);
 
 		if (entry == null) {
 			logger.info("could not find object with key '" + key + "'");
 			return null;
 		}
 
-		byte[] b = buffer.get(entry.position, entry.size);
-		try {
-			Serializable obj = deserialize(b);
-			logger.info("retrieved object with key '" + key + "' (" + b.length + " bytes)");		
-			return obj;
-		} catch (EOFException ex) {
-			logger.error("EOFException deserializing object with key '" + key + "' at position " + entry.position + " with size " + entry.size);
-			return null;
+		// mah...
+		synchronized (buffer) {
+			byte[] dest = buffer.get(entry.position, entry.size);
+			try {
+				Serializable obj = deserialize(dest);
+				logger.info("retrieved object with key '" + key + "' ("
+						+ dest.length + " bytes)");
+				return obj;
+			} catch (EOFException ex) {
+				logger.error("EOFException deserializing object with key '"
+						+ key + "' at position " + entry.position
+						+ " with size " + entry.size);
+				return null;
+			}
 		}
 	}
 	
@@ -166,8 +220,10 @@ public class DirectCache {
 		
 		List<CacheEntry> expiredList = filter(
 										having(on(CacheEntry.class).expired())
-										, allocationTable.values()
+										, entries.values()
 									);
+		logger.warn("Collecting " + expiredList.size() +  " expired entries");
+
 		for (CacheEntry expired : expiredList) {
 			removeObject(expired.getKey());
 		}
@@ -178,14 +234,15 @@ public class DirectCache {
 		logger.info("looking for object with key '" + key + "'");
 		
 		synchronized (buffer) {
-			CacheEntry entry = allocationTable.get(key);
+			CacheEntry entry = entries.get(key);
 			if (entry == null) {
 				logger.info("could not find object with key '" + key + "'");
 				return null;
 			}
-			allocationTable.remove(key);
-			garbage.add(entry);
-			totalGarbageSize += entry.size;
+			entries.remove(key);
+			garbagedEntries.add(entry);
+			garbageSize += entry.size;
+			usedMemory -= entry.size;
 			
 			logger.info("object with key '" + key + "' trashed");
 			return entry;
@@ -193,10 +250,10 @@ public class DirectCache {
 	}
 	
 	public int remaining() {
-		return buffer.remaining()+totalGarbageSize;
+		return capacity-usedMemory;
 	}
-	public int size() {
-		return (buffer.capacity()-remaining());
+	public int usedMemory() {
+		return usedMemory;
 	}
 	public int capacity() {
 		return buffer.capacity();
@@ -206,14 +263,14 @@ public class DirectCache {
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append("DirectCache {" );
-		sb.append("items: ");
-		sb.append(getAllocationTable().size());
+		sb.append("entries: ");
+		sb.append(entries().size());
 		sb.append(", ");
 		sb.append("capacity (mb): ");
 		sb.append(capacity()/1024/1024);
 		sb.append(", ");
 		sb.append("size (mb): ");
-		sb.append(size()/1024/1024);
+		sb.append(usedMemory()/1024/1024);
 		sb.append(", ");
 		sb.append("remaining (mb): ");
 		sb.append(remaining()/1024/1024);

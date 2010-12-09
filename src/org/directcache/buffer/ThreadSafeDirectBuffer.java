@@ -1,6 +1,5 @@
 package org.directcache.buffer;
 
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 public class ThreadSafeDirectBuffer  {

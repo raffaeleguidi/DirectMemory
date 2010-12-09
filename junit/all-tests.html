@@ -1,0 +1,34 @@
+<html xmlns:lxslt="http://xml.apache.org/xslt" xmlns:stringutils="xalan://org.apache.tools.ant.util.StringUtils">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Unit Test Results: All Tests</title>
+<link rel="stylesheet" type="text/css" title="Style" href="stylesheet.css">
+</head>
+<body onload="open('allclasses-frame.html','classListFrame')">
+<h1>Unit Test Results.</h1>
+<table width="100%">
+<tr>
+<td align="left"></td><td align="right">Designed for use with <a href="http://www.junit.org/">JUnit</a> and <a href="http://ant.apache.org/">Ant</a>.</td>
+</tr>
+</table>
+<hr size="1">
+<h2>All Tests</h2>
+<table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+<tr valign="top">
+<th>Class</th><th>Name</th><th>Status</th><th width="80%">Type</th><th nowrap>Time(s)</th>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/0_PerformanceTest.html">PerformanceTest</a></td><td><a name="org.directcache.test.PerformanceTest"></a><a href="org/directcache/test/0_PerformanceTest.html#org.directcache.test.PerformanceTest">org.directcache.test.PerformanceTest</a></td><td>Error</td><td>Direct buffer memory<br>
+<br>
+<code>java.lang.OutOfMemoryError: Direct buffer memory<br>	at java.nio.Bits.reserveMemory(Bits.java:633)<br>	at java.nio.DirectByteBuffer.&lt;init&gt;(DirectByteBuffer.java:98)<br>	at java.nio.ByteBuffer.allocateDirect(ByteBuffer.java:288)<br>	at org.directcache.buffer.ThreadSafeDirectBuffer.&lt;init&gt;(ThreadSafeDirectBuffer.java:10)<br>	at org.directcache.DirectCache.&lt;init&gt;(DirectCache.java:46)<br>	at org.directcache.test.PerformanceTest.allocateMemory(PerformanceTest.java:37)<br>	at org.directcache.test.PerformanceTest.setup(PerformanceTest.java:44)<br>
+</code></td><td>0.000</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/0_PerformanceTest.html">PerformanceTest</a></td><td><a name="org.directcache.test.PerformanceTest"></a><a href="org/directcache/test/0_PerformanceTest.html#org.directcache.test.PerformanceTest">org.directcache.test.PerformanceTest</a></td><td>Error</td><td>N/A<br>
+<br>
+<code>java.lang.NullPointerException<br>	at org.directcache.test.PerformanceTest.checkBuffer(PerformanceTest.java:176)<br>
+</code></td><td>0.000</td>
+</tr>
+</table>
+</body>
+</html>

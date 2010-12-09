@@ -44,9 +44,9 @@ public class BaseTest {
 
 		System.out.println(cache.toString());
 
-		assertEquals (cache.getAllocationTable().size(), objects);
+		assertEquals (cache.entries().size(), objects);
 		assertEquals (cache.capacity(), mb2use*1024*1024);
-		assertEquals (cache.size(), size);
+		assertEquals (cache.usedMemory(), size);
 		assertEquals (cache.remaining(), cache.capacity() - size);		
 	}
 	
@@ -69,7 +69,7 @@ public class BaseTest {
     public void firstAndLargestItem() throws Exception { 	
     	DummyObject firstObject = new DummyObject("key0", objectsSize);
     	cache.storeObject(firstObject.getName(), firstObject);
-		System.out.println("cache size is " + cache.size() + " bytes");
+		System.out.println("cache size is " + cache.usedMemory() + " bytes");
 		System.out.println();
 		System.out.println(cache.toString());
     }

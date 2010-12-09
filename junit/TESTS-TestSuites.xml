@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="2" failures="0" hostname="PO042D9417" id="0" name="PerformanceTest" package="org.directcache.test" tests="0" time="0.25" timestamp="2010-12-09T00:13:21">
+      <properties>
+          <property name="java.vendor" value="Sun Microsystems Inc." />
+
+          <property name="env.VS90COMNTOOLS" value="C:\Programmi\Microsoft Visual Studio 9.0\Common7\Tools\" />
+
+          <property name="sun.java.launcher" value="SUN_STANDARD" />
+
+          <property name="sun.management.compiler" value="HotSpot Client Compiler" />
+
+          <property name="env.PROMPT" value="$P$G" />
+
+          <property name="env.JAPEX_HOME" value="C:\Development\japex" />
+
+          <property name="os.name" value="Windows XP" />
+
+          <property name="env.FP_NO_HOST_CHECK" value="NO" />
+
+          <property name="sun.boot.class.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\resources.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\rt.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\sunrsasign.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\jsse.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\jce.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\charsets.jar;C:\Programmi\Java\jdk1.6.0_22\jre\classes" />
+
+          <property name="env.COMPUTERNAME" value="PO042D9417" />
+
+          <property name="env.ALLUSERSPROFILE" value="C:\Documents and Settings\All Users" />
+
+          <property name="sun.desktop" value="windows" />
+
+          <property name="java.vm.specification.vendor" value="Sun Microsystems Inc." />
+
+          <property name="ant.home" value="C:\Programmi\apache-ant-1.8.0\bin\.." />
+
+          <property name="java.runtime.version" value="1.6.0_22-b04" />
+
+          <property name="env.HOMEPATH" value="\Documents and Settings\oi43839" />
+
+          <property name="env.HOMESHARE" value="\\ROMS07300132\BKAREA$" />
+
+          <property name="user.name" value="OI43839" />
+
+          <property name="user.language" value="it" />
+
+          <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin" />
+
+          <property name="ant.project.default-target" value="build" />
+
+          <property name="ant.project.name" value="DirectCache" />
+
+          <property name="ant.file.DirectCache" value="C:\Development\directcache\build.xml" />
+
+          <property name="java.version" value="1.6.0_22" />
+
+          <property name="env.PROCESSOR_IDENTIFIER" value="x86 Family 6 Model 15 Stepping 13, GenuineIntel" />
+
+          <property name="user.timezone" value="" />
+
+          <property name="env.TEMP" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp" />
+
+          <property name="sun.arch.data.model" value="32" />
+
+          <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\endorsed" />
+
+          <property name="env._JAVACMD" value="C:\Programmi\Java\jdk1.6.0_22\bin\java.exe" />
+
+          <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86" />
+
+          <property name="env.HOMEDRIVE" value="C:" />
+
+          <property name="sun.jnu.encoding" value="Cp1252" />
+
+          <property name="file.encoding.pkg" value="sun.io" />
+
+          <property name="file.separator" value="\" />
+
+          <property name="java.specification.name" value="Java Platform API Specification" />
+
+          <property name="java.class.version" value="50.0" />
+
+          <property name="user.country" value="IT" />
+
+          <property name="java.home" value="C:\Programmi\Java\jdk1.6.0_22\jre" />
+
+          <property name="env.APPDATA" value="C:\Documents and Settings\oi43839\Dati applicazioni" />
+
+          <property name="java.vm.info" value="mixed mode, sharing" />
+
+          <property name="env.ComSpec" value="C:\WINDOWS\system32\cmd.exe" />
+
+          <property name="env.OS" value="Windows_NT" />
+
+          <property name="env.CommonProgramFiles" value="C:\Programmi\File comuni" />
+
+          <property name="ant.file" value="C:\Development\directcache\build.xml" />
+
+          <property name="os.version" value="5.1" />
+
+          <property name="env._USE_CLASSPATH" value="yes" />
+
+          <property name="path.separator" value=";" />
+
+          <property name="java.vm.version" value="17.1-b03" />
+
+          <property name="env.USERPROFILE" value="C:\Documents and Settings\oi43839" />
+
+          <property name="user.variant" value="" />
+
+          <property name="ant.library.dir" value="C:\Programmi\apache-ant-1.8.0\lib" />
+
+          <property name="junit.output.dir" value="junit" />
+
+          <property name="env.JAVA_HOME" value="C:\Programmi\Java\jdk1.6.0_22" />
+
+          <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
+
+          <property name="ant.file.type.DirectCache" value="file" />
+
+          <property name="env.TMP" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp" />
+
+          <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+
+          <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
+
+          <property name="user.home" value="C:\Documents and Settings\oi43839" />
+
+          <property name="target" value="1.6" />
+
+          <property name="env.SESSIONNAME" value="Console" />
+
+          <property name="java.specification.vendor" value="Sun Microsystems Inc." />
+
+          <property name="env.CLASSPATH" value="C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar" />
+
+          <property name="env.NUMBER_OF_PROCESSORS" value="2" />
+
+          <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\" />
+
+          <property name="java.vendor.url" value="http://java.sun.com/" />
+
+          <property name="env.USERDNSDOMAIN" value="DIP.BANCA.BNL.IT" />
+
+          <property name="java.vm.vendor" value="Sun Microsystems Inc." />
+
+          <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+
+          <property name="java.class.path" value="C:\Programmi\apache-ant-1.8.0\bin\..\lib\ant-launcher.jar;C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-antlr.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-bcel.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-bsf.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-log4j.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-oro.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-regexp.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-resolver.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-xalan2.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-commons-logging.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-commons-net.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jai.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-javamail.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jdepend.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jmf.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jsch.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-junit.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-launcher.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-netrexx.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-nodeps.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-stylebook.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-swing.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-testutil.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-trax.jar;C:\Programmi\apache-ant-1.8.0\lib\ant.jar;C:\Programmi\apache-ant-1.8.0\lib\xercesImpl.jar;C:\Programmi\apache-ant-1.8.0\lib\xml-apis.jar;C:\Programmi\Java\jdk1.6.0_22\lib\tools.jar" />
+
+          <property name="ant.version" value="Apache Ant version 1.8.0 compiled on February 1 2010" />
+
+          <property name="env.JUNITPERF_HOME" value="C:\MyStuff\junitperf-1.9.1" />
+
+          <property name="env.DXSDK_DIR" value="C:\Programmi\Microsoft DirectX SDK (June 2010)\" />
+
+          <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+
+          <property name="ant.file.type" value="file" />
+
+          <property name="env.LOGONSERVER" value="\\GCP14ALBAN" />
+
+          <property name="env.windir" value="C:\WINDOWS" />
+
+          <property name="env.PROCESSOR_ARCHITECTURE" value="x86" />
+
+          <property name="java.vm.specification.version" value="1.0" />
+
+          <property name="sun.cpu.endian" value="little" />
+
+          <property name="sun.os.patch.level" value="Service Pack 3" />
+
+          <property name="env.HOME" value="c:\userhomes\oi43839" />
+
+          <property name="debuglevel" value="source,lines,vars" />
+
+          <property name="env.ProgramFiles" value="C:\Programmi" />
+
+          <property name="env.ANT_HOME" value="C:\Programmi\apache-ant-1.8.0\bin\.." />
+
+          <property name="env.PROCESSOR_REVISION" value="0f0d" />
+
+          <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\" />
+
+          <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi" />
+
+          <property name="env.SystemRoot" value="C:\WINDOWS" />
+
+          <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+
+          <property name="os.arch" value="x86" />
+
+          <property name="env.ANT_CMD_LINE_ARGS" value=" PerformanceTest" />
+
+          <property name="java.ext.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext" />
+
+          <property name="env.MQSERVER" value="PO042D9417/TCP/SQL9470" />
+
+          <property name="user.dir" value="C:\Development\directcache" />
+
+          <property name="env.MAVEN_HOME" value="C:\MyStuff\springsource\maven-2.2.1.RELEASE" />
+
+          <property name="line.separator" value=" " />
+
+          <property name="java.vm.name" value="Java HotSpot(TM) Client VM" />
+
+          <property name="env.PATHEXT" value=".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH" />
+
+          <property name="env.Path" value="C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\" />
+
+          <property name="basedir" value="C:\Development\directcache" />
+
+          <property name="ant.java.version" value="1.6" />
+
+          <property name="ant.core.lib" value="C:\Programmi\apache-ant-1.8.0\lib\ant.jar" />
+
+          <property name="env.USERNAME" value="OI43839" />
+
+          <property name="source" value="1.6" />
+
+          <property name="env.SystemDrive" value="C:" />
+
+          <property name="env.SCALA_HOME" value="C:\Programmi\scala" />
+
+          <property name="file.encoding" value="Cp1252" />
+
+          <property name="env.USERDOMAIN" value="DIP" />
+
+          <property name="env.IRNPATH" value="c:\IRN\WORK\" />
+
+          <property name="java.specification.version" value="1.6" />
+
+          <property name="ant.project.invoked-targets" value="PerformanceTest" />
+
+          <property name="env.PROCESSOR_LEVEL" value="6" />
+
+      </properties>
+
+      <testcase classname="junit.framework.TestSuite" name="org.directcache.test.PerformanceTest" time="0.0">
+          <error message="Direct buffer memory" type="java.lang.OutOfMemoryError">java.lang.OutOfMemoryError: Direct buffer memory
+	at java.nio.Bits.reserveMemory(Bits.java:633)
+	at java.nio.DirectByteBuffer.&lt;init&gt;(DirectByteBuffer.java:98)
+	at java.nio.ByteBuffer.allocateDirect(ByteBuffer.java:288)
+	at org.directcache.buffer.ThreadSafeDirectBuffer.&lt;init&gt;(ThreadSafeDirectBuffer.java:10)
+	at org.directcache.DirectCache.&lt;init&gt;(DirectCache.java:46)
+	at org.directcache.test.PerformanceTest.allocateMemory(PerformanceTest.java:37)
+	at org.directcache.test.PerformanceTest.setup(PerformanceTest.java:44)
+</error>
+
+      </testcase>
+
+      <testcase classname="junit.framework.TestSuite" name="org.directcache.test.PerformanceTest" time="0.0">
+          <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at org.directcache.test.PerformanceTest.checkBuffer(PerformanceTest.java:176)
+</error>
+
+      </testcase>
+
+      <system-out />
+
+      <system-err />
+
+  </testsuite>
+</testsuites>
