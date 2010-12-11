@@ -86,11 +86,13 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
+            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=100"/>
             <test name="org.directcache.test.BaseTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.FiltersTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.FunctionalTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.LoadTest" todir="${junit.output.dir}"/>
+            <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
@@ -99,7 +101,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k"/>
+            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=100"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>

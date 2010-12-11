@@ -30,11 +30,17 @@ public class PerformanceTest {
     
 	static DirectCache cache = null;
 	static int objectsSize = 2048;
-	static int mb2use = 490*1024*1024;
 	static Random generator = new Random();
+	static int cacheSize = 490*1024*1024;
 	
 	public static void allocateMemory() {
-		cache = new DirectCache(mb2use);
+		String mb2useFromCommandLine = System.getProperty("mb2use");
+		if (mb2useFromCommandLine != null) {
+			logger.debug("using mb2useFromCommandLine=" + mb2useFromCommandLine);
+			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
+			logger.debug("cacheSize=" + cacheSize);
+		}
+		cache = new DirectCache(cacheSize);
 		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}
@@ -45,7 +51,7 @@ public class PerformanceTest {
 	}
 
 	private String randomKey() {
-		return "key"+generator.nextInt(mb2use/objectsSize);
+		return "key"+generator.nextInt(cacheSize/objectsSize);
 	}
 
 	public DummyObject randomObject() {
@@ -115,54 +121,54 @@ public class PerformanceTest {
 		logger.debug(cache.toString());	
     }
 
-//	@Test
-//    public void testAllAgain() throws IOException, ClassNotFoundException {
-//    	testAll();
-//    }
-
     @Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 650, average = 7)
-    public void onlyRead() throws Exception { 	
+    public void onlyReads() throws Exception { 	
     	@SuppressWarnings("unused")
 		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     }
     
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 1.5)
-    public void fourReadsOneWriteOneDelete() throws Exception { 	
-    	@SuppressWarnings("unused")
-		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
-    }
-    
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 1.5)
-    public void tenReadsOneWriteOneDelete() throws Exception { 	
-    	for (int i = 0; i < 10; i++) {
+	private void doSomeReads(int howMany) throws IOException, ClassNotFoundException {
+		for (int i = 0; i < howMany; i++) {
     		@SuppressWarnings("unused")
 			DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
 			
 		}
+	}
+	@Test
+    @PerfTest(duration = 500, threads = 5)
+	public void onlyWrites() throws Exception {
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);		
+	}
+
+	@Test
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 4)
+    public void tenReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(10);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
     }
 
+
     @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 2500, average = 7)
+    @Required(max = 1500, average = 7)
+    public void fiveReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(5);
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);
+    	cache.removeObject(randomKey());
+    }
+    
+    @Test
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 2500, average = 9)
     public void twoReadsOneWriteOneDelete() throws Exception { 	
-    	@SuppressWarnings("unused")
-		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-    	randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	doSomeReads(2);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
@@ -173,8 +179,7 @@ public class PerformanceTest {
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 1000, average = 12)
     public void oneReadOneWriteOneDelete() throws Exception { 	
-    	@SuppressWarnings("unused")
-		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+    	doSomeReads(1);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
