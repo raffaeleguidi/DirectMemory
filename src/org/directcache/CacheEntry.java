@@ -8,9 +8,23 @@ public class CacheEntry {
 	String key;
 	int size;
 	int position;
-	Date timeStamp = Calendar.getInstance().getTime();
+	private Date created = Calendar.getInstance().getTime();
+	private Date lastUsed = null;
+
+	public void touch() {
+		this.lastUsed = Calendar.getInstance().getTime();
+	}
+
 	int duration = -1;
 
+	public Date getLastUsed() {
+		return lastUsed;
+	}
+	
+	public Date lastUsed() {
+		return lastUsed;
+	}
+	
 	public int getDuration() {
 		return duration;
 	}
@@ -47,17 +61,18 @@ public class CacheEntry {
 		this.position = position;
 	}
 	public Date getTimeStamp() {
-		return timeStamp;
-	}
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+		return created;
 	}
 	
 	public boolean expired() {
 		if (duration==-1) 
 			return false;
-		Date expiryTime = new Date(duration + timeStamp.getTime());
+		Date expiryTime = new Date(duration + created.getTime());
 		boolean result = new Date().after(expiryTime);
 		return result;
+	}
+
+	public int size() {
+		return size;
 	}
 }

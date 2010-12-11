@@ -48,4 +48,8 @@ public class ThreadSafeDirectBuffer  {
 		return buffer.position();
 	}
 	
+	public void clear() {
+		buffer.clear();
+	}
+	
 }

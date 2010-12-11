@@ -36,24 +36,36 @@ public class DirectCache {
 	private static Logger logger=LoggerFactory.getLogger(DirectCache.class);
 	
 	private ThreadSafeDirectBuffer buffer;
-	private Map<String, CacheEntry> entries = new Hashtable<String, CacheEntry>();
-	private List<CacheEntry> garbagedEntries = new Vector<CacheEntry>();
+	private Map<String, CacheEntry> entries;
+	private List<CacheEntry> freeEntries;
 
 	private int capacity;
 	private int usedMemory;
-	private int garbageSize = 0;
+	private int memoryInFreeEntries = 0;
 	private int defaultDuration=-1;
+	
+	private void setup(int capacity) {
+		this.capacity = capacity;
+		entries = new Hashtable<String, CacheEntry>();
+		freeEntries = new Vector<CacheEntry>();
+		if (buffer != null) buffer.clear();
+		buffer = new ThreadSafeDirectBuffer(capacity);
+		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
+		freeEntries.add(new CacheEntry("directcachefirstitem",capacity,0));
+		memoryInFreeEntries = capacity;
+		usedMemory = 0;
+	}
 		
 	public DirectCache() {
 		// defaults to 50mb
-		this.capacity = 50*1024*1024;
-		buffer = new ThreadSafeDirectBuffer(1024*1024*capacity);
-		logger.info("DirectCache allocated with the default " + capacity + "mb buffer");
+		setup(50*1024*1024);
 	}
 	public DirectCache(int capacity) {
-		this.capacity = capacity;
-		buffer = new ThreadSafeDirectBuffer(capacity);
-		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
+		setup(capacity);
+	}
+	
+	public void reset() {
+		setup(this.capacity);
 	}
 
 	public int getDefaultDuration() {
@@ -91,25 +103,21 @@ public class DirectCache {
 		byte source[] = serializeObject(obj);
 		
 		logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
-		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + garbageSize);
+		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + memoryInFreeEntries);
 
 		synchronized (buffer) {
 			if (source.length > remaining()) {
 				collectExpired();
 			}
-			if (source.length > remaining()) {
-				logger.warn("DirectCache full");
-				return null;
-			}
 			
 			CacheEntry storedEntry = null;
 			
-			if (source.length <= buffer.remaining() &! endReached) {   
-				logger.info("object with key '" + key + "' fits in buffer");
-				storedEntry = storeAtTheEnd(key, source, duration);
-			} else if (source.length <= garbageSize) {
-				logger.info("object with key '" + key + "' doesn't fit in buffer but fits in garbage");
-				storedEntry = storeReusingGarbage(key, source, duration);	
+			if (source.length <= memoryInFreeEntries) {
+				logger.info("storing object with key '" + key + "'");
+				storedEntry = storeUsingFreeEntries(key, source, duration);	
+			} else {
+				logger.error("there's no room for object with key '" + key + "'");
+				// how's that?!?...
 			}
 			if (storedEntry != null) {
 				usedMemory+=storedEntry.size;
@@ -117,79 +125,80 @@ public class DirectCache {
 			return storedEntry;
 		}
 	}
-	
-	private boolean endReached = false;
 
-	private CacheEntry storeReusingGarbage(String key, byte[] source, int duration) throws Exception {
-		endReached = true;
+	private CacheEntry freeEntryLargerThan(int size) {
 
-		logger.info("storing object with key '" + key + "'");
+//		logger.debug("Executing lambda query for objects larger than " + size);
 
-//		logger.warn("Executing lambda query for objects larger than " + source.length);
-//
+//		List<CacheEntry> entriesThatFit =
+//				filter(
+//					having( 
+//							on(
+//									CacheEntry.class).size(), 
+//									greaterThan(size) 
+//							), 
+//					freeEntries
+//				);
+		
+		for (CacheEntry cacheEntry : freeEntries) {
+			if (cacheEntry.size >= size) {
+				return cacheEntry;
+			}
+		}
+		
+		return null;
+		
 //		List<CacheEntry> entriesThatFit =
 //			sort(
 //				filter(
 //					having( 
 //							on(
-//									CacheEntry.class).size, 
-//									greaterThan(source.length) 
+//									CacheEntry.class).size(), 
+//									greaterThan(size) 
 //							), 
-//					garbagedEntries
+//					freeEntries
 //				)
 //				,
-//				on(CacheEntry.class).size
+//				on(CacheEntry.class).size()
 //			);
+
+//		logger.debug("Finished lambda query");
 //		
-//		logger.warn("Finished lambda query");
-//
-//		if (entriesThatFit.size() >= 1) {
-//			logger.warn("Obtained " + entriesThatFit.size() + " entries - using the first");
-//			CacheEntry trashed = entriesThatFit.get(1);
-//			CacheEntry entry = new CacheEntry(key, source.length, trashed.position, duration);
-//			entries.put(key, entry);
-//			trashed.size -= source.length;
-//			garbageSize -= source.length;
-//			trashed.position += source.length;
-//			buffer.put(source, entry.position);
-//			logger.warn("Reusing entry " + key);
-//			return entry;
-//		} else {
-//			logger.warn("Buffer too fragmented for entry " + key);
-//			return null;
-//		}
-		
-		// a volte va in overflow - capire perchè
-		// rifare la query con lambdaj
-
-		for (CacheEntry trashed : garbagedEntries) {
-			if (trashed.size >= source.length) {
-				CacheEntry entry = new CacheEntry(key, source.length, trashed.position, duration);
-				entries.put(key, entry);
-				trashed.size -= source.length;
-				garbageSize -= source.length;
-				trashed.position += source.length;
-				buffer.put(source, entry.position);
-				
-				// not really an optimized garbage collection algorythm but...
-				if (trashed.size == 0) 
-					garbagedEntries.remove(trashed);
-
-				logger.info("Reusing entry " + key);
-
-				return entry;
-			}
-		}
-		logger.warn("Buffer too fragmented for entry " + key);
-		return null;
+//		return entriesThatFit;
 	}
-	private CacheEntry storeAtTheEnd(String key, byte[] bsource, int duration) {
+	
+	private CacheEntry storeUsingFreeEntries(String key, byte[] source, int duration) throws Exception {
+
 		logger.info("storing object with key '" + key + "'");
-		CacheEntry entry = new CacheEntry(key, bsource.length, buffer.position(), duration);
+
+		CacheEntry freeEntry = freeEntryLargerThan(source.length);
+		
+		if (freeEntry == null) {
+			logger.warn("No entries for " + source.length + " bytes, trying LRU");
+			freeEntry = collectLRU(source.length);
+		}
+		
+		if (freeEntry == null) {
+			logger.warn("Obtained no LRU entries that fit - exiting");
+			return null;
+		}
+		
+		CacheEntry entry = new CacheEntry(key, source.length, freeEntry.position, duration);
 		entries.put(key, entry);
-		buffer.append(bsource);
+		freeEntry.size -= source.length;
+		memoryInFreeEntries -= source.length;
+		freeEntry.position += source.length;
+		buffer.put(source, entry.position);
+		
+		// not really an optimized garbage collection algorythm but...
+		if (freeEntry.size == 0) 
+			freeEntries.remove(freeEntry);
+
+		logger.info("Reusing entry " + key);
+
 		return entry;
-	} 	
+		
+	}
 	
 	public Serializable retrieveObject(String key) throws IOException, ClassNotFoundException {
 
@@ -209,6 +218,7 @@ public class DirectCache {
 				Serializable obj = deserialize(dest);
 				logger.info("retrieved object with key '" + key + "' ("
 						+ dest.length + " bytes)");
+				entry.touch();
 				return obj;
 			} catch (EOFException ex) {
 				logger.error("EOFException deserializing object with key '"
@@ -229,16 +239,67 @@ public class DirectCache {
 	
 	public void collectExpired() {	
 		
+		logger.debug("Looking for expired entries");
+
 		List<CacheEntry> expiredList = filter(
 										having(on(CacheEntry.class).expired())
 										, entries.values()
 									);
-		logger.warn("Collecting " + expiredList.size() +  " expired entries");
+
+		logger.debug("Collecting " + expiredList.size() +  " expired entries");
 
 		for (CacheEntry expired : expiredList) {
 			removeObject(expired.getKey());
 		}
+
+		logger.debug("Collected " + expiredList.size() +  " expired entries");		
 	}
+	
+	public CacheEntry collectLRU(int bytesToFree) {	
+
+		logger.debug("Attempting LRU collection for " + bytesToFree + " bytes");
+
+//		List<CacheEntry> 
+//			LRUItems = 
+//				sort(
+//					sort(
+//						filter(
+//							having( 
+//									on(
+//											CacheEntry.class).size(), 
+//											greaterThan(bytesToFree) 
+//									), 
+//									entries.values()
+//						),
+//						on(CacheEntry.class).size()
+//					),
+//					on(CacheEntry.class).lastUsed()
+//				);
+		
+//		LRUItems = 
+//				sort(
+//					filter(
+//						having( 
+//								on(
+//										CacheEntry.class).size(), 
+//										greaterThan(bytesToFree) 
+//								), 
+//								entries.values()
+//						),
+//					on(CacheEntry.class).lastUsed()
+//				);
+
+		for (CacheEntry entry  : entries.values()) {
+			if (entry.size >= bytesToFree) {
+				removeObject(entry.getKey());
+				logger.debug("Collected LRU entry " + entry.getKey());
+				return entry;
+			}			
+		}
+		logger.warn("No LRU entries to collect for " + bytesToFree + " bytes");
+		return null;
+	}
+	
 	
 	public CacheEntry removeObject(String key) {
 
@@ -250,12 +311,13 @@ public class DirectCache {
 				logger.info("could not find object with key '" + key + "'");
 				return null;
 			}
+			
 			entries.remove(key);
-			garbagedEntries.add(entry);
-			garbageSize += entry.size;
+			freeEntries.add(entry);
+			memoryInFreeEntries += entry.size;
 			usedMemory -= entry.size;
 			
-			logger.info("object with key '" + key + "' trashed");
+			logger.info("object with key '" + key + "' freed");
 			return entry;
 		}
 	}

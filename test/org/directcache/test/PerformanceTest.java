@@ -72,35 +72,16 @@ public class PerformanceTest {
 		logger.debug(cache.toString());
     }
     
-	
 	@Test
-    public void fillUpHalfCache() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() / 2) {
-			DummyObject dummy = new DummyObject("key" + cache.entries().size(), objectsSize*generator.nextInt(5));
+    public void fillCacheUpTo90Percent() throws Exception {	
+		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*10)) {
+			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
 			@SuppressWarnings("unused")
-			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
+			CacheEntry entry = cache.storeObject(dummy.getName(), dummy, -1); //no expiry
 		}
 		logger.debug(cache.toString());
+		cache.reset();
     }
-
-//    @Test
-//    public void fillUp() throws Exception {
-//    	int objects=0;
-//    	
-//		while (cache.remaining() > objectsSize*5) {
-//			DummyObject dummy = new DummyObject("key" + objects);
-//			dummy.obj = new Object[objectsSize*generator.nextInt(5)];
-//			@SuppressWarnings("unused")
-//			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
-//			objects++;
-//		}
-//		
-//		assertEquals(objects, cache.entries().size());
-//		
-//		logger.debug("" + objects + " added");
-//		logger.debug(cache.toString());
-//		
-//    }
 	
     @Test
     public void testAll() throws IOException, ClassNotFoundException {
@@ -119,6 +100,21 @@ public class PerformanceTest {
 		}
 		logger.debug("all objects checked");
 		logger.debug(cache.toString());	
+    }
+
+    @Test
+    public void fillCacheUpToHalfCapacity() throws Exception {	
+		while (cache.usedMemory() < cache.capacity() / 2) {
+			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
+			@SuppressWarnings("unused")
+			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
+		}
+		logger.debug(cache.toString());
+    }
+	
+    @Test
+    public void testAllAgain() throws IOException, ClassNotFoundException {
+		testAll();	
     }
 
     @Test
@@ -145,7 +141,7 @@ public class PerformanceTest {
 
 	@Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 4)
+    @Required(max = 1500, average = 4.5)
     public void tenReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(10);
     	DummyObject object2add = randomObject();
@@ -156,7 +152,7 @@ public class PerformanceTest {
 
     @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 7)
+    @Required(max = 1500, average = 9)
     public void fiveReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(5);
     	DummyObject object2add = randomObject();
@@ -166,7 +162,7 @@ public class PerformanceTest {
     
     @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 2500, average = 9)
+    @Required(max = 2500, average = 15)
     public void twoReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(2);
     	DummyObject object2add = randomObject();
@@ -177,7 +173,7 @@ public class PerformanceTest {
 
     @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1000, average = 12)
+    @Required(max = 1000, average = 17)
     public void oneReadOneWriteOneDelete() throws Exception { 	
     	doSomeReads(1);
     	DummyObject object2add = randomObject();
