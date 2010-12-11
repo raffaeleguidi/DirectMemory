@@ -22,6 +22,17 @@ import org.slf4j.LoggerFactory;
 
 public class DirectCache {
 
+	// suggested java memory settings:
+	//-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k
+	//   - win32 with 4gb - allocated 1250mb
+	//   - win32 with 2gb - allocated 490mb
+
+	// have to try this
+	//-XX:MaxDirectMemorySize
+	//java -d64 -XX:MaxDirectMemorySize=12g -XX:+UseLargePages com.example.MyApp	
+	// see http://www.kdgregory.com/index.php?page=java.byteBuffer
+	// and http://www.kdgregory.com/programming/java/ByteBuffer_JUG_Presentation.pdf
+	
 	private static Logger logger=LoggerFactory.getLogger(DirectCache.class);
 	
 	private ThreadSafeDirectBuffer buffer;

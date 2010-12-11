@@ -141,6 +141,21 @@ public class PerformanceTest {
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
     }
+    
+    @Test
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 1.5)
+    public void tenReadsOneWriteOneDelete() throws Exception { 	
+    	for (int i = 0; i < 10; i++) {
+    		@SuppressWarnings("unused")
+			DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+			
+		}
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);
+    	cache.removeObject(randomKey());
+    }
+
     @Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 2500, average = 7)
