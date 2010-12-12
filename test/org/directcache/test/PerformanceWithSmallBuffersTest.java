@@ -12,10 +12,8 @@ import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.log.EmptyExecutionLogger;
-import org.directcache.DirectCache;
 import org.directcache.DirectCacheWithSmallBuffers;
 import org.directcache.ICacheEntry;
-import org.directcache.IDirectCache;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -83,14 +81,28 @@ public class PerformanceWithSmallBuffersTest {
 		}
 	}
 	@Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 3)
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 0.5)
 	public void onlyWrites() throws Exception {
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);		
 	}
 
-    @Test
+	@Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 1500, average = 2)
+	public void onlyWrites10Threads() throws Exception {
+    	onlyWrites();		
+	}
+
+	@Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 1500, average = 4.5)
+	public void onlyWrites20Threads() throws Exception {
+    	onlyWrites();		
+	}
+
+	@Test
     public void testAll() throws IOException, ClassNotFoundException {
 		Map<String, ICacheEntry> entries = cache.entries();
 		
@@ -109,16 +121,30 @@ public class PerformanceWithSmallBuffersTest {
     }
 	
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 750, average = 0.5)
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 750, average = 0.1)
     public void onlyReads() throws Exception { 	
     	@SuppressWarnings("unused")
 		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     }
     
-	@Test
+    @Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 750, average = 0.2)
+    public void onlyReads10Threads() throws Exception { 	
+    	onlyReads();
+    }
+    
+    @Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 750, average = 0.5)
+    public void onlyReads20Threads() throws Exception { 	
+    	onlyReads();
+    }
+
+    @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 2)
+    @Required(max = 1500, average = 1.5)
     public void twentyReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(20);
     	DummyObject object2add = randomObject();
@@ -135,7 +161,7 @@ public class PerformanceWithSmallBuffersTest {
 	
 	@Test
     @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 6)
+    @Required(max = 1500, average = 8)
     public void twentyReadsOneWriteOneDelete20Threads() throws Exception { 	
 		twentyReadsOneWriteOneDelete();
 	}
@@ -143,6 +169,30 @@ public class PerformanceWithSmallBuffersTest {
     @Test
     public void testAllOnceAgain() throws IOException, ClassNotFoundException {
     	testAll();
+    }
+
+    @Test
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 2)
+    public void twoReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(2);
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);
+    	cache.removeObject(randomKey());
+    }
+
+    @Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 1500, average = 2)
+    public void twoReadsOneWriteOneDelete10Threads() throws Exception { 	
+    	twoReadsOneWriteOneDelete();
+    }
+
+    @Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 1500, average = 2)
+    public void twoReadsOneWriteOneDelete20Threads() throws Exception { 	
+    	twoReadsOneWriteOneDelete();
     }
 
     @AfterClass

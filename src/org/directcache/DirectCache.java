@@ -282,6 +282,7 @@ public class DirectCache implements IDirectCache {
 		return obj;
 	}
 	
+	@SuppressWarnings("unused")
 	private void collectExpired() {	
 		
 		logger.debug("Looking for expired entries");

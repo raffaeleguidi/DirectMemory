@@ -104,5 +104,6 @@ public class CacheEntryWithBuffer implements ICacheEntry {
 	@Override
 	public void dispose() {
 		buffer.clear();
+		buffer = null;
 	}
 }

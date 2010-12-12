@@ -249,10 +249,10 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 				return null;
 			}
 			
-			entry.dispose();
-			
 			entries.remove(key);
 			usedMemory.addAndGet(-entry.size());
+			entry.dispose();
+			entry = null;
 			
 			logger.info("object with key '" + key + "' freed");
 			return entry;
