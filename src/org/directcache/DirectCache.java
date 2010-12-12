@@ -142,10 +142,12 @@ public class DirectCache {
 		
 		for (CacheEntry cacheEntry : freeEntries) {
 			if (cacheEntry.size >= size) {
+				logger.debug("Free entry found for size " + size);
 				return cacheEntry;
 			}
 		}
 		
+		logger.debug("No free entry found for size " + size);
 		return null;
 		
 //		List<CacheEntry> entriesThatFit =
@@ -169,7 +171,7 @@ public class DirectCache {
 	
 	private CacheEntry storeUsingFreeEntries(String key, byte[] source, int duration) throws Exception {
 
-		logger.info("storing object with key '" + key + "'");
+		logger.debug("storing object with key '" + key + "'");
 
 		CacheEntry freeEntry = freeEntryLargerThan(source.length);
 		
