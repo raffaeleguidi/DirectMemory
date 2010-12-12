@@ -166,8 +166,8 @@ public class PerformanceTest {
 		twentyReadsOneWriteOneDelete();
 	}
 
-    public void tenReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(10);
+    public void twoReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(2);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
@@ -176,22 +176,22 @@ public class PerformanceTest {
     @Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 1500, average = 4.5)
-    public void tenReadsOneWriteOneDelete5Threads() throws Exception { 	
-    	tenReadsOneWriteOneDelete();
+    public void twoReadsOneWriteOneDelete5Threads() throws Exception { 	
+    	twoReadsOneWriteOneDelete();
     }
 
 	@Test
     @PerfTest(duration = 10000, threads = 10)
     @Required(max = 1500, average = 4.5)
-    public void tenReadsOneWriteOneDelete10Threads() throws Exception { 	
-		tenReadsOneWriteOneDelete();
+    public void twoReadsOneWriteOneDelete10Threads() throws Exception { 	
+		twoReadsOneWriteOneDelete();
     }
 
 	@Test
     @PerfTest(duration = 10000, threads = 20)
     @Required(max = 1500, average = 4.5)
-    public void tenReadsOneWriteOneDelete20Threads() throws Exception {
-		tenReadsOneWriteOneDelete();
+    public void twoReadsOneWriteOneDelete20Threads() throws Exception {
+		twoReadsOneWriteOneDelete();
 	}
 
 	@Test

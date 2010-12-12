@@ -103,9 +103,9 @@ public class DirectCache {
 		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + memoryInFreeEntries);
 
 		synchronized (buffer) {
-			if (source.length > remaining()) {
-				collectExpired();
-			}
+//			if (source.length > remaining()) {
+//				collectExpired();
+//			}
 			
 			CacheEntry storedEntry = null;
 			
@@ -166,12 +166,30 @@ public class DirectCache {
 //		return entriesThatFit;
 	}
 	
+	private CacheEntry expiredEntryLargerThan(int size) {
+	
+		for (CacheEntry cacheEntry : entries.values()) {
+			if (cacheEntry.size >= size && cacheEntry.expired()) {
+				logger.debug("expired entry found for size " + size);
+				return cacheEntry;
+			}
+		}
+		
+		logger.debug("No expired entry found for size " + size);
+		return null;
+	}
+
 	private CacheEntry storeUsingFreeEntries(String key, byte[] source, int duration) throws Exception {
 
 		logger.debug("storing object with key '" + key + "'");
 
 		CacheEntry freeEntry = freeEntryLargerThan(source.length);
 		
+		if (freeEntry == null) {
+			logger.warn("No entries for " + source.length + " bytes, trying LRU");
+			freeEntry = expiredEntryLargerThan(source.length);
+		}
+
 		if (freeEntry == null) {
 			logger.warn("No entries for " + source.length + " bytes, trying LRU");
 			freeEntry = collectLRU(source.length);
