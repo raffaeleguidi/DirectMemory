@@ -1,32 +1,25 @@
 package org.directcache.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.databene.contiperf.PerfTest;
-import org.databene.contiperf.Required;
-import org.databene.contiperf.junit.ContiPerfRule;
-import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.directcache.CacheEntry;
 import org.directcache.DirectCache;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class PerformanceTest {
+public class ProfilingTest {
 	
-	private static Logger logger=LoggerFactory.getLogger(PerformanceTest.class);
-
-	@Rule
-    public ContiPerfRule perfRule = new ContiPerfRule(new EmptyExecutionLogger());
+	private static Logger logger=LoggerFactory.getLogger(ProfilingTest.class);
     
 	static DirectCache cache = null;
 	static int objectsSize = 2048;
@@ -61,29 +54,7 @@ public class PerformanceTest {
 		return dummy;
 	}
 	
-    @Test
-    @Required(max = 200)
-    public void firstAndLargestItem() throws Exception { 	
-    	DummyObject firstObject = new DummyObject("key0", objectsSize*5);
-    	cache.storeObject(firstObject.getName(), firstObject);
-    	assertEquals(cache.entries().size(), 1);
-    	DummyObject retrievedObject = (DummyObject)cache.retrieveObject("key0");
-    	assertEquals(firstObject.getName(), retrievedObject.getName());
-		logger.debug(cache.toString());
-    }
-    
-	//@Test
-    public void fillCacheUpTo90Percent() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*10)) {
-			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
-			@SuppressWarnings("unused")
-			CacheEntry entry = cache.storeObject(dummy.getName(), dummy, -1); //no expiry
-		}
-		logger.debug(cache.toString());
-		cache.reset();
-    }
 	
-    @Test
     public void testAll() throws IOException, ClassNotFoundException {
 		Map<String, CacheEntry> entries = cache.entries();
 		
@@ -102,8 +73,8 @@ public class PerformanceTest {
     }
 
     @Test
-    public void fillCacheUpToHalfCapacity() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() / 2) {
+    public void fillCacheUpToOneTenthCapacity() throws Exception {	
+		while (cache.usedMemory() < cache.capacity() / 10) {
 			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
 			@SuppressWarnings("unused")
 			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
@@ -117,8 +88,6 @@ public class PerformanceTest {
     }
 
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 650, average = 7)
     public void onlyReads() throws Exception { 	
     	@SuppressWarnings("unused")
 		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
@@ -132,15 +101,12 @@ public class PerformanceTest {
 		}
 	}
 	@Test
-    @PerfTest(duration = 500, threads = 20)
 	public void onlyWrites() throws Exception {
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);		
 	}
 
 	@Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 4.5)
     public void tenReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(10);
     	DummyObject object2add = randomObject();
@@ -150,8 +116,6 @@ public class PerformanceTest {
 
 
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 9)
     public void fiveReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(5);
     	DummyObject object2add = randomObject();
@@ -160,8 +124,6 @@ public class PerformanceTest {
     }
     
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 2500, average = 15)
     public void twoReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(2);
     	DummyObject object2add = randomObject();
@@ -171,8 +133,6 @@ public class PerformanceTest {
 
 
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1000, average = 17)
     public void oneReadOneWriteOneDelete() throws Exception { 	
     	doSomeReads(1);
     	DummyObject object2add = randomObject();
