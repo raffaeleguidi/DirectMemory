@@ -74,7 +74,7 @@ public class PerformanceTest {
     
 	//@Test
     public void fillCacheUpTo90Percent() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*10)) {
+		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*20)) {
 			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
 			@SuppressWarnings("unused")
 			CacheEntry entry = cache.storeObject(dummy.getName(), dummy, -1); //no expiry
@@ -138,9 +138,34 @@ public class PerformanceTest {
     	cache.storeObject(object2add.getName(), object2add);		
 	}
 
+    public void twentyReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(20);
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);
+    	cache.removeObject(randomKey());
+    }
+
+    @Test
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 4.5)
+    public void twentyReadsOneWriteOneDelete5Threads() throws Exception { 	
+		twentyReadsOneWriteOneDelete();
+    }
+
+	@Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 1500, average = 4.5)
+    public void twentyReadsOneWriteOneDelete10Threads() throws Exception { 	
+		twentyReadsOneWriteOneDelete();
+    }
+
 	@Test
     @PerfTest(duration = 10000, threads = 20)
     @Required(max = 1500, average = 4.5)
+    public void twentyReadsOneWriteOneDelete20Threads() throws Exception {
+		twentyReadsOneWriteOneDelete();
+	}
+
     public void tenReadsOneWriteOneDelete() throws Exception { 	
     	doSomeReads(10);
     	DummyObject object2add = randomObject();
@@ -148,40 +173,28 @@ public class PerformanceTest {
     	cache.removeObject(randomKey());
     }
 
-
     @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 9)
-    public void fiveReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(5);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
+    @PerfTest(duration = 10000, threads = 5)
+    @Required(max = 1500, average = 4.5)
+    public void tenReadsOneWriteOneDelete5Threads() throws Exception { 	
+    	tenReadsOneWriteOneDelete();
     }
-    
-    @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 2500, average = 15)
-    public void twoReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(2);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
-    }    
 
-
-    @Test
-    @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1000, average = 17)
-    public void oneReadOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(1);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
+	@Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 1500, average = 4.5)
+    public void tenReadsOneWriteOneDelete10Threads() throws Exception { 	
+		tenReadsOneWriteOneDelete();
     }
-    
 
-    @Test
+	@Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 1500, average = 4.5)
+    public void tenReadsOneWriteOneDelete20Threads() throws Exception {
+		tenReadsOneWriteOneDelete();
+	}
+
+	@Test
     public void testAllOnceAgain() throws IOException, ClassNotFoundException {
     	testAll();
     }

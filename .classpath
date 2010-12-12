@@ -4,6 +4,8 @@
 	<classpathentry including="*.*" kind="src" path="config"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/hamcrest-all-1.3.0RC2.jar"/>
+	<classpathentry kind="lib" path="lib/logback-core-0.9.26.jar"/>
+	<classpathentry kind="lib" path="lib/logback-classic-0.9.26.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/lambdaj-2.3.1-with-dependencies.jar"/>

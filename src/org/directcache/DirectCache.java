@@ -295,6 +295,8 @@ public class DirectCache {
 //					on(CacheEntry.class).lastUsed()
 //				);
 
+		
+		// temporary for performance reasons
 		for (CacheEntry entry  : entries.values()) {
 			if (entry.size >= bytesToFree) {
 				removeObject(entry.getKey());
