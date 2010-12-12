@@ -3,6 +3,7 @@ package org.directcache.test;
 import java.util.Random;
 
 import org.directcache.DirectCache;
+import org.directcache.IDirectCache;
 
 public class Starter {
 
@@ -22,7 +23,7 @@ public class Starter {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		DirectCache cache = new DirectCache(cacheSize);
+		IDirectCache cache = new DirectCache(cacheSize);
 	    cache.setDefaultDuration(1000);
 	    DummyObject firstObject = new DummyObject("key0", 10000); // a random object with a 10kb payload
 	    cache.storeObject(firstObject.getName(), firstObject);

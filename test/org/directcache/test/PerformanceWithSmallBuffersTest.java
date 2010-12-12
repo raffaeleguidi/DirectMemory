@@ -13,6 +13,7 @@ import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.directcache.DirectCache;
+import org.directcache.DirectCacheWithSmallBuffers;
 import org.directcache.ICacheEntry;
 import org.directcache.IDirectCache;
 import org.junit.AfterClass;
@@ -23,14 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class PerformanceTest {
+public class PerformanceWithSmallBuffersTest {
 	
-	private static Logger logger=LoggerFactory.getLogger(PerformanceTest.class);
+	private static Logger logger=LoggerFactory.getLogger(PerformanceWithSmallBuffersTest.class);
 
 	@Rule
     public ContiPerfRule i = new ContiPerfRule(new EmptyExecutionLogger());
     
-	static IDirectCache cache = null;
+	static DirectCacheWithSmallBuffers cache = null;
 	static int objectsSize = 2048;
 	static Random generator = new Random();
 	static int cacheSize = 490*1024*1024;
@@ -42,7 +43,7 @@ public class PerformanceTest {
 			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
 			logger.debug("cacheSize=" + cacheSize);
 		}
-		cache = new DirectCache(cacheSize);
+		cache = new DirectCacheWithSmallBuffers(cacheSize);
 		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}
@@ -64,7 +65,7 @@ public class PerformanceTest {
 	}
 	
     @Test
-    @Required(max = 200)
+    @Required(max = 50)
     public void firstAndLargestItem() throws Exception { 	
     	DummyObject firstObject = new DummyObject("key0", objectsSize*5);
     	cache.storeObject(firstObject.getName(), firstObject);
@@ -74,17 +75,21 @@ public class PerformanceTest {
 		logger.debug(cache.toString());
     }
     
-	//@Test
-    public void fillCacheUpTo90Percent() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*10)) {
-			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
-			@SuppressWarnings("unused")
-			ICacheEntry entry = cache.storeObject(dummy.getName(), dummy, -1); //no expiry
+	private void doSomeReads(int howMany) throws IOException, ClassNotFoundException {
+		for (int i = 0; i < howMany; i++) {
+    		@SuppressWarnings("unused")
+			DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+			
 		}
-		logger.debug(cache.toString());
-		cache.reset();
-    }
-	
+	}
+	@Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 1500, average = 3)
+	public void onlyWrites() throws Exception {
+    	DummyObject object2add = randomObject();
+    	cache.storeObject(object2add.getName(), object2add);		
+	}
+
     @Test
     public void testAll() throws IOException, ClassNotFoundException {
 		Map<String, ICacheEntry> entries = cache.entries();
@@ -102,86 +107,38 @@ public class PerformanceTest {
 		logger.debug("all objects checked");
 		logger.debug(cache.toString());	
     }
-
-    @Test
-    public void fillCacheUpToHalfCapacity() throws Exception {	
-		while (cache.usedMemory() < cache.capacity() / 2) {
-			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
-			@SuppressWarnings("unused")
-			ICacheEntry entry = cache.storeObject(dummy.getName(), dummy);
-		}
-		logger.debug(cache.toString());
-    }
 	
     @Test
-    public void testAllAgain() throws IOException, ClassNotFoundException {
-		testAll();	
-    }
-
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 650, average = 7)
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 750, average = 0.5)
     public void onlyReads() throws Exception { 	
     	@SuppressWarnings("unused")
 		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
     }
     
-	private void doSomeReads(int howMany) throws IOException, ClassNotFoundException {
-		for (int i = 0; i < howMany; i++) {
-    		@SuppressWarnings("unused")
-			DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
-			
-		}
-	}
-	@Test
-    @PerfTest(duration = 500, threads = 5)
-	public void onlyWrites() throws Exception {
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);		
-	}
-
 	@Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 4.5)
-    public void tenReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(10);
+    @Required(max = 1500, average = 2)
+    public void twentyReadsOneWriteOneDelete() throws Exception { 	
+    	doSomeReads(20);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
     	cache.removeObject(randomKey());
     }
 
-
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1500, average = 9)
-    public void fiveReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(5);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
-    }
-    
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 2500, average = 15)
-    public void twoReadsOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(2);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
-    }    
-
-
-    @Test
-    @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 1000, average = 17)
-    public void oneReadOneWriteOneDelete() throws Exception { 	
-    	doSomeReads(1);
-    	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
-    }
-    
+	@Test
+    @PerfTest(duration = 10000, threads = 10)
+    @Required(max = 1500, average = 3)
+    public void twentyReadsOneWriteOneDelete10Threads() throws Exception { 	
+		twentyReadsOneWriteOneDelete();
+	}
+	
+	@Test
+    @PerfTest(duration = 10000, threads = 20)
+    @Required(max = 1500, average = 6)
+    public void twentyReadsOneWriteOneDelete20Threads() throws Exception { 	
+		twentyReadsOneWriteOneDelete();
+	}
 
     @Test
     public void testAllOnceAgain() throws IOException, ClassNotFoundException {

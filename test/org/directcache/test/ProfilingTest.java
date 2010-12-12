@@ -8,8 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.directcache.CacheEntry;
 import org.directcache.DirectCache;
+import org.directcache.ICacheEntry;
+import org.directcache.IDirectCache;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class ProfilingTest {
 	
 	private static Logger logger=LoggerFactory.getLogger(ProfilingTest.class);
     
-	static DirectCache cache = null;
+	static IDirectCache cache = null;
 	static int objectsSize = 2048;
 	static Random generator = new Random();
 	static int cacheSize = 490*1024*1024;
@@ -56,11 +57,11 @@ public class ProfilingTest {
 	
 	
     public void testAll() throws IOException, ClassNotFoundException {
-		Map<String, CacheEntry> entries = cache.entries();
+		Map<String, ICacheEntry> entries = cache.entries();
 		
-    	Iterator<CacheEntry> iter = entries.values().iterator();
+    	Iterator<ICacheEntry> iter = entries.values().iterator();
 		while (iter.hasNext()) {
-			CacheEntry entry = iter.next();
+			ICacheEntry entry = iter.next();
 			if (!entry.expired()) {
 				DummyObject dummy = (DummyObject) cache.retrieveObject(entry.getKey());
 				assertNotNull(dummy);
@@ -77,7 +78,7 @@ public class ProfilingTest {
 		while (cache.usedMemory() < cache.capacity() / 10) {
 			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));
 			@SuppressWarnings("unused")
-			CacheEntry entry = cache.storeObject(dummy.getName(), dummy);
+			ICacheEntry entry = cache.storeObject(dummy.getName(), dummy);
 		}
 		logger.debug(cache.toString());
     }
