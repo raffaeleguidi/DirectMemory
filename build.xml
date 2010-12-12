@@ -96,7 +96,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=500 -XX:MaxDirectMemorySize=1g"/>
+            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=200 -XX:MaxDirectMemorySize=1g"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
