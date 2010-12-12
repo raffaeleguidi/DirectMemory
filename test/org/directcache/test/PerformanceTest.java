@@ -72,7 +72,7 @@ public class PerformanceTest {
 		logger.debug(cache.toString());
     }
     
-	@Test
+	//@Test
     public void fillCacheUpTo90Percent() throws Exception {	
 		while (cache.usedMemory() < cache.capacity() - (cache.capacity()/100*10)) {
 			DummyObject dummy = new DummyObject(randomKey(), objectsSize*generator.nextInt(5));

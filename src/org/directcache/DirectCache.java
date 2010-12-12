@@ -1,9 +1,5 @@
 package org.directcache;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -15,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directcache.buffer.ThreadSafeDirectBuffer;
 import org.slf4j.Logger;
@@ -39,21 +36,21 @@ public class DirectCache {
 	private Map<String, CacheEntry> entries;
 	private List<CacheEntry> freeEntries;
 
-	private int capacity;
-	private int usedMemory;
-	private int memoryInFreeEntries = 0;
+	private AtomicInteger capacity;
+	private AtomicInteger usedMemory;
+	private AtomicInteger memoryInFreeEntries;
 	private int defaultDuration=-1;
 	
 	private void setup(int capacity) {
-		this.capacity = capacity;
+		this.capacity = new AtomicInteger(capacity);
 		entries = new Hashtable<String, CacheEntry>();
 		freeEntries = new Vector<CacheEntry>();
 		if (buffer != null) buffer.clear();
 		buffer = new ThreadSafeDirectBuffer(capacity);
 		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
 		freeEntries.add(new CacheEntry("directcachefirstitem",capacity,0));
-		memoryInFreeEntries = capacity;
-		usedMemory = 0;
+		memoryInFreeEntries = this.capacity;
+		usedMemory = new AtomicInteger(0);
 	}
 		
 	public DirectCache() {
@@ -65,7 +62,7 @@ public class DirectCache {
 	}
 	
 	public void reset() {
-		setup(this.capacity);
+		setup(this.capacity.get());
 	}
 
 	public int getDefaultDuration() {
@@ -106,13 +103,13 @@ public class DirectCache {
 		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + memoryInFreeEntries);
 
 		synchronized (buffer) {
-			if (source.length > remaining()) {
-				collectExpired();
-			}
+//			if (source.length > remaining()) {
+//				collectExpired();
+//			}
 			
 			CacheEntry storedEntry = null;
 			
-			if (source.length <= memoryInFreeEntries) {
+			if (source.length <= memoryInFreeEntries.get()) {
 				logger.info("storing object with key '" + key + "'");
 				storedEntry = storeUsingFreeEntries(key, source, duration);	
 			} else {
@@ -120,7 +117,7 @@ public class DirectCache {
 				// how's that?!?...
 			}
 			if (storedEntry != null) {
-				usedMemory+=storedEntry.size;
+				usedMemory.addAndGet(storedEntry.size);
 			}
 			return storedEntry;
 		}
@@ -169,12 +166,30 @@ public class DirectCache {
 //		return entriesThatFit;
 	}
 	
+	private CacheEntry expiredEntryLargerThan(int size) {
+	
+		for (CacheEntry cacheEntry : entries.values()) {
+			if (cacheEntry.size >= size && cacheEntry.expired()) {
+				logger.debug("expired entry found for size " + size);
+				return cacheEntry;
+			}
+		}
+		
+		logger.debug("No expired entry found for size " + size);
+		return null;
+	}
+
 	private CacheEntry storeUsingFreeEntries(String key, byte[] source, int duration) throws Exception {
 
 		logger.debug("storing object with key '" + key + "'");
 
 		CacheEntry freeEntry = freeEntryLargerThan(source.length);
 		
+		if (freeEntry == null) {
+			logger.warn("No entries for " + source.length + " bytes, trying LRU");
+			freeEntry = expiredEntryLargerThan(source.length);
+		}
+
 		if (freeEntry == null) {
 			logger.warn("No entries for " + source.length + " bytes, trying LRU");
 			freeEntry = collectLRU(source.length);
@@ -188,7 +203,7 @@ public class DirectCache {
 		CacheEntry entry = new CacheEntry(key, source.length, freeEntry.position, duration);
 		entries.put(key, entry);
 		freeEntry.size -= source.length;
-		memoryInFreeEntries -= source.length;
+		memoryInFreeEntries.addAndGet(-source.length);
 		freeEntry.position += source.length;
 		buffer.put(source, entry.position);
 		
@@ -218,8 +233,8 @@ public class DirectCache {
 			byte[] dest = buffer.get(entry.position, entry.size);
 			try {
 				Serializable obj = deserialize(dest);
-				logger.info("retrieved object with key '" + key + "' ("
-						+ dest.length + " bytes)");
+				logger.info("retrieved object with key '" + key + "' (" + 
+						dest.length + " bytes)");
 				entry.touch();
 				return obj;
 			} catch (EOFException ex) {
@@ -243,13 +258,20 @@ public class DirectCache {
 		
 		logger.debug("Looking for expired entries");
 
-		List<CacheEntry> expiredList = filter(
-										having(on(CacheEntry.class).expired())
-										, entries.values()
-									);
+//		List<CacheEntry> expiredList = filter(
+//										having(on(CacheEntry.class).expired())
+//										, entries.values()
+//									);
+
+		List<CacheEntry> expiredList = new Vector<CacheEntry>();
+		
+		for (CacheEntry cacheEntry : entries.values()) {
+			if (cacheEntry.expired())
+				expiredList.add(cacheEntry);
+		}
 
 		logger.debug("Collecting " + expiredList.size() +  " expired entries");
-
+		
 		for (CacheEntry expired : expiredList) {
 			removeObject(expired.getKey());
 		}
@@ -291,6 +313,8 @@ public class DirectCache {
 //					on(CacheEntry.class).lastUsed()
 //				);
 
+		
+		// temporary for performance reasons
 		for (CacheEntry entry  : entries.values()) {
 			if (entry.size >= bytesToFree) {
 				removeObject(entry.getKey());
@@ -316,8 +340,8 @@ public class DirectCache {
 			
 			entries.remove(key);
 			freeEntries.add(entry);
-			memoryInFreeEntries += entry.size;
-			usedMemory -= entry.size;
+			memoryInFreeEntries.addAndGet(entry.size);
+			usedMemory.addAndGet(-entry.size);
 			
 			logger.info("object with key '" + key + "' freed");
 			return entry;
@@ -325,10 +349,10 @@ public class DirectCache {
 	}
 	
 	public int remaining() {
-		return capacity-usedMemory;
+		return capacity.get()-usedMemory.get();
 	}
 	public int usedMemory() {
-		return usedMemory;
+		return usedMemory.get();
 	}
 	public int capacity() {
 		return buffer.capacity();
