@@ -87,17 +87,16 @@ public class PerformanceTest {
     public void testAll() throws IOException, ClassNotFoundException {
 		Map<String, CacheEntry> entries = cache.entries();
 		
-		synchronized (entries) {
-	    	Iterator<CacheEntry> iter = entries.values().iterator();
-			while (iter.hasNext()) {
-				CacheEntry entry = iter.next();
-				if (!entry.expired()) {
-					DummyObject dummy = (DummyObject) cache.retrieveObject(entry.getKey());
-					assertNotNull(dummy);
-					assertEquals(entry.getKey(), dummy.getName());
-				}
+    	Iterator<CacheEntry> iter = entries.values().iterator();
+		while (iter.hasNext()) {
+			CacheEntry entry = iter.next();
+			if (!entry.expired()) {
+				DummyObject dummy = (DummyObject) cache.retrieveObject(entry.getKey());
+				assertNotNull(dummy);
+				assertEquals(entry.getKey(), dummy.getName());
 			}
 		}
+
 		logger.debug("all objects checked");
 		logger.debug(cache.toString());	
     }

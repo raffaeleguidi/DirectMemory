@@ -16,9 +16,9 @@
     </path>
     <path id="DirectCache.classpath">
         <pathelement location="bin"/>
+        <pathelement location="lib/hamcrest-all-1.3.0RC2.jar"/>
         <path refid="JUnit 4.libraryclasspath"/>
         <pathelement location="lib/lambdaj-2.3.1-with-dependencies.jar"/>
-        <pathelement location="lib/hamcrest-all-1.3.0RC2.jar"/>
         <pathelement location="lib/slf4j-api-1.6.1.jar"/>
         <pathelement location="lib/logback-classic-0.9.26.jar"/>
         <pathelement location="lib/logback-core-0.9.26.jar"/>
@@ -86,13 +86,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=100"/>
-            <test name="org.directcache.test.BaseTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.ConcurrencyTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.FiltersTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.FunctionalTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.LoadTest" todir="${junit.output.dir}"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=500 -XX:MaxDirectMemorySize=1g"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
@@ -101,7 +96,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=100"/>
+            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=500 -XX:MaxDirectMemorySize=1g"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
