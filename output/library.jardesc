@@ -11,12 +11,7 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/DirectCache/.project"/>
-        <file path="/DirectCache/.gitignore"/>
-        <file path="/DirectCache/build.xml"/>
-        <file path="/DirectCache/README"/>
         <javaElement handleIdentifier="=DirectCache/src"/>
-        <file path="/DirectCache/.classpath"/>
-        <file path="/DirectCache/run-tests.cmd"/>
+        <file path="/DirectCache/README"/>
     </selectedElements>
 </jardesc>
