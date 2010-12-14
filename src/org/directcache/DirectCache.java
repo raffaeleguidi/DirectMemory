@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -292,7 +293,7 @@ public class DirectCache implements IDirectCache {
 //										, entries.values()
 //									);
 
-		List<ICacheEntry> expiredList = new Vector<ICacheEntry>();
+		List<ICacheEntry> expiredList = new ArrayList<ICacheEntry>();
 		
 		for (ICacheEntry cacheEntry : entries.values()) {
 			if (cacheEntry.expired())
@@ -385,21 +386,21 @@ public class DirectCache implements IDirectCache {
 	 * @see org.directcache.IDirectCache#remaining()
 	 */
 	@Override
-	public int remaining() {
+	public long remaining() {
 		return capacity.get()-usedMemory.get();
 	}
 	/* (non-Javadoc)
 	 * @see org.directcache.IDirectCache#usedMemory()
 	 */
 	@Override
-	public int usedMemory() {
+	public long usedMemory() {
 		return usedMemory.get();
 	}
 	/* (non-Javadoc)
 	 * @see org.directcache.IDirectCache#capacity()
 	 */
 	@Override
-	public int capacity() {
+	public long capacity() {
 		return buffer.capacity();
 	}
 	/* (non-Javadoc)

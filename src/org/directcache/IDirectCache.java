@@ -25,10 +25,10 @@ public interface IDirectCache {
 
 	public abstract ICacheEntry removeObject(String key);
 
-	public abstract int remaining();
+	public abstract long remaining();
 
-	public abstract int usedMemory();
+	public abstract long usedMemory();
 
-	public abstract int capacity();
+	public abstract long capacity();
 
 }

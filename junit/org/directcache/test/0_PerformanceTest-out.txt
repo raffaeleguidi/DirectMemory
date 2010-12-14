@@ -1,0 +1,68 @@
+23:59:15.766 [main] DEBUG org.directcache.test.PerformanceTest.allocateMemory - using mb2useFromCommandLine=400
+23:59:15.766 [main] DEBUG org.directcache.test.PerformanceTest.allocateMemory - cacheSize=419430400
+23:59:16.125 [main] DEBUG org.directcache.test.PerformanceTest.allocateMemory - DirectCache {entries: 0, capacity (mb): 400, size (mb): 0, remaining (mb): 400}
+org.directcache.test.PerformanceTest.firstAndLargestItem
+23:59:16.172 [main] DEBUG org.directcache.test.PerformanceTest.firstAndLargestItem - DirectCache {entries: 1, capacity (mb): 400, size (mb): 0, remaining (mb): 399}
+samples: 1
+max:     24
+average: 24.0
+median:  24
+org.directcache.test.PerformanceTest.testAll
+23:59:16.172 [main] DEBUG org.directcache.test.PerformanceTest.testAll - all objects checked
+23:59:16.172 [main] DEBUG org.directcache.test.PerformanceTest.testAll - DirectCache {entries: 1, capacity (mb): 400, size (mb): 0, remaining (mb): 399}
+samples: 1
+max:     3
+average: 3.0
+median:  3
+org.directcache.test.PerformanceTest.fillCacheUpToHalfCapacity
+23:59:24.422 [main] DEBUG org.directcache.test.PerformanceTest.fillCacheUpToHalfCapacity - DirectCache {entries: 49146, capacity (mb): 400, size (mb): 200, remaining (mb): 0}
+samples: 1
+max:     8249
+average: 8249.0
+median:  8249
+org.directcache.test.PerformanceTest.testAllAgain
+23:59:25.266 [main] DEBUG org.directcache.test.PerformanceTest.testAll - all objects checked
+23:59:25.266 [main] DEBUG org.directcache.test.PerformanceTest.testAll - DirectCache {entries: 49146, capacity (mb): 400, size (mb): 200, remaining (mb): 0}
+samples: 1
+max:     846
+average: 846.0
+median:  846
+org.directcache.test.PerformanceTest.onlyReads
+samples: 159311
+max:     29
+average: 0.19261067973962878
+median:  0
+org.directcache.test.PerformanceTest.onlyWrites
+samples: 18384
+max:     40
+average: 0.07789382071366406
+median:  0
+org.directcache.test.PerformanceTest.tenReadsOneWriteOneDelete
+samples: 16277
+max:     48
+average: 2.5745530503163976
+median:  2
+org.directcache.test.PerformanceTest.fiveReadsOneWriteOneDelete
+samples: 16654
+max:     60
+average: 2.5189143749249427
+median:  2
+org.directcache.test.PerformanceTest.twoReadsOneWriteOneDelete
+samples: 5943
+max:     67
+average: 7.905771495877503
+median:  7
+org.directcache.test.PerformanceTest.oneReadOneWriteOneDelete
+samples: 4318
+max:     73
+average: 11.077350625289485
+median:  11
+org.directcache.test.PerformanceTest.testAllOnceAgain
+00:00:15.907 [main] DEBUG org.directcache.test.PerformanceTest.testAll - all objects checked
+00:00:15.907 [main] DEBUG org.directcache.test.PerformanceTest.testAll - DirectCache {entries: 76026, capacity (mb): 400, size (mb): 309, remaining (mb): -218}
+samples: 1
+max:     71
+average: 71.0
+median:  71
+00:00:15.907 [main] DEBUG org.directcache.test.PerformanceTest.checkBuffer - DirectCache {entries: 76026, capacity (mb): 400, size (mb): 309, remaining (mb): -218}
+
