@@ -1,0 +1,136 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+# java.lang.OutOfMemoryError: requested 32756 bytes for ChunkPool::allocate. Out of swap space?
+#
+#  Internal Error (allocation.cpp:117), pid=1712, tid=5692
+#  Error: ChunkPool::allocate
+#
+# JRE version: 6.0_22-b04
+# Java VM: Java HotSpot(TM) Client VM (17.1-b03 mixed mode, sharing windows-x86 )
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x02be7400):  JavaThread "CompilerThread0" daemon [_thread_in_native, id=5692, stack(0x02e50000,0x02ea0000)]
+
+Stack: [0x02e50000,0x02ea0000],  sp=0x02e9f6bc,  free space=13d02e9f6cck
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x1fd0f0]
+V  [jvm.dll+0xa471c]
+V  [jvm.dll+0x27b6]
+V  [jvm.dll+0x29b2]
+V  [jvm.dll+0x2bb3]
+V  [jvm.dll+0x45b86]
+V  [jvm.dll+0x47f80]
+V  [jvm.dll+0x4a6bc]
+V  [jvm.dll+0x4a9a0]
+V  [jvm.dll+0x377ae]
+V  [jvm.dll+0x465ba]
+V  [jvm.dll+0x37534]
+V  [jvm.dll+0x28167]
+V  [jvm.dll+0x28317]
+V  [jvm.dll+0x283b8]
+V  [jvm.dll+0x28524]
+V  [jvm.dll+0x28634]
+V  [jvm.dll+0x88399]
+V  [jvm.dll+0x88edf]
+V  [jvm.dll+0x1e7004]
+V  [jvm.dll+0x185f3c]
+C  [msvcr71.dll+0x9565]
+C  [kernel32.dll+0xb729]
+
+
+Current CompileTask:
+C1:403      java.io.ObjectInputStream.readArray(Z)Ljava/lang/Object; (444 bytes)
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x02bed800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=5124, stack(0x02ea0000,0x02ef0000)]
+=>0x02be7400 JavaThread "CompilerThread0" daemon [_thread_in_native, id=5692, stack(0x02e50000,0x02ea0000)]
+  0x02be5c00 JavaThread "Attach Listener" daemon [_thread_blocked, id=4880, stack(0x02e00000,0x02e50000)]
+  0x02be4800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=5136, stack(0x02db0000,0x02e00000)]
+  0x02bdd800 JavaThread "Finalizer" daemon [_thread_blocked, id=6092, stack(0x02d60000,0x02db0000)]
+  0x02bdc000 JavaThread "Reference Handler" daemon [_thread_blocked, id=5568, stack(0x02d10000,0x02d60000)]
+  0x002b7400 JavaThread "main" [_thread_in_vm, id=5968, stack(0x008c0000,0x00910000)]
+
+Other Threads:
+  0x02bda800 VMThread [stack: 0x02cc0000,0x02d10000] [id=5844]
+  0x02bf8400 WatcherThread [stack: 0x02ef0000,0x02f40000] [id=3896]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 34176K, used 27978K [0x12970000, 0x14e80000, 0x1d410000)
+  eden space 30400K,  86% used [0x12970000, 0x1431d748, 0x14720000)
+  from space 3776K,  44% used [0x14720000, 0x148c52d8, 0x14ad0000)
+  to   space 3776K,   0% used [0x14ad0000, 0x14ad0000, 0x14e80000)
+ tenured generation   total 75736K, used 51261K [0x1d410000, 0x21e06000, 0x32970000)
+   the space 75736K,  67% used [0x1d410000, 0x2061f7f0, 0x2061f800, 0x21e06000)
+ compacting perm gen  total 12288K, used 3205K [0x32970000, 0x33570000, 0x36970000)
+   the space 12288K,  26% used [0x32970000, 0x32c91410, 0x32c91600, 0x33570000)
+    ro space 10240K,  54% used [0x36970000, 0x36eec510, 0x36eec600, 0x37370000)
+    rw space 12288K,  55% used [0x37370000, 0x37a0fb78, 0x37a0fc00, 0x37f70000)
+
+Dynamic libraries:
+0x00400000 - 0x00424000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\java.exe
+0x7c910000 - 0x7c9c8000 	C:\WINDOWS\system32\ntdll.dll
+0x7c800000 - 0x7c901000 	C:\WINDOWS\system32\kernel32.dll
+0x77f40000 - 0x77feb000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x77da0000 - 0x77e33000 	C:\WINDOWS\system32\RPCRT4.dll
+0x77f10000 - 0x77f21000 	C:\WINDOWS\system32\Secur32.dll
+0x7c340000 - 0x7c396000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\msvcr71.dll
+0x6d8a0000 - 0x6db47000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\client\jvm.dll
+0x7e390000 - 0x7e421000 	C:\WINDOWS\system32\USER32.dll
+0x77e40000 - 0x77e89000 	C:\WINDOWS\system32\GDI32.dll
+0x76b00000 - 0x76b2e000 	C:\WINDOWS\system32\WINMM.dll
+0x76340000 - 0x7635d000 	C:\WINDOWS\system32\IMM32.DLL
+0x6d850000 - 0x6d85c000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\verify.dll
+0x6d3d0000 - 0x6d3ef000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\java.dll
+0x6d330000 - 0x6d338000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\hpi.dll
+0x76bb0000 - 0x76bbb000 	C:\WINDOWS\system32\PSAPI.DLL
+0x6d890000 - 0x6d89f000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\zip.dll
+0x6d6b0000 - 0x6d6c3000 	C:\Programmi\Java\jdk1.6.0_22\jre\bin\net.dll
+0x71a30000 - 0x71a47000 	C:\WINDOWS\system32\WS2_32.dll
+0x77be0000 - 0x77c38000 	C:\WINDOWS\system32\msvcrt.dll
+0x71a20000 - 0x71a28000 	C:\WINDOWS\system32\WS2HELP.dll
+0x719d0000 - 0x71a10000 	C:\WINDOWS\System32\mswsock.dll
+0x76ee0000 - 0x76f07000 	C:\WINDOWS\system32\DNSAPI.dll
+0x76f70000 - 0x76f78000 	C:\WINDOWS\System32\winrnr.dll
+0x76f20000 - 0x76f4d000 	C:\WINDOWS\system32\WLDAP32.dll
+0x76f80000 - 0x76f86000 	C:\WINDOWS\system32\rasadhlp.dll
+
+VM Arguments:
+jvm_args: -Dmb2use=400 -XX:MaxDirectMemorySize=610m -Xmx512m 
+java_command: org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner org.directcache.test.PerformanceWithSmallBuffersTest filtertrace=true haltOnError=false haltOnFailure=false formatter=org.apache.tools.ant.taskdefs.optional.junit.OutErrSummaryJUnitResultFormatter showoutput=false outputtoformatters=true logfailedtests=true logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,C:\Development\directcache\junit\TEST-org.directcache.test.PerformanceWithSmallBuffersTest.xml crashfile=C:\Development\directcache\junitvmwatcher7238621125180028487.properties propsfile=C:\Development\directcache\junit5483623230299832685.properties
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Programmi\Java\jdk1.6.0_22
+CLASSPATH=C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar
+PATH=C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin
+USERNAME=OI43839
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 13, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows XP Build 2600 Service Pack 3
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 15 stepping 13, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3
+
+Memory: 4k page, physical 2086956k(162772k free), swap 3490268k(1105144k free)
+
+vm_info: Java HotSpot(TM) Client VM (17.1-b03) for windows-x86 JRE (1.6.0_22-b04), built on Sep 15 2010 00:56:36 by "java_re" with MS VC++ 7.1 (VS2003)
+
+time: Tue Dec 14 02:06:29 2010
+elapsed time: 20 seconds
+

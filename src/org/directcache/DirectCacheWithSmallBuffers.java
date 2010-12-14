@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directcache.buffer.CacheEntryWithBuffer;
@@ -35,14 +35,14 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 	private Map<String, ICacheEntry> entries;
 
 	private AtomicInteger capacity;
-	private AtomicInteger usedMemory;
+	private long usedMemory;
 	private int defaultDuration=-1;
 	
 	private void setup(int capacity) {
 		this.capacity = new AtomicInteger(capacity);
-		entries = new Hashtable<String, ICacheEntry>();
+		entries = new ConcurrentHashMap <String, ICacheEntry>(10000, 0.75F, 20);
 		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
-		usedMemory = new AtomicInteger(0);
+		usedMemory = 0;
 	}
 		
 	public DirectCacheWithSmallBuffers() {
@@ -77,62 +77,106 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		return b;		
 	}
 
-	public ICacheEntry storeObject(String key, Serializable obj) throws Exception {
+	public ICacheEntry storeObject(String key, Serializable obj) {
 		return storeObject(key, obj, defaultDuration);
 	}
 	
-	public ICacheEntry storeObject(String key, Serializable obj, int duration) throws Exception {
+	public ICacheEntry storeObject(String key, Serializable obj, int duration) {
 
-		logger.info("attempting to remove object with key '" + key + "' - just in case");
+		//logger.info("attempting to remove object with key '" + key + "' - just in case");
 
-		removeObject(key);
+		//removeObject(key);
 		
 		logger.info("serializing object with key '" + key + "'");
 
-		byte source[] = serializeObject(obj);
-		
-		logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
+		byte source[] = null;
 
-//			if (source.length > remaining()) {
-//				collectExpired();
+		try {
+			source = serializeObject(obj);
+			logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+			logger.error("error serializing object with key '" + key + "': " + e2.getMessage());
+		}
+		
+//  lasciamo stare fino a che non gestiamo la capacity
+//		if (usedMemory.get() >= capacity.get()) {
+//			ICacheEntry entryToRemove = expiredEntryLargerThan(source.length);
+//			if (entryToRemove == null) {
+//				logger.info("collecting LRU item - no room for entry with key '" + key + "'");
+//				entryToRemove = collectLRU(source.length);
 //			}
+//		}
 		
 		CacheEntryWithBuffer storedEntry = null;
 		
-		if (source.length >= capacity.get() - usedMemory.get()) {
+		try {				
+			storedEntry = new CacheEntryWithBuffer(key, source, duration);
+			logger.debug("created entry with key '" + key + "'");
+		} catch (OutOfMemoryError e) {
+			logger.debug("collecting expired item - no room for entry with key '" + key + "'");
 			ICacheEntry entryToRemove = expiredEntryLargerThan(source.length);
-			if (entryToRemove == null) {
-				entryToRemove = collectLRU(source.length);
+			if (entryToRemove != null) {
+				removeObject(entryToRemove.getKey());
+			} else {
+				logger.debug("collecting LRU item - no room for entry with key '" + key + "'");
+				collectLRU(source.length);
 			}
-			removeObject(entryToRemove.getKey());
-		}
+			
+			try {
+				storedEntry = new CacheEntryWithBuffer(key, source, duration);
+				logger.debug("created entry with key '" + key + "'");
+			} catch (OutOfMemoryError e1) {
+				logger.debug("no room for entry with key '" + key + "' - attempting expired collection");
+				collectExpired();
+				logger.debug("no room for entry with key '" + key + "' - attempting expired collection");
+				storedEntry = new CacheEntryWithBuffer(key, source, duration);
+			}
+		} 
 
-		logger.info("storing object with key '" + key + "'");
-		storedEntry = new CacheEntryWithBuffer(key, source, duration);
-		synchronized (entries) {
-			entries.put(key, storedEntry);
-		}
-		usedMemory.addAndGet(storedEntry.size());
+		usedMemory+=storedEntry.size();
+//		usedMemory.addAndGet(storedEntry.size());
+
+		entries.put(key, storedEntry);
+
+		logger.debug("stored entry with key '" + key + "'");
+
 		return storedEntry;
 	}
 	
 	private ICacheEntry expiredEntryLargerThan(int size) {
 	
-		synchronized (entries) {
+//		synchronized (entries) {
 			for (ICacheEntry cacheEntry : entries.values()) {
 				if (cacheEntry.size() >= size && cacheEntry.expired()) {
 					logger.debug("expired entry found for size " + size);
 					return cacheEntry;
 				}
 			}
-		}
+//		}
 		
 		logger.debug("No expired entry found for size " + size);
 		return null;
 	}
 
+	public void collectLRU(int bytesToFree) {	
+
+		logger.debug("Attempting LRU collection for " + bytesToFree + " bytes");
+
+		long freedBytes = 0;
+		for (ICacheEntry entry : entries.values()) {
+			freedBytes += entry.getSize();
+			removeObject(entry.getKey());
+			logger.debug("Collected LRU entry " + entry.getKey());
+			if (freedBytes >= bytesToFree)
+				return;
+		}
+		
+		logger.debug("No LRU entries to collect for " + bytesToFree + " bytes");
+	}
 	
-	public Serializable retrieveObject(String key) throws IOException, ClassNotFoundException {
+	public Serializable retrieveObject(String key)  {
 
 		logger.info("looking for object with key '" + key + "'");
 		
@@ -144,6 +188,12 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		}
 		
 		byte[] dest = entry.getBuffer();
+		
+		if (dest == null) { 
+			logger.error("invalid buffer");
+			return null;
+		}
+		
 		try {
 			Serializable obj = deserialize(dest);
 			logger.info("retrieved object with key '" + key + "' (" + 
@@ -154,7 +204,14 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 			logger.error("EOFException deserializing object with key '"
 					+ key + "' with size " + entry.size());
 			return null;
+		} catch (IOException e) {
+			logger.error("IOException deserializing object with key '"
+					+ key + "' with size " + entry.size());
+		} catch (ClassNotFoundException e) {
+			logger.error("ClassNotFoundException deserializing object with key '"
+					+ key + "' with size " + entry.size());
 		}
+		return null;
 	}
 	
 	private Serializable deserialize(byte[] b) throws IOException, ClassNotFoundException {
@@ -176,11 +233,12 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 
 		List<ICacheEntry> expiredList = new Vector<ICacheEntry>();
 		
-		for (ICacheEntry cacheEntry : entries.values()) {
-			if (cacheEntry.expired())
-				expiredList.add(cacheEntry);
-		}
-
+//		synchronized (entries) {
+			for (ICacheEntry cacheEntry : entries.values()) {
+				if (cacheEntry.expired())
+					expiredList.add(cacheEntry);
+			}
+//		}
 		logger.debug("Collecting " + expiredList.size() +  " expired entries");
 		
 		for (ICacheEntry expired : expiredList) {
@@ -188,86 +246,35 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		}
 
 		logger.debug("Collected " + expiredList.size() +  " expired entries");		
-	}
-	
-	public ICacheEntry collectLRU(int bytesToFree) {	
-
-		logger.debug("Attempting LRU collection for " + bytesToFree + " bytes");
-
-//		List<CacheEntry> 
-//			LRUItems = 
-//				sort(
-//					sort(
-//						filter(
-//							having( 
-//									on(
-//											CacheEntry.class).size(), 
-//											greaterThan(bytesToFree) 
-//									), 
-//									entries.values()
-//						),
-//						on(CacheEntry.class).size()
-//					),
-//					on(CacheEntry.class).lastUsed()
-//				);
-		
-//		LRUItems = 
-//				sort(
-//					filter(
-//						having( 
-//								on(
-//										CacheEntry.class).size(), 
-//										greaterThan(bytesToFree) 
-//								), 
-//								entries.values()
-//						),
-//					on(CacheEntry.class).lastUsed()
-//				);
-
-		
-		// temporary for performance reasons
-		for (ICacheEntry entry  : entries.values()) {
-			if (entry.size() >= bytesToFree) {
-				removeObject(entry.getKey());
-				logger.debug("Collected LRU entry " + entry.getKey());
-				return entry;
-			}			
-		}
-		logger.warn("No LRU entries to collect for " + bytesToFree + " bytes");
-		return null;
-	}
-	
+	}	
 	
 	public ICacheEntry removeObject(String key) {
 
-		logger.info("looking for object with key '" + key + "'");
+		logger.info("trying to remove entry with key '" + key + "'");	
+
+		ICacheEntry entry = null;
 		
-		synchronized (entries) {
-			ICacheEntry entry = entries.get(key);
-			if (entry == null) {
-				logger.info("could not find object with key '" + key + "'");
-				return null;
-			}
-			
-			entries.remove(key);
-			usedMemory.addAndGet(-entry.size());
+//		synchronized (entries) {
+			entry = entries.remove(key);
+//		}
+		
+		if (entry != null) {
+//			usedMemory.addAndGet(-entry.size());
+			usedMemory-=entry.size();
 			entry.dispose();
-			entry = null;
-			
-			logger.info("object with key '" + key + "' freed");
-			return entry;
+			logger.info("object with key '" + key + "' disposed");
 		}
+
+		return entry;
 	}
 	
-	public int remaining() {
-		return capacity.get()-usedMemory.get();
+	public long remaining() {
+		return capacity.longValue()-usedMemory;
 	}
-	public int usedMemory() {
-		return usedMemory.get();
+	public long usedMemory() {
+		return usedMemory;
 	}
-	public int capacity() {
-		return capacity.get();
-	}
+	
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -276,9 +283,9 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		sb.append("entries: ");
 		sb.append(entries().size());
 		sb.append(", ");
-		sb.append("capacity (mb): ");
-		sb.append(capacity()/1024/1024);
-		sb.append(", ");
+//		sb.append("capacity (mb): ");
+//		sb.append(capacity()/1024/1024);
+//		sb.append(", ");
 		sb.append("size (mb): ");
 		sb.append(usedMemory()/1024/1024);
 		sb.append(", ");
@@ -287,6 +294,12 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+
+	@Override
+	public long capacity() {
+		// deve ritornare -XX:MaxDirectMemorySize 
+		return 512*1024*1024L;
 	}
 	
 }

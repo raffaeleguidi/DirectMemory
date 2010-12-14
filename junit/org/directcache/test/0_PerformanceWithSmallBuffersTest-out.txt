@@ -1,0 +1,83 @@
+23:50:37.094 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.allocateMemory - DirectCache {entries: 0, capacity (mb): 490, size (mb): 0, remaining (mb): 490}
+org.directcache.test.PerformanceWithSmallBuffersTest.firstAndLargestItem
+23:50:37.266 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.firstAndLargestItem - DirectCache {entries: 1, capacity (mb): 490, size (mb): 0, remaining (mb): 489}
+samples: 1
+max:     68
+average: 68.0
+median:  68
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites
+samples: 70018
+max:     1012
+average: 0.26730269359307607
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites10Threads
+samples: 2
+max:     342
+average: 341.5
+median:  341
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites20Threads
+samples: 25
+max:     1028
+average: 360.8
+median:  111
+org.directcache.test.PerformanceWithSmallBuffersTest.testAll
+23:50:47.422 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - all objects checked
+23:50:47.422 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - DirectCache {entries: 61055, capacity (mb): 490, size (mb): 247, remaining (mb): 242}
+samples: 1
+max:     25
+average: 25.0
+median:  25
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads
+samples: 946458
+max:     233
+average: 0.03390747397137538
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads10Threads
+samples: 934771
+max:     694
+average: 0.08710261657668028
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads20Threads
+samples: 916727
+max:     1171
+average: 0.19686558811947286
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete
+samples: 12
+max:     477
+average: 202.41666666666666
+median:  131
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete10Threads
+samples: 17
+max:     703
+average: 220.52941176470588
+median:  112
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete20Threads
+samples: 34
+max:     916
+average: 71.47058823529412
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.testAllOnceAgain
+23:51:22.110 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - all objects checked
+23:51:22.110 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - DirectCache {entries: 61077, capacity (mb): 490, size (mb): 247, remaining (mb): 242}
+samples: 1
+max:     24
+average: 24.0
+median:  24
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete
+samples: 3
+max:     468
+average: 156.0
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete10Threads
+samples: 16
+max:     698
+average: 180.875
+median:  110
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete20Threads
+samples: 33
+max:     2759
+average: 502.969696969697
+median:  112
+23:51:27.516 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.checkBuffer - DirectCache {entries: 61094, capacity (mb): 490, size (mb): 247, remaining (mb): 242}
+

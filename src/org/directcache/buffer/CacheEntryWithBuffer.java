@@ -35,7 +35,7 @@ public class CacheEntryWithBuffer implements ICacheEntry {
 		this.duration = duration;
 	}
 	
-	public CacheEntryWithBuffer (String key, byte[] source, int duration) {
+	public CacheEntryWithBuffer (String key, byte[] source, int duration) throws OutOfMemoryError {
 		this.key = key;
 		this.size = source.length;
 		this.buffer = ByteBuffer.allocateDirect(this.size);
@@ -44,11 +44,19 @@ public class CacheEntryWithBuffer implements ICacheEntry {
 	}
 	
 	public byte[] getBuffer() {
-		byte[] dest = new byte[size]; 
-		synchronized (buffer) {
-			buffer.position(0);
-			buffer.get(dest);
+		
+		byte[] dest = null; 
+		try {
+			synchronized (buffer) {
+				buffer.position(0);
+				dest = new byte[size];
+				buffer.get(dest);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 		return dest;
 	}
 	
