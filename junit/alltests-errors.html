@@ -18,10 +18,70 @@
 <th>Class</th><th>Name</th><th>Status</th><th width="80%">Type</th><th nowrap>Time(s)</th>
 </tr>
 <tr valign="top" class="Error">
-<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="testAll"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#testAll">testAll</a></td><td>Error</td><td>Forked Java VM exited abnormally. Please note the time in the report does not reflect the time until the VM exit.<br>
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="onlyWrites"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#onlyWrites">onlyWrites</a></td><td>Error</td><td>java.lang.OutOfMemoryError: Direct buffer memory<br>
 <br>
-<code>junit.framework.AssertionFailedError: Forked Java VM exited abnormally. Please note the time in the report does not reflect the time until the VM exit.<br>
-</code></td><td>0.000</td>
+<code>org.databene.contiperf.PerfTestExecutionError: java.lang.OutOfMemoryError: Direct buffer memory<br>	at org.databene.contiperf.util.ContiPerfUtil.executionError(ContiPerfUtil.java:64)<br>	at org.databene.contiperf.junit.JUnitInvoker.invoke(JUnitInvoker.java:54)<br>	at org.databene.contiperf.util.InvokerProxy.invoke(InvokerProxy.java:46)<br>	at org.databene.contiperf.PerformanceTracker.invoke(PerformanceTracker.java:76)<br>	at org.databene.contiperf.TimedRunner.run(TimedRunner.java:50)<br>	at java.lang.Thread.run(Thread.java:662)<br>Caused by: java.lang.OutOfMemoryError: Direct buffer memory<br>	at java.nio.Bits.reserveMemory(Bits.java:633)<br>	at java.nio.DirectByteBuffer.&lt;init&gt;(DirectByteBuffer.java:98)<br>	at java.nio.ByteBuffer.allocateDirect(ByteBuffer.java:288)<br>	at org.directcache.buffer.CacheEntryWithBuffer.&lt;init&gt;(CacheEntryWithBuffer.java:41)<br>	at org.directcache.DirectCacheWithSmallBuffers.storeObject(DirectCacheWithSmallBuffers.java:137)<br>	at org.directcache.DirectCacheWithSmallBuffers.storeObject(DirectCacheWithSmallBuffers.java:84)<br>	at org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites(PerformanceWithSmallBuffersTest.java:97)<br>	at org.databene.contiperf.junit.JUnitInvoker.invoke(JUnitInvoker.java:51)<br>
+</code></td><td>10.094</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="onlyWrites10Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#onlyWrites10Threads">onlyWrites10Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 3823 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 3823 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>11.000</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="onlyWrites20Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#onlyWrites20Threads">onlyWrites20Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 6114 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 6114 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>11.109</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="onlyReads10Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#onlyReads10Threads">onlyReads10Threads</a></td><td>Error</td><td>The maximum latency of 750.0 ms was exceeded, Measured: 770 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 750.0 ms was exceeded, Measured: 770 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.125</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="onlyReads20Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#onlyReads20Threads">onlyReads20Threads</a></td><td>Error</td><td>The maximum latency of 750.0 ms was exceeded, Measured: 2328 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 750.0 ms was exceeded, Measured: 2328 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.016</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twentyReadsOneWriteOneDelete"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twentyReadsOneWriteOneDelete">twentyReadsOneWriteOneDelete</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 1777 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 1777 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.406</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twentyReadsOneWriteOneDelete10Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twentyReadsOneWriteOneDelete10Threads">twentyReadsOneWriteOneDelete10Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 4129 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 4129 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.938</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twentyReadsOneWriteOneDelete20Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twentyReadsOneWriteOneDelete20Threads">twentyReadsOneWriteOneDelete20Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 5442 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 5442 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>11.828</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twoReadsOneWriteOneDelete"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twoReadsOneWriteOneDelete">twoReadsOneWriteOneDelete</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 1579 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 1579 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.203</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twoReadsOneWriteOneDelete10Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twoReadsOneWriteOneDelete10Threads">twoReadsOneWriteOneDelete10Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 3762 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 3762 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>10.765</td>
+</tr>
+<tr valign="top" class="Error">
+<td><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html">PerformanceWithSmallBuffersTest</a></td><td><a name="twoReadsOneWriteOneDelete20Threads"></a><a href="org/directcache/test/1_PerformanceWithSmallBuffersTest.html#twoReadsOneWriteOneDelete20Threads">twoReadsOneWriteOneDelete20Threads</a></td><td>Error</td><td>The maximum latency of 1500.0 ms was exceeded, Measured: 7357 ms<br>
+<br>
+<code>org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 7357 ms<br>	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)<br>	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)<br>	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)<br>
+</code></td><td>11.860</td>
 </tr>
 </table>
 </body>

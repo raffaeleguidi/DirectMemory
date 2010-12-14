@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.directcache.buffer.CacheEntryWithBuffer;
 import org.slf4j.Logger;
@@ -34,15 +36,17 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 	
 	private Map<String, ICacheEntry> entries;
 
-	private AtomicInteger capacity;
-	private long usedMemory;
+	private AtomicLong capacity;
+//	private AtomicLong usedMemory;
 	private int defaultDuration=-1;
 	
-	private void setup(int capacity) {
-		this.capacity = new AtomicInteger(capacity);
-		entries = new ConcurrentHashMap <String, ICacheEntry>(10000, 0.75F, 20);
+	private void setup(long capacity) {
+		this.capacity = new AtomicLong(capacity);
+		// these params make things considerably worse
+//		entries = new ConcurrentHashMap <String, ICacheEntry>(60000, 0.75F, 30);
+		entries = new ConcurrentHashMap <String, ICacheEntry>();
 		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
-		usedMemory = 0;
+//		usedMemory = new AtomicLong(0);
 	}
 		
 	public DirectCacheWithSmallBuffers() {
@@ -135,7 +139,7 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 			}
 		} 
 
-		usedMemory+=storedEntry.size();
+//		usedMemory+=storedEntry.size();
 //		usedMemory.addAndGet(storedEntry.size());
 
 		entries.put(key, storedEntry);
@@ -260,7 +264,7 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 		
 		if (entry != null) {
 //			usedMemory.addAndGet(-entry.size());
-			usedMemory-=entry.size();
+//			usedMemory-=entry.size();
 			entry.dispose();
 			logger.info("object with key '" + key + "' disposed");
 		}
@@ -269,10 +273,17 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 	}
 	
 	public long remaining() {
-		return capacity.longValue()-usedMemory;
+//		return capacity.get()-usedMemory.get();
+		return 0;
 	}
 	public long usedMemory() {
-		return usedMemory;
+//		return usedMemory.get();
+		long totalSize = 0;
+		for (ICacheEntry entry:entries.values()) {
+			totalSize += entry.size();
+		}
+		
+		return totalSize;
 	}
 	
 	@Override

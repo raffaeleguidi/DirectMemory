@@ -334,7 +334,7 @@ median:  71
       <system-err />
 
   </testsuite>
-  <testsuite errors="1" failures="0" hostname="PO042D9417" id="1" name="PerformanceWithSmallBuffersTest" package="org.directcache.test" tests="1" time="0.0" timestamp="2010-12-14T01:06:30">
+  <testsuite errors="11" failures="0" hostname="PO042D9417" id="1" name="PerformanceWithSmallBuffersTest" package="org.directcache.test" tests="15" time="138.859" timestamp="2010-12-14T08:53:32">
       <properties>
           <property name="java.vendor" value="Sun Microsystems Inc." />
 
@@ -470,7 +470,7 @@ median:  71
 
           <property name="env.NUMBER_OF_PROCESSORS" value="2" />
 
-          <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin" />
+          <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\springsource\maven-2.2.1.RELEASE\bin;C:\Programmi\Java\jdk1.6.0_22\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\TortoiseGit\bin;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\scala\bin" />
 
           <property name="java.vendor.url" value="http://java.sun.com/" />
 
@@ -482,7 +482,7 @@ median:  71
 
           <property name="ant.version" value="Apache Ant version 1.8.0 compiled on February 1 2010" />
 
-          <property name="java.class.path" value="C:\Programmi\apache-ant-1.8.0\bin\..\lib\ant-launcher.jar;C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-antlr.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-bcel.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-bsf.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-log4j.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-oro.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-regexp.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-resolver.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-apache-xalan2.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-commons-logging.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-commons-net.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jai.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-javamail.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jdepend.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jmf.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-jsch.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-junit.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-launcher.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-netrexx.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-nodeps.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-stylebook.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-swing.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-testutil.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-trax.jar;C:\Programmi\apache-ant-1.8.0\lib\ant.jar;C:\Programmi\apache-ant-1.8.0\lib\xercesImpl.jar;C:\Programmi\apache-ant-1.8.0\lib\xml-apis.jar;C:\Programmi\Java\jdk1.6.0_22\lib\tools.jar" />
+          <property name="java.class.path" value="C:\Development\directcache\bin;C:\MyStuff\eclipse\plugins\org.junit_4.8.1.v4_8_1_v20100427-1100\junit.jar;C:\MyStuff\eclipse\plugins\org.hamcrest.core_1.1.0.v20090501071000.jar;C:\Development\directcache\lib\slf4j-api-1.6.1.jar;C:\Development\directcache\lib\logback-classic-0.9.26.jar;C:\Development\directcache\lib\logback-core-0.9.26.jar;C:\Development\directcache\lib\contiperf-1.08.jar;C:\MyStuff\junitperf-1.9.1\lib\junitperf-1.9.1.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-launcher.jar;C:\Programmi\apache-ant-1.8.0\lib\ant.jar;C:\Programmi\apache-ant-1.8.0\lib\ant-junit.jar" />
 
           <property name="env.JUNITPERF_HOME" value="C:\MyStuff\junitperf-1.9.1" />
 
@@ -564,17 +564,220 @@ median:  71
 
           <property name="java.specification.version" value="1.6" />
 
+          <property name="mb2use" value="400" />
+
           <property name="ant.project.invoked-targets" value="PerformanceWithSmallBuffersTest" />
 
           <property name="env.PROCESSOR_LEVEL" value="6" />
 
       </properties>
 
-      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="testAll" time="0.0">
-          <error message="Forked Java VM exited abnormally. Please note the time in the report does not reflect the time until the VM exit." type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: Forked Java VM exited abnormally. Please note the time in the report does not reflect the time until the VM exit.
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="firstAndLargestItem" time="0.031" />
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyWrites" time="10.094">
+          <error message="java.lang.OutOfMemoryError: Direct buffer memory" type="org.databene.contiperf.PerfTestExecutionError">org.databene.contiperf.PerfTestExecutionError: java.lang.OutOfMemoryError: Direct buffer memory
+	at org.databene.contiperf.util.ContiPerfUtil.executionError(ContiPerfUtil.java:64)
+	at org.databene.contiperf.junit.JUnitInvoker.invoke(JUnitInvoker.java:54)
+	at org.databene.contiperf.util.InvokerProxy.invoke(InvokerProxy.java:46)
+	at org.databene.contiperf.PerformanceTracker.invoke(PerformanceTracker.java:76)
+	at org.databene.contiperf.TimedRunner.run(TimedRunner.java:50)
+	at java.lang.Thread.run(Thread.java:662)
+Caused by: java.lang.OutOfMemoryError: Direct buffer memory
+	at java.nio.Bits.reserveMemory(Bits.java:633)
+	at java.nio.DirectByteBuffer.&lt;init&gt;(DirectByteBuffer.java:98)
+	at java.nio.ByteBuffer.allocateDirect(ByteBuffer.java:288)
+	at org.directcache.buffer.CacheEntryWithBuffer.&lt;init&gt;(CacheEntryWithBuffer.java:41)
+	at org.directcache.DirectCacheWithSmallBuffers.storeObject(DirectCacheWithSmallBuffers.java:137)
+	at org.directcache.DirectCacheWithSmallBuffers.storeObject(DirectCacheWithSmallBuffers.java:84)
+	at org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites(PerformanceWithSmallBuffersTest.java:97)
+	at org.databene.contiperf.junit.JUnitInvoker.invoke(JUnitInvoker.java:51)
 </error>
 
       </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyWrites10Threads" time="11.0">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 3823 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 3823 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyWrites20Threads" time="11.109">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 6114 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 6114 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="testAll" time="5.281" />
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyReads" time="10.0" />
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyReads10Threads" time="10.125">
+          <error message="The maximum latency of 750.0 ms was exceeded, Measured: 770 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 750.0 ms was exceeded, Measured: 770 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="onlyReads20Threads" time="10.016">
+          <error message="The maximum latency of 750.0 ms was exceeded, Measured: 2328 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 750.0 ms was exceeded, Measured: 2328 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twentyReadsOneWriteOneDelete" time="10.406">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 1777 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 1777 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twentyReadsOneWriteOneDelete10Threads" time="10.938">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 4129 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 4129 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twentyReadsOneWriteOneDelete20Threads" time="11.828">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 5442 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 5442 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="testAllOnceAgain" time="5.141" />
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twoReadsOneWriteOneDelete" time="10.203">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 1579 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 1579 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twoReadsOneWriteOneDelete10Threads" time="10.765">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 3762 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 3762 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <testcase classname="org.directcache.test.PerformanceWithSmallBuffersTest" name="twoReadsOneWriteOneDelete20Threads" time="11.86">
+          <error message="The maximum latency of 1500.0 ms was exceeded, Measured: 7357 ms" type="org.databene.contiperf.PerfTestFailure">org.databene.contiperf.PerfTestFailure: The maximum latency of 1500.0 ms was exceeded, Measured: 7357 ms
+	at org.databene.contiperf.PerformanceTracker.checkRequirements(PerformanceTracker.java:103)
+	at org.databene.contiperf.PerformanceTracker.stop(PerformanceTracker.java:92)
+	at org.databene.contiperf.junit.PerfTestStatement.evaluate(PerfTestStatement.java:75)
+</error>
+
+      </testcase>
+
+      <system-out><![CDATA[09:53:33.015 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.allocateMemory - using mb2useFromCommandLine=400
+09:53:33.015 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.allocateMemory - cacheSize=419430400
+09:53:33.015 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.allocateMemory - DirectCache {entries: 0, size (mb): 0, remaining (mb): 0}
+org.directcache.test.PerformanceWithSmallBuffersTest.firstAndLargestItem
+09:53:33.062 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.firstAndLargestItem - DirectCache {entries: 1, size (mb): 0, remaining (mb): 0}
+samples: 1
+max:     20
+average: 20.0
+median:  20
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites
+samples: 126215
+max:     1372
+average: 0.21527552192687083
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites10Threads
+samples: 278
+max:     3823
+average: 125.25179856115108
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyWrites20Threads
+samples: 509
+max:     6114
+average: 57.15717092337918
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.testAll
+09:54:10.531 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - **** computed size is: 536723759
+09:54:10.546 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - DirectCache {entries: 126136, size (mb): 511, remaining (mb): 0}
+samples: 1
+max:     5272
+average: 5272.0
+median:  5272
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads
+samples: 335641
+max:     226
+average: 0.09631421667793863
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads10Threads
+samples: 337295
+max:     770
+average: 0.23469070101839637
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.onlyReads20Threads
+samples: 331903
+max:     2328
+average: 0.5481752198684555
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete
+samples: 1307
+max:     1777
+average: 38.045906656465185
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete10Threads
+samples: 1725
+max:     4129
+average: 37.335072463768114
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twentyReadsOneWriteOneDelete20Threads
+samples: 1643
+max:     5442
+average: 113.73463177115033
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.testAllOnceAgain
+09:55:18.968 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - **** computed size is: 535113989
+09:55:18.984 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.testAll - DirectCache {entries: 121445, size (mb): 510, remaining (mb): 0}
+samples: 1
+max:     5126
+average: 5126.0
+median:  5126
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete
+samples: 9148
+max:     1579
+average: 5.34936598163533
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete10Threads
+samples: 6895
+max:     3762
+average: 11.632052211747643
+median:  0
+org.directcache.test.PerformanceWithSmallBuffersTest.twoReadsOneWriteOneDelete20Threads
+samples: 5155
+max:     7357
+average: 31.103588748787583
+median:  0
+09:55:51.843 [main] DEBUG org.directcache.test.PerformanceWithSmallBuffersTest.checkBuffer - DirectCache {entries: 105640, size (mb): 506, remaining (mb): 0}
+]]></system-out>
+
+      <system-err />
 
   </testsuite>
 </testsuites>
