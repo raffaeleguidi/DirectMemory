@@ -14,8 +14,7 @@ public interface IDirectCache {
 
 	public abstract Map<String, ICacheEntry> entries();
 
-	public abstract ICacheEntry storeObject(String key, Serializable obj)
-			throws Exception;
+	public abstract ICacheEntry storeObject(String key, Serializable obj);
 
 	public abstract ICacheEntry storeObject(String key, Serializable obj,
 			int duration) throws Exception;

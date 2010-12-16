@@ -1,4 +1,4 @@
-package org.directcache;
+package org.directcache.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -7,19 +7,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.directcache.buffer.CacheEntryWithBuffer;
+import org.directcache.ICacheEntry;
+import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DirectCacheWithSmallBuffers implements IDirectCache {
+public class DirectCache2 implements IDirectCache {
 
 	// suggested java memory settings:
 	//-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k
@@ -32,7 +31,7 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 	// see http://www.kdgregory.com/index.php?page=java.byteBuffer
 	// and http://www.kdgregory.com/programming/java/ByteBuffer_JUG_Presentation.pdf
 	
-	private static Logger logger=LoggerFactory.getLogger(DirectCacheWithSmallBuffers.class);
+	private static Logger logger=LoggerFactory.getLogger(DirectCache2.class);
 	
 	private Map<String, ICacheEntry> entries;
 
@@ -49,11 +48,11 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 //		usedMemory = new AtomicLong(0);
 	}
 		
-	public DirectCacheWithSmallBuffers() {
+	public DirectCache2() {
 		// defaults to 50mb
 		setup(50*1024*1024);
 	}
-	public DirectCacheWithSmallBuffers(int capacity) {
+	public DirectCache2(int capacity) {
 		setup(capacity);
 	}
 	
@@ -113,40 +112,31 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 //			}
 //		}
 		
-		CacheEntryWithBuffer storedEntry = null;
+		CacheEntry2 newEntry = null;
 		
-		try {				
-			storedEntry = new CacheEntryWithBuffer(key, source, duration);
-			logger.debug("created entry with key '" + key + "'");
-		} catch (OutOfMemoryError e) {
-			logger.debug("collecting expired item - no room for entry with key '" + key + "'");
-			ICacheEntry entryToRemove = expiredEntryLargerThan(source.length);
-			if (entryToRemove != null) {
-				removeObject(entryToRemove.getKey());
-			} else {
-				logger.debug("collecting LRU item - no room for entry with key '" + key + "'");
-				collectLRU(source.length);
+		while  (newEntry == null) {
+			logger.debug("trying to create entry for object with key '" + key + "'");
+			newEntry = CacheEntry2.allocate(key, source, duration);
+			if (newEntry == null) {
+				logger.debug("removing one expired entry - no room for entry with key '" + key + "'");
+				ICacheEntry entryToRemove = expiredEntryLargerThan(source.length);
+				if (entryToRemove != null) {
+					removeObject(entryToRemove.getKey());
+				} else {
+					logger.debug("collecting LRU item - no room for entry with key '" + key + "'");
+					collectLRU(source.length);
+				}
 			}
-			
-			try {
-				storedEntry = new CacheEntryWithBuffer(key, source, duration);
-				logger.debug("created entry with key '" + key + "'");
-			} catch (OutOfMemoryError e1) {
-				logger.debug("no room for entry with key '" + key + "' - attempting expired collection");
-				collectExpired();
-				logger.debug("no room for entry with key '" + key + "' - attempting expired collection");
-				storedEntry = new CacheEntryWithBuffer(key, source, duration);
-			}
-		} 
+		}
 
-//		usedMemory+=storedEntry.size();
+		//		usedMemory+=storedEntry.size();
 //		usedMemory.addAndGet(storedEntry.size());
 
-		entries.put(key, storedEntry);
+		entries.put(key, newEntry);
 
 		logger.debug("stored entry with key '" + key + "'");
 
-		return storedEntry;
+		return newEntry;
 	}
 	
 	private ICacheEntry expiredEntryLargerThan(int size) {
@@ -184,7 +174,7 @@ public class DirectCacheWithSmallBuffers implements IDirectCache {
 
 		logger.info("looking for object with key '" + key + "'");
 		
-		CacheEntryWithBuffer entry = (CacheEntryWithBuffer)entries.get(key);
+		CacheEntry2 entry = (CacheEntry2)entries.get(key);
 
 		if (entry == null) {
 			logger.info("could not find object with key '" + key + "'");

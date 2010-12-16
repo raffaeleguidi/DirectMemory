@@ -11,8 +11,8 @@ import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.log.EmptyExecutionLogger;
-import org.directcache.DirectCacheWithSmallBuffers;
 import org.directcache.ICacheEntry;
+import org.directcache.impl.DirectCache2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -28,7 +28,7 @@ public class PerformanceWithSmallBuffersTest {
 	@Rule
     public ContiPerfRule i = new ContiPerfRule(new EmptyExecutionLogger());
     
-	static DirectCacheWithSmallBuffers cache = null;
+	static DirectCache2 cache = null;
 	static int objectsSize = 2048*2;
 	static Random generator = new Random();
 	static int cacheSize = 490*1024*1024;
@@ -40,7 +40,7 @@ public class PerformanceWithSmallBuffersTest {
 			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
 			logger.debug("cacheSize=" + cacheSize);
 		}
-		cache = new DirectCacheWithSmallBuffers(cacheSize);
+		cache = new DirectCache2(cacheSize);
 //		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}

@@ -1,4 +1,4 @@
-package org.directcache;
+package org.directcache.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.directcache.buffer.ThreadSafeDirectBuffer;
+import org.directcache.ICacheEntry;
+import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +107,7 @@ public class DirectCache implements IDirectCache {
 	 * @see org.directcache.IDirectCache#storeObject(java.lang.String, java.io.Serializable)
 	 */
 	@Override
-	public ICacheEntry storeObject(String key, Serializable obj) throws Exception {
+	public ICacheEntry storeObject(String key, Serializable obj) {
 		return storeObject(key, obj, defaultDuration);
 	}
 	
@@ -114,7 +115,7 @@ public class DirectCache implements IDirectCache {
 	 * @see org.directcache.IDirectCache#storeObject(java.lang.String, java.io.Serializable, int)
 	 */
 	@Override
-	public ICacheEntry storeObject(String key, Serializable obj, int duration) throws Exception {
+	public ICacheEntry storeObject(String key, Serializable obj, int duration) {
 
 		logger.info("attempting to remove object with key '" + key + "' - just in case");
 
@@ -122,7 +123,13 @@ public class DirectCache implements IDirectCache {
 		
 		logger.info("serializing object with key '" + key + "'");
 
-		byte source[] = serializeObject(obj);
+		byte source[]=null;
+		try {
+			source = serializeObject(obj);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
 		logger.info("buffer size is " + buffer.remaining() + " garbage size is " + memoryInFreeEntries);
@@ -136,13 +143,18 @@ public class DirectCache implements IDirectCache {
 			
 			if (source.length <= memoryInFreeEntries.get()) {
 				logger.info("storing object with key '" + key + "'");
-				storedEntry = (CacheEntry)storeUsingFreeEntries(key, source, duration);	
+				try {
+					storedEntry = (CacheEntry)storeUsingFreeEntries(key, source, duration);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			} else {
 				logger.error("there's no room for object with key '" + key + "'");
 				// how's that?!?...
 			}
 			if (storedEntry != null) {
-				usedMemory.addAndGet(storedEntry.size);
+				usedMemory.addAndGet(storedEntry.size());
 			}
 			return storedEntry;
 		}
@@ -163,7 +175,7 @@ public class DirectCache implements IDirectCache {
 //				);
 		
 		for (CacheEntry cacheEntry : freeEntries) {
-			if (cacheEntry.size >= size) {
+			if (cacheEntry.size() >= size) {
 				logger.debug("Free entry found for size " + size);
 				return cacheEntry;
 			}
@@ -208,7 +220,7 @@ public class DirectCache implements IDirectCache {
 
 		logger.debug("storing object with key '" + key + "'");
 
-		CacheEntry freeEntry = (CacheEntry)freeEntryLargerThan(source.length);
+		CacheEntry freeEntry = freeEntryLargerThan(source.length);
 		
 		if (freeEntry == null) {
 			logger.warn("No entries for " + source.length + " bytes, trying LRU");
@@ -227,13 +239,13 @@ public class DirectCache implements IDirectCache {
 		
 		CacheEntry entry = new CacheEntry(key, source.length, freeEntry.getPosition(), duration);
 		entries.put(key, entry);
-		freeEntry.size -= source.length;
+		freeEntry.setSize(freeEntry.size()- source.length);
 		memoryInFreeEntries.addAndGet(-source.length);
-		freeEntry.position += source.length;
-		buffer.put(source, entry.position);
+		freeEntry.setPosition(freeEntry.getPosition()+source.length);
+		buffer.put(source, entry.getPosition());
 		
 		// not really an optimized garbage collection algorythm but...
-		if (freeEntry.size == 0) 
+		if (freeEntry.size() == 0) 
 			freeEntries.remove(freeEntry);
 
 		logger.info("Reusing entry " + key);
@@ -259,7 +271,7 @@ public class DirectCache implements IDirectCache {
 
 		// mah...
 		synchronized (buffer) {
-			byte[] dest = buffer.get(entry.position, entry.size);
+			byte[] dest = buffer.get(entry.getPosition(), entry.size());
 			try {
 				Serializable obj = deserialize(dest);
 				logger.info("retrieved object with key '" + key + "' (" + 
@@ -268,8 +280,8 @@ public class DirectCache implements IDirectCache {
 				return obj;
 			} catch (EOFException ex) {
 				logger.error("EOFException deserializing object with key '"
-						+ key + "' at position " + entry.position
-						+ " with size " + entry.size);
+						+ key + "' at position " + entry.getPosition()
+						+ " with size " + entry.size());
 				return null;
 			}
 		}
@@ -374,8 +386,8 @@ public class DirectCache implements IDirectCache {
 			
 			entries.remove(key);
 			freeEntries.add(entry);
-			memoryInFreeEntries.addAndGet(entry.size);
-			usedMemory.addAndGet(-entry.size);
+			memoryInFreeEntries.addAndGet(entry.size());
+			usedMemory.addAndGet(-entry.size());
 			
 			logger.info("object with key '" + key + "' freed");
 			return entry;

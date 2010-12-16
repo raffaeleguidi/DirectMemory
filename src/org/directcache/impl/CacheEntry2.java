@@ -1,4 +1,4 @@
-package org.directcache.buffer;
+package org.directcache.impl;
 
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.directcache.ICacheEntry;
 
-public class CacheEntryWithBuffer implements ICacheEntry {
+public class CacheEntry2 implements ICacheEntry {
 	
 	String key;
 	int size;
@@ -23,24 +23,47 @@ public class CacheEntryWithBuffer implements ICacheEntry {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	public CacheEntryWithBuffer(String key, int size, int position) {
+	public CacheEntry2(String key, int size, int position) {
 		this.key = key;
 		this.size = size;
 		this.position = position;
 	}
-	public CacheEntryWithBuffer(String key, int size, int position, int duration) {
+	public CacheEntry2(String key, int size, int position, int duration) {
 		this.key = key;
 		this.size = size;
 		this.position = position;
 		this.duration = duration;
 	}
 	
-	public CacheEntryWithBuffer (String key, byte[] source, int duration) throws OutOfMemoryError {
+	public CacheEntry2 (String key, byte[] source, int duration) throws OutOfMemoryError {
 		this.key = key;
 		this.size = source.length;
 		this.buffer = ByteBuffer.allocateDirect(this.size);
 		this.duration = duration;
 		this.buffer.put(source);
+	}
+	
+	
+	private CacheEntry2 (String key, ByteBuffer buffer, int duration) {
+		this.key = key;
+		this.buffer = buffer;
+		this.duration = duration;
+		this.size = buffer.capacity();
+	}
+	
+	public static CacheEntry2 allocate(String key, byte[] source, int duration) {
+		try {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(source.length);
+			buffer.put(source);
+			CacheEntry2 entry = new CacheEntry2(key, buffer, duration);
+			return entry;
+		} catch (OutOfMemoryError e) {
+			return null;
+		}
+	}
+	
+	public static CacheEntry2 allocate(String key, byte[] source) {
+		return allocate(key, source, -1);
 	}
 	
 	public byte[] getBuffer() {

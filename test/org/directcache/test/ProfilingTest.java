@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.directcache.DirectCache;
 import org.directcache.ICacheEntry;
 import org.directcache.IDirectCache;
+import org.directcache.impl.DirectCache;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

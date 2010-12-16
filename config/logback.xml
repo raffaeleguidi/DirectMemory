@@ -3,7 +3,7 @@
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class.%method - %msg%n</Pattern>
+      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %method - %msg%n</Pattern>
     </encoder>
   </appender>
   
@@ -14,13 +14,12 @@
     </encoder>
   </appender>
     
-  <logger name="org.directcache.DirectCacheWithSmallBuffers" level="warn">
+  <logger name="org.directcache.impl.DirectCacheWithSmallBuffers" level="warn">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="org.directcache.test" level="all">
-    <appender-ref ref="STDOUT" />
+  <logger name="org.directcache.test" level="warn">
     <appender-ref ref="FILE" />
   </logger>
   
