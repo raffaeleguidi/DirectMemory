@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.directcache.ICacheEntry;
 
-public class CacheEntry2 implements ICacheEntry {
+public class CacheEntryImpl implements ICacheEntry {
 	
 	String key;
 	int size;
@@ -23,19 +23,19 @@ public class CacheEntry2 implements ICacheEntry {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	public CacheEntry2(String key, int size, int position) {
+	public CacheEntryImpl(String key, int size, int position) {
 		this.key = key;
 		this.size = size;
 		this.position = position;
 	}
-	public CacheEntry2(String key, int size, int position, int duration) {
+	public CacheEntryImpl(String key, int size, int position, int duration) {
 		this.key = key;
 		this.size = size;
 		this.position = position;
 		this.duration = duration;
 	}
 	
-	public CacheEntry2 (String key, byte[] source, int duration) throws OutOfMemoryError {
+	public CacheEntryImpl (String key, byte[] source, int duration) throws OutOfMemoryError {
 		this.key = key;
 		this.size = source.length;
 		this.buffer = ByteBuffer.allocateDirect(this.size);
@@ -43,26 +43,29 @@ public class CacheEntry2 implements ICacheEntry {
 		this.buffer.put(source);
 	}
 	
+	public CacheEntryImpl() {
+		
+	}
 	
-	private CacheEntry2 (String key, ByteBuffer buffer, int duration) {
+	private CacheEntryImpl (String key, ByteBuffer buffer, int duration) {
 		this.key = key;
 		this.buffer = buffer;
 		this.duration = duration;
 		this.size = buffer.capacity();
 	}
 	
-	public static CacheEntry2 allocate(String key, byte[] source, int duration) {
+	public static CacheEntryImpl allocate(String key, byte[] source, int duration) {
 		try {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(source.length);
 			buffer.put(source);
-			CacheEntry2 entry = new CacheEntry2(key, buffer, duration);
+			CacheEntryImpl entry = new CacheEntryImpl(key, buffer, duration);
 			return entry;
 		} catch (OutOfMemoryError e) {
 			return null;
 		}
 	}
 	
-	public static CacheEntry2 allocate(String key, byte[] source) {
+	public static CacheEntryImpl allocate(String key, byte[] source) {
 		return allocate(key, source, -1);
 	}
 	

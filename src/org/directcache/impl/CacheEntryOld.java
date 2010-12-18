@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.directcache.ICacheEntry;
 
-public class CacheEntry implements ICacheEntry {
+public class CacheEntryOld implements ICacheEntry {
 	
 	String key;
 	int size;
@@ -53,12 +53,12 @@ public class CacheEntry implements ICacheEntry {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	public CacheEntry(String key, int size, int position) {
+	public CacheEntryOld(String key, int size, int position) {
 		this.key = key;
 		this.size = size;
 		this.position = position;
 	}
-	public CacheEntry(String key, int size, int position, int duration) {
+	public CacheEntryOld(String key, int size, int position, int duration) {
 		this.key = key;
 		this.size = size;
 		this.position = position;

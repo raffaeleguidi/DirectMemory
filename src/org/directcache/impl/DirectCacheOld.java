@@ -19,7 +19,7 @@ import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DirectCache implements IDirectCache {
+public class DirectCacheOld implements IDirectCache {
 
 	// suggested java memory settings:
 	//-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k
@@ -32,11 +32,11 @@ public class DirectCache implements IDirectCache {
 	// see http://www.kdgregory.com/index.php?page=java.byteBuffer
 	// and http://www.kdgregory.com/programming/java/ByteBuffer_JUG_Presentation.pdf
 	
-	private static Logger logger=LoggerFactory.getLogger(DirectCache.class);
+	private static Logger logger=LoggerFactory.getLogger(DirectCacheOld.class);
 	
 	private ThreadSafeDirectBuffer buffer;
 	private Map<String, ICacheEntry> entries;
-	private List<CacheEntry> freeEntries;
+	private List<CacheEntryOld> freeEntries;
 
 	private AtomicInteger capacity;
 	private AtomicInteger usedMemory;
@@ -46,20 +46,20 @@ public class DirectCache implements IDirectCache {
 	private void setup(int capacity) {
 		this.capacity = new AtomicInteger(capacity);
 		entries = new Hashtable<String, ICacheEntry>();
-		freeEntries = new Vector<CacheEntry>();
+		freeEntries = new Vector<CacheEntryOld>();
 		if (buffer != null) buffer.clear();
 		buffer = new ThreadSafeDirectBuffer(capacity);
 		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
-		freeEntries.add(new CacheEntry("directcachefirstitem",capacity,0));
+		freeEntries.add(new CacheEntryOld("directcachefirstitem",capacity,0));
 		memoryInFreeEntries = this.capacity;
 		usedMemory = new AtomicInteger(0);
 	}
 		
-	public DirectCache() {
+	public DirectCacheOld() {
 		// defaults to 50mb
 		setup(50*1024*1024);
 	}
-	public DirectCache(int capacity) {
+	public DirectCacheOld(int capacity) {
 		setup(capacity);
 	}
 	
@@ -139,12 +139,12 @@ public class DirectCache implements IDirectCache {
 //				collectExpired();
 //			}
 			
-			CacheEntry storedEntry = null;
+			CacheEntryOld storedEntry = null;
 			
 			if (source.length <= memoryInFreeEntries.get()) {
 				logger.info("storing object with key '" + key + "'");
 				try {
-					storedEntry = (CacheEntry)storeUsingFreeEntries(key, source, duration);
+					storedEntry = (CacheEntryOld)storeUsingFreeEntries(key, source, duration);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -160,7 +160,7 @@ public class DirectCache implements IDirectCache {
 		}
 	}
 
-	private CacheEntry freeEntryLargerThan(int size) {
+	private CacheEntryOld freeEntryLargerThan(int size) {
 
 //		logger.debug("Executing lambda query for objects larger than " + size);
 
@@ -174,7 +174,7 @@ public class DirectCache implements IDirectCache {
 //					freeEntries
 //				);
 		
-		for (CacheEntry cacheEntry : freeEntries) {
+		for (CacheEntryOld cacheEntry : freeEntries) {
 			if (cacheEntry.size() >= size) {
 				logger.debug("Free entry found for size " + size);
 				return cacheEntry;
@@ -220,16 +220,16 @@ public class DirectCache implements IDirectCache {
 
 		logger.debug("storing object with key '" + key + "'");
 
-		CacheEntry freeEntry = freeEntryLargerThan(source.length);
+		CacheEntryOld freeEntry = freeEntryLargerThan(source.length);
 		
 		if (freeEntry == null) {
 			logger.warn("No entries for " + source.length + " bytes, trying LRU");
-			freeEntry = (CacheEntry)expiredEntryLargerThan(source.length);
+			freeEntry = (CacheEntryOld)expiredEntryLargerThan(source.length);
 		}
 
 		if (freeEntry == null) {
 			logger.warn("No entries for " + source.length + " bytes, trying LRU");
-			freeEntry = (CacheEntry)collectLRU(source.length);
+			freeEntry = (CacheEntryOld)collectLRU(source.length);
 		}
 		
 		if (freeEntry == null) {
@@ -237,7 +237,7 @@ public class DirectCache implements IDirectCache {
 			return null;
 		}
 		
-		CacheEntry entry = new CacheEntry(key, source.length, freeEntry.getPosition(), duration);
+		CacheEntryOld entry = new CacheEntryOld(key, source.length, freeEntry.getPosition(), duration);
 		entries.put(key, entry);
 		freeEntry.setSize(freeEntry.size()- source.length);
 		memoryInFreeEntries.addAndGet(-source.length);
@@ -262,7 +262,7 @@ public class DirectCache implements IDirectCache {
 
 		logger.info("looking for object with key '" + key + "'");
 		
-		CacheEntry entry = (CacheEntry)entries.get(key);
+		CacheEntryOld entry = (CacheEntryOld)entries.get(key);
 
 		if (entry == null) {
 			logger.info("could not find object with key '" + key + "'");
@@ -378,7 +378,7 @@ public class DirectCache implements IDirectCache {
 		logger.info("looking for object with key '" + key + "'");
 		
 		synchronized (buffer) {
-			CacheEntry entry = (CacheEntry)entries.get(key);
+			CacheEntryOld entry = (CacheEntryOld)entries.get(key);
 			if (entry == null) {
 				logger.info("could not find object with key '" + key + "'");
 				return null;

@@ -14,12 +14,13 @@
     </encoder>
   </appender>
     
-  <logger name="org.directcache.impl.DirectCacheWithSmallBuffers" level="warn">
+  <logger name="org.directcache.impl" level="warn">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="org.directcache.test" level="warn">
+  <logger name="org.directcache.test" level="debug">
+    <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
   

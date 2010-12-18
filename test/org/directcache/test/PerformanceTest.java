@@ -14,7 +14,7 @@ import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.directcache.ICacheEntry;
 import org.directcache.IDirectCache;
-import org.directcache.impl.DirectCache;
+import org.directcache.impl.DirectCacheOld;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -42,7 +42,7 @@ public class PerformanceTest {
 			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
 			logger.debug("cacheSize=" + cacheSize);
 		}
-		cache = new DirectCache(cacheSize);
+		cache = new DirectCacheOld(cacheSize);
 		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}

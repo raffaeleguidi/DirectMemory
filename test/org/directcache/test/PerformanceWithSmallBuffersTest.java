@@ -3,6 +3,7 @@ package org.directcache.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -12,7 +13,7 @@ import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.directcache.ICacheEntry;
-import org.directcache.impl.DirectCache2;
+import org.directcache.impl.DirectCacheImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -28,7 +29,7 @@ public class PerformanceWithSmallBuffersTest {
 	@Rule
     public ContiPerfRule i = new ContiPerfRule(new EmptyExecutionLogger());
     
-	static DirectCache2 cache = null;
+	static DirectCacheImpl cache = null;
 	static int objectsSize = 2048*2;
 	static Random generator = new Random();
 	static int cacheSize = 490*1024*1024;
@@ -40,7 +41,7 @@ public class PerformanceWithSmallBuffersTest {
 			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
 			logger.debug("cacheSize=" + cacheSize);
 		}
-		cache = new DirectCache2(cacheSize);
+		cache = new DirectCacheImpl(cacheSize);
 //		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}
@@ -73,7 +74,7 @@ public class PerformanceWithSmallBuffersTest {
     @Test
     //@Required(max = 50)
     @Required(max = 300) // well under 50ms in sun jvm
-    public void firstAndLargestItem() { 	
+    public void firstAndLargestItem() throws IOException { 	
     	DummyObject firstObject = new DummyObject("key0", objectsSize*5);
     	cache.storeObject(firstObject.getName(), firstObject);
     	assertEquals(cache.entries().size(), 1);
@@ -92,7 +93,7 @@ public class PerformanceWithSmallBuffersTest {
 	@Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 1500, average = 1)
-	public void onlyWrites() {
+	public void onlyWrites() throws IOException {
     	DummyObject object2add = nextObject();
     	ICacheEntry entry = cache.storeObject(object2add.getName(), object2add);
     	assertNotNull(entry);
@@ -108,7 +109,7 @@ public class PerformanceWithSmallBuffersTest {
 	@Test
     @PerfTest(duration = 10000, threads = 20)
     @Required(max = 1500, average = 6)
-	public void onlyWrites20Threads() {
+	public void onlyWrites20Threads() throws IOException {
     	onlyWrites();		
 	}
 
@@ -158,7 +159,7 @@ public class PerformanceWithSmallBuffersTest {
     @Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 1500, average = 6)
-    public void twentyReadsOneWriteOneDelete() { 	
+    public void twentyReadsOneWriteOneDelete() throws IOException { 	
     	doSomeReads(20);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
@@ -168,14 +169,14 @@ public class PerformanceWithSmallBuffersTest {
 	@Test
     @PerfTest(duration = 10000, threads = 10)
     @Required(max = 1500, average = 12)
-    public void twentyReadsOneWriteOneDelete10Threads() { 	
+    public void twentyReadsOneWriteOneDelete10Threads() throws IOException { 	
 		twentyReadsOneWriteOneDelete();
 	}
 	
 	@Test
     @PerfTest(duration = 10000, threads = 20)
     @Required(max = 1500, average = 24)
-    public void twentyReadsOneWriteOneDelete20Threads() { 	
+    public void twentyReadsOneWriteOneDelete20Threads() throws IOException { 	
 		twentyReadsOneWriteOneDelete();
 	}
 
@@ -187,7 +188,7 @@ public class PerformanceWithSmallBuffersTest {
     @Test
     @PerfTest(duration = 10000, threads = 5)
     @Required(max = 1500, average = 4)
-    public void twoReadsOneWriteOneDelete() { 	
+    public void twoReadsOneWriteOneDelete() throws IOException { 	
     	doSomeReads(2);
     	DummyObject object2add = randomObject();
     	cache.storeObject(object2add.getName(), object2add);
@@ -197,14 +198,14 @@ public class PerformanceWithSmallBuffersTest {
     @Test
     @PerfTest(duration = 10000, threads = 10)
     @Required(max = 1500, average = 8)
-    public void twoReadsOneWriteOneDelete10Threads() { 	
+    public void twoReadsOneWriteOneDelete10Threads() throws IOException { 	
     	twoReadsOneWriteOneDelete();
     }
 
     @Test
     @PerfTest(duration = 10000, threads = 20)
     @Required(max = 1500, average = 5)
-    public void twoReadsOneWriteOneDelete20Threads() { 	
+    public void twoReadsOneWriteOneDelete20Threads() throws IOException { 	
     	twoReadsOneWriteOneDelete();
     }
 
