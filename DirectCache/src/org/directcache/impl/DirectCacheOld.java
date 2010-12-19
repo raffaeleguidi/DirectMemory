@@ -20,6 +20,7 @@ import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class DirectCacheOld implements IDirectCache {
 
 	// suggested java memory settings:

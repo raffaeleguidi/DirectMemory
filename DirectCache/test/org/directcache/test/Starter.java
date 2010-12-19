@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 import org.directcache.ICacheSupervisor;
 import org.directcache.IDirectCache;
-import org.directcache.impl.NoopCacheSupervisor;
 import org.directcache.impl.DirectCacheImpl;
 import org.directcache.impl.SimpleCacheSupervisor;
 import org.slf4j.Logger;

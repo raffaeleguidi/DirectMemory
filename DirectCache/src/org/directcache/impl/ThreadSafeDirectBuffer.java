@@ -2,6 +2,7 @@ package org.directcache.impl;
 
 import java.nio.ByteBuffer;
 
+@Deprecated
 public class ThreadSafeDirectBuffer  {
 	
 	private ByteBuffer buffer;

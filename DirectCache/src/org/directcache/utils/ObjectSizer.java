@@ -4,6 +4,8 @@ package org.directcache.utils;
 * Measures the approximate size of an object in memory, given a Class which
 * has a no-argument constructor.
 */
+
+@Deprecated
 public final class ObjectSizer {
 
   /**

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.directcache.ICacheEntry;
 
+@Deprecated
 public class CacheEntryOld implements ICacheEntry {
 	
 	String key;

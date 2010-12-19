@@ -290,7 +290,7 @@ public class DirectCacheImpl implements IDirectCache {
 	}
 
 	private void signalWeRetrevied(ICacheEntry entry) {
-		supervisor.signalWeRetrevied(entry);
+		supervisor.signalWeRetrieved(entry);
 	}
 
 	public void signalLRUCollectionNeeded(IDirectCache cache, long bytesToFree) {	

@@ -55,7 +55,7 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeInserted(org.directcache.impl.CacheEntryImpl)
 	 */
 	@Override
-	public void signalWeInserted(CacheEntryImpl newEntry) {
+	public void signalWeInserted(ICacheEntry newEntry) {
 //		entriesInInsertOrder.put(newEntry.getKey(), newEntry);
 	}
 
@@ -64,7 +64,7 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeRetrevied(org.directcache.ICacheEntry)
 	 */
 	@Override
-	public void signalWeRetrevied(ICacheEntry entry) {
+	public void signalWeRetrieved(ICacheEntry entry) {
 		entry.touch();
 	}
 	/* (non-Javadoc)

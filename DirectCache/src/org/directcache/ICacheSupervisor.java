@@ -1,6 +1,5 @@
 package org.directcache;
 
-import org.directcache.impl.CacheEntryImpl;
 import org.directcache.impl.DirectCacheImpl;
 
 public interface ICacheSupervisor {
@@ -10,9 +9,9 @@ public interface ICacheSupervisor {
 
 	public abstract void signalWeDeleted(String key);
 
-	public abstract void signalWeInserted(CacheEntryImpl newEntry);
+	public abstract void signalWeInserted(ICacheEntry newEntry);
 
-	public abstract void signalWeRetrevied(ICacheEntry entry);
+	public abstract void signalWeRetrieved(ICacheEntry entry);
 
 	public abstract void signalReset();
 

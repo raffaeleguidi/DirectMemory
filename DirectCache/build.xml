@@ -6,7 +6,8 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="DirectCache">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../MyStuff/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../MyStuff/eclipse"/>
+    <property name="DirectCacheDemo.location" value="../DirectCacheDemo"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
@@ -22,6 +23,7 @@
         <pathelement location="lib/logback-classic-0.9.26.jar"/>
         <pathelement location="lib/logback-core-0.9.26.jar"/>
         <pathelement location="lib/contiperf-1.08.jar"/>
+        <pathelement location="lib/javolution-5.5.1.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -67,7 +69,14 @@
             <classpath refid="DirectCache.classpath"/>
         </javac>
     </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${DirectCacheDemo.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${DirectCacheDemo.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
         <copy todir="${ant.library.dir}">
             <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
@@ -81,23 +90,11 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="DirectCache">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.PerformanceWithSmallBuffersTest" todir="${junit.output.dir}"/>
-            <test name="org.directcache.test.ProfilingTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=100 -XX:MaxDirectMemorySize=1g"/>
-            <classpath refid="DirectCache.classpath"/>
-        </junit>
-    </target>
     <target name="PerformanceTest">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xss512k -Dmb2use=400 -XX:MaxDirectMemorySize=1g"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
     </target>
@@ -106,9 +103,14 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="org.directcache.test.PerformanceWithSmallBuffersTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dmb2use=400 -XX:MaxDirectMemorySize=512m -Xmx512m"/>
+            <jvmarg line="-XX:MaxDirectMemorySize=512m -Dmb2use=400"/>
             <classpath refid="DirectCache.classpath"/>
         </junit>
+    </target>
+    <target name="Starter">
+        <java classname="org.directcache.test.Starter" failonerror="true" fork="yes">
+            <classpath refid="DirectCache.classpath"/>
+        </java>
     </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">

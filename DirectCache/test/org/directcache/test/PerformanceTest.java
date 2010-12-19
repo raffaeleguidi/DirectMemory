@@ -33,7 +33,7 @@ public class PerformanceTest {
 	static IDirectCache cache = null;
 	static int objectsSize = 2048;
 	static Random generator = new Random();
-	static int cacheSize = 490*1024*1024;
+	static int cacheSize = 200*1024*1024;
 	
 	public static void allocateMemory() {
 		String mb2useFromCommandLine = System.getProperty("mb2use");
