@@ -81,6 +81,7 @@ public class DemoServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			@SuppressWarnings("unused")
 			DummyObject obj = fakeBusinessMethodWithCache(request.getParameter("key"));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
