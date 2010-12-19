@@ -51,24 +51,6 @@ public class CacheStoreImpl implements ICacheStore {
 			supervisor.signalReset();
 		}
 	}
-		
-//	private Serializable deserialize(byte[] b) throws IOException, ClassNotFoundException {
-//		ByteArrayInputStream bis = new ByteArrayInputStream(b);
-//		ObjectInputStream ois = new ObjectInputStream(bis);
-//		Serializable obj = (Serializable) ois.readObject();
-//		ois.close();
-//		return obj;
-//	}
-//	
-//	private byte[] serializeObject(Serializable obj) throws IOException {
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		ObjectOutputStream oos = new ObjectOutputStream(baos);
-//		oos.writeObject(obj);
-//		oos.close();
-//		byte[] b = baos.toByteArray();
-//		logger.debug("object serialized");
-//		return b;		
-//	}
 
 	@Override
 	public void dispose() {
@@ -159,19 +141,6 @@ public class CacheStoreImpl implements ICacheStore {
 			signalLRUCollectionNeeded(this, size- bytesFreed);
 		}
 	}
-	
-//	private ICacheEntry expiredEntryLargerThan(int size) {
-//	
-//		for (ICacheEntry cacheEntry : entries.values()) {
-//			if (cacheEntry.size() >= size && cacheEntry.expired()) {
-//				logger.debug("expired entry found for size " + size);
-//				return cacheEntry;
-//			}
-//		}
-//		
-//		logger.debug("No expired entry found for size " + size);
-//		return null;
-//	}
 
 	public Serializable get(String key)  {
 
@@ -302,12 +271,8 @@ public class CacheStoreImpl implements ICacheStore {
 	}
 
 	public void signalLRUCollectionNeeded(ICacheStore cache, long bytesToFree) {	
-
-		// not really LRU - that will have to wait
-		logger.debug("Signalinc LRU collection needed for " + bytesToFree + " bytes");
-		
+		logger.debug("Signalint LRU collection needed for " + bytesToFree + " bytes");
 		long freedBytes = supervisor.signalLRUCollectionNeeded(this, bytesToFree);
-
 		logger.debug("" + freedBytes + " bytes collected out " + bytesToFree + " needed");
 	}
 

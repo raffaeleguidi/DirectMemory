@@ -145,6 +145,15 @@ public class CacheEntryImpl implements ICacheEntry {
 	}
 	@Override
 	public Serializable getPayload() {
+		if (offHeap()) {
+			try {
+				return SerializationUtils.deserialize(getBuffer());
+			} catch (IOException e) {
+				logger.error("error retrieving payload: " + e.getMessage());
+			} catch (ClassNotFoundException e) {
+				logger.error("error retrieving payload: " + e.getMessage());
+			}
+		} 
 		return payLoad;
 	}
 	@Override
@@ -154,5 +163,12 @@ public class CacheEntryImpl implements ICacheEntry {
 		buffer.put(source);
 		size = source.length;
 		payLoad = null;
+	}
+	@Override
+	public void moveInHeap() throws IOException, ClassNotFoundException {
+		payLoad = SerializationUtils.deserialize(getBuffer());
+		buffer.clear();
+		buffer = null;
+		size = -1;
 	}	
 }

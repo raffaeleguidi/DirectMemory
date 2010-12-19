@@ -38,4 +38,5 @@ public interface ICacheEntry {
 	
 	public abstract void moveOffHeap() throws IOException;
 
+	public abstract void moveInHeap() throws IOException, ClassNotFoundException;
 }
