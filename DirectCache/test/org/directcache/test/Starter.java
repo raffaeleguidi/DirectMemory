@@ -1,7 +1,13 @@
 package org.directcache.test;
 
+import java.io.IOException;
+import java.util.Calendar;
+
+import org.directcache.ICacheSupervisor;
 import org.directcache.IDirectCache;
+import org.directcache.impl.NoopCacheSupervisor;
 import org.directcache.impl.DirectCacheImpl;
+import org.directcache.impl.SimpleCacheSupervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,28 +15,64 @@ public class Starter {
 
 	private static Logger logger=LoggerFactory.getLogger(Starter.class);
 
-	private static int cacheSize = 100*1024*1024;
-	public static void main(String[] args) throws Exception {
-		IDirectCache cache = new DirectCacheImpl(cacheSize);
-	    //cache.setDefaultDuration(1000);
-	    
+
+	private static void belowLimit(int cacheSize, ICacheSupervisor supervisor) throws IOException, ClassNotFoundException {
+
+		Long startedAt = Calendar.getInstance().getTimeInMillis();
 		
+		IDirectCache cache = new DirectCacheImpl(cacheSize);
+		cache.setSupervisor(supervisor);
+
 		logger.debug("started");
 	    for (int i = 0; i < cacheSize / 1024 / 1.25; i++) {
 	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+//	    	DummyObject retrObj = (DummyObject)cache.retrieveObject("test"+i);
+//		    logger.debug(retrObj.getName());
 	    }
 	    
-	    logger.debug("finished " + cache.toString());
+	    Long finishedAt = Calendar.getInstance().getTimeInMillis();
+		
+	    logger.debug("finished in " + (finishedAt - startedAt) + " msecs");
+	    logger.debug("" + cache.toString());
+
+	    cache.dispose();
+
+	    logger.debug("" + cache.toString());
+	}
+	
+	private static void aboveLimit(int cacheSize, ICacheSupervisor supervisor) throws IOException, ClassNotFoundException {
+
+		Long startedAt = Calendar.getInstance().getTimeInMillis();
+		
+		IDirectCache cache = new DirectCacheImpl(cacheSize);
+		cache.setSupervisor(supervisor);
+
+		logger.debug("started");
+	    for (int i = 0; i < cacheSize / 1024; i++) {
+	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+//	    	DummyObject retrObj = (DummyObject)cache.retrieveObject("test"+i);
+//		    logger.debug(retrObj.getName());
+	    }
 	    
+	    Long finishedAt = Calendar.getInstance().getTimeInMillis();
+		
+	    logger.debug("finished in " + (finishedAt - startedAt) + " msecs");
+	    logger.debug("" + cache.toString());
+
+	    cache.dispose();
+
+	    logger.debug("" + cache.toString());
+	}
+	
+	
+	public static void main(String[] args) throws Exception {
+		int cacheSize = 100*1024*1024;
+
+//		belowLimit(cacheSize, new NoopCacheSupervisor());
+//		aboveLimit(cacheSize, new NoopCacheSupervisor());
+		belowLimit(cacheSize, new SimpleCacheSupervisor());
+		aboveLimit(cacheSize, new SimpleCacheSupervisor());
 	    
-		
-//		System.out.println("CacheEntry2 " + ObjectSizer.getObjectSize(CacheEntry2.class));
-//		System.out.println("String " + ObjectSizer.getObjectSize(String.class));
-//		System.out.println("ConcurrentHashMap " + ObjectSizer.getObjectSize(ConcurrentHashMap.class));
-		
-//		int objectSize = 1024*4;
-		
-		return;
 //		
 //		Thread last = null;
 //		
@@ -50,5 +92,7 @@ public class Starter {
 //    	logger.debug("entries " + cache.entries().size() + " mb " + objectSize*2048/1024/1024);
 //    	logger.debug(cache.toString());
 	}
+
+
 
 }

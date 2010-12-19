@@ -24,4 +24,9 @@
     <appender-ref ref="FILE" />
   </logger>
   
+  <logger name="org.directcache.impl.SimpleCacheSupervisor" level="warn">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
+
 </configuration>

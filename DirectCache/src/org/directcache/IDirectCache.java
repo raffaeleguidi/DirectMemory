@@ -30,4 +30,9 @@ public interface IDirectCache {
 
 	public abstract long capacity();
 
+	public abstract void dispose();
+	
+	public abstract ICacheSupervisor getSupervisor(); 
+
+	public abstract void setSupervisor(ICacheSupervisor supervisor); 
 }

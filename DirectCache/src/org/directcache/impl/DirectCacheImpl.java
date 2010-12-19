@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.directcache.ICacheEntry;
+import org.directcache.ICacheSupervisor;
 import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +33,11 @@ public class DirectCacheImpl implements IDirectCache {
 	private static Logger logger=LoggerFactory.getLogger(DirectCacheImpl.class);
 	
 	private Map<String, ICacheEntry> entries;
-
 	private long capacity;
 	private AtomicLong usedMemory = new AtomicLong(0);
 	private int defaultDuration=-1;
+	
+	private ICacheSupervisor supervisor;
 	
 	private void setup(long capacity) {
 		this.capacity = capacity;
@@ -46,6 +46,18 @@ public class DirectCacheImpl implements IDirectCache {
 		entries = new ConcurrentHashMap <String, ICacheEntry>();
 		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
 		usedMemory = new AtomicLong(0);
+		if (supervisor == null) {
+			supervisor = new SimpleCacheSupervisor();
+		} else {
+			supervisor.signalReset();
+		}
+	}
+		
+	@Override
+	public void dispose() {
+		entries.clear();
+		usedMemory.set(0);
+		// something more to free buffers?
 	}
 		
 	public DirectCacheImpl() {
@@ -114,8 +126,9 @@ public class DirectCacheImpl implements IDirectCache {
 		}
 
 		entries.put(key, newEntry);
+		signalWeInserted(newEntry);
 		usedMemory.addAndGet(source.length);
-		
+
 		source = null;
 
 		logger.debug("stored entry with key '" + key + "'");
@@ -123,46 +136,31 @@ public class DirectCacheImpl implements IDirectCache {
 		return newEntry;
 	}
 
-	private void makeRoomForObject(int size) {
-		ICacheEntry entryToRemove = expiredEntryLargerThan(size);
-		if (entryToRemove != null) {
-			removeObject(entryToRemove.getKey());
+	private void makeRoomForObject(long size) {
+
+		long bytesFreed = signalCollectExpiredNeeded(size);
+
+		if ( bytesFreed >= size || bytesFreed == -1 ) {
+			return;
 		} else {
 			logger.debug("collecting LRU item");
-			collectLRU(size);
+			signalLRUCollectionNeeded(this, size- bytesFreed);
 		}
 	}
 	
-	private ICacheEntry expiredEntryLargerThan(int size) {
-	
-		for (ICacheEntry cacheEntry : entries.values()) {
-			if (cacheEntry.size() >= size && cacheEntry.expired()) {
-				logger.debug("expired entry found for size " + size);
-				return cacheEntry;
-			}
-		}
-		
-		logger.debug("No expired entry found for size " + size);
-		return null;
-	}
+//	private ICacheEntry expiredEntryLargerThan(int size) {
+//	
+//		for (ICacheEntry cacheEntry : entries.values()) {
+//			if (cacheEntry.size() >= size && cacheEntry.expired()) {
+//				logger.debug("expired entry found for size " + size);
+//				return cacheEntry;
+//			}
+//		}
+//		
+//		logger.debug("No expired entry found for size " + size);
+//		return null;
+//	}
 
-	public void collectLRU(int bytesToFree) {	
-
-		// not really LRU - that will have to wait
-		logger.debug("Attempting LRU collection for " + bytesToFree + " bytes");
-
-		long freedBytes = 0;
-		for (ICacheEntry entry : entries.values()) {
-			freedBytes += entry.getSize();
-			removeObject(entry.getKey());
-			logger.debug("Collected LRU entry " + entry.getKey());
-			if (freedBytes >= bytesToFree)
-				return;
-		}
-		
-		logger.debug("No LRU entries to collect for " + bytesToFree + " bytes");
-	}
-	
 	public Serializable retrieveObject(String key)  {
 
 		logger.info("looking for object with key '" + key + "'");
@@ -185,7 +183,9 @@ public class DirectCacheImpl implements IDirectCache {
 			Serializable obj = deserialize(dest);
 			logger.info("retrieved object with key '" + key + "' (" + 
 					dest.length + " bytes)");
-			entry.touch();
+			
+			signalWeRetrevied(entry);
+
 			return obj;
 		} catch (EOFException ex) {
 			logger.error("EOFException deserializing object with key '"
@@ -209,30 +209,15 @@ public class DirectCacheImpl implements IDirectCache {
 		return obj;
 	}
 	
-	public void collectExpired() {	
+	public long  signalCollectExpiredNeeded(long bytesToFree) {	
 		
 		logger.debug("Looking for expired entries");
 
-//		List<CacheEntry> expiredList = filter(
-//										having(on(CacheEntry.class).expired())
-//										, entries.values()
-//									);
+		long expiredSize = supervisor.signalCollectExpiredNeeded(this, bytesToFree);
 
-		List<ICacheEntry> expiredList = new Vector<ICacheEntry>();
+		logger.debug("Collected " + expiredSize +  " bytes of expired entries");		
 		
-//		synchronized (entries) {
-			for (ICacheEntry cacheEntry : entries.values()) {
-				if (cacheEntry.expired())
-					expiredList.add(cacheEntry);
-			}
-//		}
-		logger.debug("Collecting " + expiredList.size() +  " expired entries");
-		
-		for (ICacheEntry expired : expiredList) {
-			removeObject(expired.getKey());
-		}
-
-		logger.debug("Collected " + expiredList.size() +  " expired entries");		
+		return expiredSize;
 	}	
 	
 	public ICacheEntry removeObject(String key) {
@@ -242,7 +227,8 @@ public class DirectCacheImpl implements IDirectCache {
 		ICacheEntry entry = null;
 		
 		entry = entries.remove(key);
-
+		signalWeDeleted(key);
+		
 		if (entry != null) {
 			usedMemory.addAndGet(-entry.size());
 			entry.dispose();
@@ -264,7 +250,9 @@ public class DirectCacheImpl implements IDirectCache {
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append("DirectCacheImpl {" );
-		sb.append("entries: ");
+		sb.append("supervisor: ");
+		sb.append(supervisor.getClass());
+		sb.append(", entries: ");
 		sb.append(entries().size());
 		sb.append(", ");
 		sb.append("capacity (mb): ");
@@ -284,5 +272,35 @@ public class DirectCacheImpl implements IDirectCache {
 	public long capacity() {
 		return capacity;
 	}
+
+	public void setSupervisor(ICacheSupervisor supervisor) {
+		this.supervisor = supervisor;
+	}
+
+	public ICacheSupervisor getSupervisor() {
+		return supervisor;
+	}
 	
+	private void signalWeDeleted(String key) {
+		supervisor.signalWeDeleted(key);
+	}
+
+	private void signalWeInserted(CacheEntryImpl newEntry) {
+		supervisor.signalWeInserted(newEntry);
+	}
+
+	private void signalWeRetrevied(ICacheEntry entry) {
+		supervisor.signalWeRetrevied(entry);
+	}
+
+	public void signalLRUCollectionNeeded(IDirectCache cache, long bytesToFree) {	
+
+		// not really LRU - that will have to wait
+		logger.debug("Signalinc LRU collection needed for " + bytesToFree + " bytes");
+		
+		long freedBytes = supervisor.signalLRUCollectionNeeded(this, bytesToFree);
+
+		logger.debug("" + freedBytes + " bytes collected out " + bytesToFree + " needed");
+	}
+
 }

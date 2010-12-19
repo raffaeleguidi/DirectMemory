@@ -15,6 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directcache.ICacheEntry;
+import org.directcache.ICacheSupervisor;
 import org.directcache.IDirectCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -438,6 +439,24 @@ public class DirectCacheOld implements IDirectCache {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ICacheSupervisor getSupervisor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSupervisor(ICacheSupervisor supervisor) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
