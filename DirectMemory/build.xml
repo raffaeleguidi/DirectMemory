@@ -4,10 +4,10 @@
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="DirectCache">
+<project basedir="." default="build" name="DirectMemory">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../../MyStuff/eclipse"/>
-    <property name="DirectCacheDemo.location" value="../DirectCacheDemo"/>
+    <property name="DirectMemoryDemo.location" value="../DirectMemoryDemo"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
@@ -16,7 +16,7 @@
         <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
     </path>
-    <path id="DirectCache.classpath">
+    <path id="DirectMemory.classpath">
         <pathelement location="bin"/>
         <path refid="JUnit 4.libraryclasspath"/>
         <pathelement location="lib/slf4j-api-1.6.1.jar"/>
@@ -57,21 +57,21 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
-            <classpath refid="DirectCache.classpath"/>
+            <classpath refid="DirectMemory.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="config"/>
             <include name="*.*"/>
-            <classpath refid="DirectCache.classpath"/>
+            <classpath refid="DirectMemory.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="test"/>
-            <classpath refid="DirectCache.classpath"/>
+            <classpath refid="DirectMemory.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="build.xml" dir="${DirectCacheDemo.location}" inheritAll="false" target="clean"/>
-        <ant antfile="build.xml" dir="${DirectCacheDemo.location}" inheritAll="false" target="build">
+        <ant antfile="build.xml" dir="${DirectMemoryDemo.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${DirectMemoryDemo.location}" inheritAll="false" target="build">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>
@@ -90,27 +90,14 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="PerformanceTest">
+    <target name="UnitAndPerformanceTests">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="org.directcache.test.PerformanceTest" todir="${junit.output.dir}"/>
-            <classpath refid="DirectCache.classpath"/>
+            <test name="org.directmemory.test.UnitAndPerformanceTests" todir="${junit.output.dir}"/>
+            <jvmarg line="-XX:MaxDirectMemorySize=512m -Dmb2use=200"/>
+            <classpath refid="DirectMemory.classpath"/>
         </junit>
-    </target>
-    <target name="PerformanceWithSmallBuffersTest">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="org.directcache.test.PerformanceWithSmallBuffersTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-XX:MaxDirectMemorySize=512m -Dmb2use=400"/>
-            <classpath refid="DirectCache.classpath"/>
-        </junit>
-    </target>
-    <target name="Starter">
-        <java classname="org.directcache.test.Starter" failonerror="true" fork="yes">
-            <classpath refid="DirectCache.classpath"/>
-        </java>
     </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">

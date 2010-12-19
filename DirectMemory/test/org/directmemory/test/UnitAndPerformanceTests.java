@@ -161,14 +161,14 @@ public class UnitAndPerformanceTests {
 
 	@Test
     @PerfTest(duration = 10000, threads = 10)
-    @Required(max = 1500, average = 3)
+    @Required(max = 3000, average = 3)
 	public void onlyWrites10Threads() throws Exception {
     	onlyWrites();		
 	}
 
 	@Test
     @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1500, average = 6)
+    @Required(max = 6000, average = 6)
 	public void onlyWrites20Threads() throws IOException {
     	onlyWrites();		
 	}
@@ -211,7 +211,7 @@ public class UnitAndPerformanceTests {
     
     @Test
     @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 750, average = 0.5)
+    @Required(max = 1100, average = 0.5)
     public void onlyReads20Threads() { 	
     	onlyReads();
     }
@@ -228,7 +228,7 @@ public class UnitAndPerformanceTests {
 
 	@Test
     @PerfTest(duration = 10000, threads = 10)
-    @Required(max = 1500, average = 12)
+    @Required(max = 1600, average = 12)
     public void twentyReadsOneWriteOneDelete10Threads() throws IOException { 	
 		twentyReadsOneWriteOneDelete();
 	}

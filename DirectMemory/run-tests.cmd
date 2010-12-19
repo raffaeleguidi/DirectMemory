@@ -1,5 +1,5 @@
 @echo off
 call ant build
-call ant PerformanceWithSmallBuffersTest
+call ant UnitAndPerformanceTests
 call ant junitreport
 call junit\index.html

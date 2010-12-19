@@ -5,9 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.directmemory.ICacheEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CacheEntryImpl implements ICacheEntry {
 	
+	private static Logger logger=LoggerFactory.getLogger(CacheEntryImpl.class);
+
 	String key;
 	int size;
 	int position;
@@ -79,8 +83,7 @@ public class CacheEntryImpl implements ICacheEntry {
 				buffer.get(dest);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("error retrieving buffer: " + e.getMessage());
 		}
 
 		return dest;
