@@ -21,7 +21,7 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 		long freedBytes = 0;
 		
 		for (ICacheEntry entry : cache.entries().values()) {
-			cache.removeObject(entry.getKey());
+			cache.delete(entry.getKey());
 			freedBytes += entry.getSize();
 			logger.debug("Collected LRU entry " + entry.getKey());
 			if (freedBytes >= bytesToFree)
@@ -95,7 +95,7 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 		long bytesFreed = 0;
 		
 		for (ICacheEntry expired : expiredList) {
-			store.removeObject(expired.getKey());
+			store.delete(expired.getKey());
 			bytesFreed += expired.getSize();
 		}
 

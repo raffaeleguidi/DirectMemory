@@ -109,19 +109,19 @@ public class DirectCacheOld implements ICacheStore {
 	 * @see org.directcache.IDirectCache#storeObject(java.lang.String, java.io.Serializable)
 	 */
 	@Override
-	public ICacheEntry storeObject(String key, Serializable obj) {
-		return storeObject(key, obj, defaultDuration);
+	public ICacheEntry put(String key, Serializable obj) {
+		return put(key, obj, defaultDuration);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.directcache.IDirectCache#storeObject(java.lang.String, java.io.Serializable, int)
 	 */
 	@Override
-	public ICacheEntry storeObject(String key, Serializable obj, int duration) {
+	public ICacheEntry put(String key, Serializable obj, int duration) {
 
 		logger.info("attempting to remove object with key '" + key + "' - just in case");
 
-		removeObject(key);
+		delete(key);
 		
 		logger.info("serializing object with key '" + key + "'");
 
@@ -260,7 +260,7 @@ public class DirectCacheOld implements ICacheStore {
 	 * @see org.directcache.IDirectCache#retrieveObject(java.lang.String)
 	 */
 	@Override
-	public Serializable retrieveObject(String key) throws IOException, ClassNotFoundException {
+	public Serializable get(String key) throws IOException, ClassNotFoundException {
 
 		logger.info("looking for object with key '" + key + "'");
 		
@@ -317,7 +317,7 @@ public class DirectCacheOld implements ICacheStore {
 		logger.debug("Collecting " + expiredList.size() +  " expired entries");
 		
 		for (ICacheEntry expired : expiredList) {
-			removeObject(expired.getKey());
+			delete(expired.getKey());
 		}
 
 		logger.debug("Collected " + expiredList.size() +  " expired entries");		
@@ -361,7 +361,7 @@ public class DirectCacheOld implements ICacheStore {
 		// temporary for performance reasons
 		for (ICacheEntry entry  : entries.values()) {
 			if (entry.size() >= bytesToFree) {
-				removeObject(entry.getKey());
+				delete(entry.getKey());
 				logger.debug("Collected LRU entry " + entry.getKey());
 				return entry;
 			}			
@@ -375,7 +375,7 @@ public class DirectCacheOld implements ICacheStore {
 	 * @see org.directcache.IDirectCache#removeObject(java.lang.String)
 	 */
 	@Override
-	public ICacheEntry removeObject(String key) {
+	public ICacheEntry delete(String key) {
 
 		logger.info("looking for object with key '" + key + "'");
 		

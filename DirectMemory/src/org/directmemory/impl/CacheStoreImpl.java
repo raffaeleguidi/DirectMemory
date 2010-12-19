@@ -92,11 +92,11 @@ public class CacheStoreImpl implements ICacheStore {
 		return b;		
 	}
 
-	public ICacheEntry storeObject(String key, Serializable obj) throws IOException {
-		return storeObject(key, obj, defaultDuration);
+	public ICacheEntry put(String key, Serializable obj) throws IOException {
+		return put(key, obj, defaultDuration);
 	}
 	
-	public ICacheEntry storeObject(String key, Serializable obj, int duration) throws IOException {
+	public ICacheEntry put(String key, Serializable obj, int duration) throws IOException {
 
 		logger.info("serializing object with key '" + key + "'");
 
@@ -161,7 +161,7 @@ public class CacheStoreImpl implements ICacheStore {
 //		return null;
 //	}
 
-	public Serializable retrieveObject(String key)  {
+	public Serializable get(String key)  {
 
 		logger.info("looking for object with key '" + key + "'");
 		
@@ -220,7 +220,7 @@ public class CacheStoreImpl implements ICacheStore {
 		return expiredSize;
 	}	
 	
-	public ICacheEntry removeObject(String key) {
+	public ICacheEntry delete(String key) {
 
 		logger.info("trying to remove entry with key '" + key + "'");	
 

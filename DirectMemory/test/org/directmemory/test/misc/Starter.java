@@ -24,7 +24,7 @@ public class Starter {
 
 		logger.debug("started");
 	    for (int i = 0; i < cacheSize / 1024 / 1.25; i++) {
-	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+	    	cache.put("test" + i, new DummyObject("test"+i, 1024));
 //	    	DummyObject retrObj = (DummyObject)cache.retrieveObject("test"+i);
 //		    logger.debug(retrObj.getName());
 	    }
@@ -48,7 +48,7 @@ public class Starter {
 
 		logger.debug("started");
 	    for (int i = 0; i < cacheSize / 1024; i++) {
-	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+	    	cache.put("test" + i, new DummyObject("test"+i, 1024));
 //	    	DummyObject retrObj = (DummyObject)cache.retrieveObject("test"+i);
 //		    logger.debug(retrObj.getName());
 	    }

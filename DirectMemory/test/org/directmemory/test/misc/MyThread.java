@@ -37,7 +37,7 @@ public class MyThread extends Thread {
 	    for (int i = 0; i < howMany; i++) {
 		    DummyObject randomObject = randomObject(i);
 			try {
-				cache.storeObject(randomObject.getName(), randomObject);
+				cache.put(randomObject.getName(), randomObject);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

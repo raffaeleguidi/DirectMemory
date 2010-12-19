@@ -14,15 +14,15 @@ public interface ICacheStore {
 
 	public abstract Map<String, ICacheEntry> entries();
 
-	public abstract ICacheEntry storeObject(String key, Serializable obj) throws IOException;
+	public abstract ICacheEntry put(String key, Serializable obj) throws IOException;
 
-	public abstract ICacheEntry storeObject(String key, Serializable obj,
+	public abstract ICacheEntry put(String key, Serializable obj,
 			int duration) throws Exception;
 
-	public abstract Serializable retrieveObject(String key) throws IOException,
+	public abstract Serializable get(String key) throws IOException,
 			ClassNotFoundException;
 
-	public abstract ICacheEntry removeObject(String key);
+	public abstract ICacheEntry delete(String key);
 
 	public abstract long remaining();
 

@@ -65,7 +65,7 @@ public class UnitAndPerformanceTests {
 
 		logger.debug("started");
 	    for (int i = 0; i < cacheSize / 1024 / 1.25; i++) {
-	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+	    	cache.put("test" + i, new DummyObject("test"+i, 1024));
 //	    	DummyObject retrObj = (DummyObject)cache.retrieveObject("test"+i);
 //		    logger.debug(retrObj.getName());
 	    }
@@ -89,7 +89,7 @@ public class UnitAndPerformanceTests {
 
 		logger.debug("started");
 	    for (int i = 0; i < cacheSize / 1024; i++) {
-	    	cache.storeObject("test" + i, new DummyObject("test"+i, 1024));
+	    	cache.put("test" + i, new DummyObject("test"+i, 1024));
 	    }
 	    
 	    Long finishedAt = Calendar.getInstance().getTimeInMillis();
@@ -136,9 +136,9 @@ public class UnitAndPerformanceTests {
     @Required(max = 300) // well under 50ms in sun jvm
     public void firstAndLargestItem() throws IOException { 	
     	DummyObject firstObject = new DummyObject("key0", objectsSize*5);
-    	cache.storeObject(firstObject.getName(), firstObject);
+    	cache.put(firstObject.getName(), firstObject);
     	assertEquals(cache.entries().size(), 1);
-    	DummyObject retrievedObject = (DummyObject)cache.retrieveObject("key0");
+    	DummyObject retrievedObject = (DummyObject)cache.get("key0");
     	assertEquals(firstObject.getName(), retrievedObject.getName());
 		logger.debug(cache.toString());
     }
@@ -146,7 +146,7 @@ public class UnitAndPerformanceTests {
 	private void doSomeReads(int howMany) {
 		for (int i = 0; i < howMany; i++) {
     		@SuppressWarnings("unused")
-			DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+			DummyObject randomPick = (DummyObject)cache.get(randomKey());
 			
 		}
 	}
@@ -155,7 +155,7 @@ public class UnitAndPerformanceTests {
     @Required(max = 1500, average = 1)
 	public void onlyWrites() throws IOException {
     	DummyObject object2add = nextObject();
-    	ICacheEntry entry = cache.storeObject(object2add.getName(), object2add);
+    	ICacheEntry entry = cache.put(object2add.getName(), object2add);
     	assertNotNull(entry);
 	}
 
@@ -183,7 +183,7 @@ public class UnitAndPerformanceTests {
 		while (iter.hasNext()) {
 			ICacheEntry entry = iter.next();
 			if (!entry.expired()) {
-				DummyObject dummy = (DummyObject) cache.retrieveObject(entry.getKey());
+				DummyObject dummy = (DummyObject) cache.get(entry.getKey());
 				assertNotNull(dummy);
 				assertEquals(entry.getKey(), dummy.getName());
 			}
@@ -199,7 +199,7 @@ public class UnitAndPerformanceTests {
     @Required(max = 750, average = 0.5)
     public void onlyReads() { 	
     	@SuppressWarnings("unused")
-		DummyObject randomPick = (DummyObject)cache.retrieveObject(randomKey());
+		DummyObject randomPick = (DummyObject)cache.get(randomKey());
     }
     
     @Test
@@ -222,8 +222,8 @@ public class UnitAndPerformanceTests {
     public void twentyReadsOneWriteOneDelete() throws IOException { 	
     	doSomeReads(20);
     	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
+    	cache.put(object2add.getName(), object2add);
+    	cache.delete(randomKey());
     }
 
 	@Test
@@ -251,8 +251,8 @@ public class UnitAndPerformanceTests {
     public void twoReadsOneWriteOneDelete() throws IOException { 	
     	doSomeReads(2);
     	DummyObject object2add = randomObject();
-    	cache.storeObject(object2add.getName(), object2add);
-    	cache.removeObject(randomKey());
+    	cache.put(object2add.getName(), object2add);
+    	cache.delete(randomKey());
     }
 
     @Test

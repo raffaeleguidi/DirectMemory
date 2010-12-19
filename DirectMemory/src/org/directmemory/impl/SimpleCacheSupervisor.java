@@ -31,7 +31,7 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 		long freedBytes = 0;
 		
 		for (ICacheEntry entry : store.entries().values()) {
-			store.removeObject(entry.getKey());
+			store.delete(entry.getKey());
 			freedBytes += entry.getSize();
 			logger.debug("Collected LRU entry " + entry.getKey());
 			if (freedBytes >= bytesToFree)
@@ -49,7 +49,7 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 		
 		synchronized (entriesInInsertOrder) {
 			for (ICacheEntry entry : entriesInInsertOrder.values()) {
-				store.removeObject(entry.getKey());
+				store.delete(entry.getKey());
 				freedBytes += entry.getSize();
 //				logger.debug("Collected LRU entry " + entry.getKey());
 				if (freedBytes >= bytesToFree)
@@ -139,7 +139,7 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 		logger.debug("Collecting " + expiredList.size() +  " expired entries");
 		
 		for (ICacheEntry expired : expiredList) {
-			store.removeObject(expired.getKey());
+			store.delete(expired.getKey());
 		}
 		
 		return bytesFreed;

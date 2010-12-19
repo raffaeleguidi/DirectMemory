@@ -34,7 +34,7 @@ public class Reader extends Thread {
 				Thread.yield();
 		    	String key = randomKey();
 				logger.debug("looking for " + key);
-				DummyObject obj = (DummyObject)cache.retrieveObject(key);
+				DummyObject obj = (DummyObject)cache.get(key);
 				if (obj != null) {
 					logger.debug("got " + key);
 					if (!obj.getName().equals(key)) {
