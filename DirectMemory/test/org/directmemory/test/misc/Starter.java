@@ -19,7 +19,7 @@ public class Starter {
 
 		Long startedAt = Calendar.getInstance().getTimeInMillis();
 		
-		ICacheStore cache = new CacheStoreImpl(cacheSize);
+		ICacheStore cache = new CacheStoreImpl(-1, cacheSize);
 		cache.setSupervisor(supervisor);
 
 		logger.debug("started");
@@ -43,7 +43,7 @@ public class Starter {
 
 		Long startedAt = Calendar.getInstance().getTimeInMillis();
 		
-		ICacheStore cache = new CacheStoreImpl(cacheSize);
+		ICacheStore cache = new CacheStoreImpl(-1, cacheSize);
 		cache.setSupervisor(supervisor);
 
 		logger.debug("started");

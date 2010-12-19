@@ -1,10 +1,13 @@
 package org.directmemory.impl;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.directmemory.ICacheEntry;
+import org.directmemory.utils.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +17,8 @@ public class CacheEntryImpl implements ICacheEntry {
 
 	String key;
 	int size;
-	int position;
 	int duration = -1;
+	private Serializable payLoad = null;
 	private Date created = Calendar.getInstance().getTime();
 	private Date lastUsed = null;
 
@@ -30,25 +33,22 @@ public class CacheEntryImpl implements ICacheEntry {
 	public CacheEntryImpl(String key, int size, int position) {
 		this.key = key;
 		this.size = size;
-		this.position = position;
+		this.duration = -1;
 	}
-	public CacheEntryImpl(String key, int size, int position, int duration) {
-		this.key = key;
-		this.size = size;
-		this.position = position;
-		this.duration = duration;
-	}
-	
+
 	public CacheEntryImpl (String key, byte[] source, int duration) throws OutOfMemoryError {
 		this.key = key;
 		this.size = source.length;
-		this.buffer = ByteBuffer.allocateDirect(this.size);
 		this.duration = duration;
+		this.buffer = ByteBuffer.allocateDirect(this.size);
 		this.buffer.put(source);
 	}
 	
-	public CacheEntryImpl() {
-		
+	public CacheEntryImpl (String key, Serializable payLoad, int duration) throws OutOfMemoryError {
+		this.key = key;
+		this.size = -1;
+		this.payLoad = payLoad;
+		this.duration = duration;
 	}
 	
 	private CacheEntryImpl (String key, ByteBuffer buffer, int duration) {
@@ -101,12 +101,6 @@ public class CacheEntryImpl implements ICacheEntry {
 	public void setSize(int size) {
 		this.size = size;
 	}
-	public int getPosition() {
-		return position;
-	}
-	public void setPosition(int position) {
-		this.position = position;
-	}
 	public Date getTimeStamp() {
 		return created;
 	}
@@ -115,12 +109,18 @@ public class CacheEntryImpl implements ICacheEntry {
 	}
 	
 	public boolean expired() {
-		if (duration==-1) 
+		if (duration==-1) {
 			return false;
+		}
 		Date expiryTime = new Date(duration + created.getTime());
 		boolean result = new Date().after(expiryTime);
 		return result;
 	}
+	
+	public boolean offHeap() {
+		return buffer != null;
+	}
+	
 	@Override
 	public void touch() {
 		created = Calendar.getInstance().getTime();		
@@ -143,4 +143,16 @@ public class CacheEntryImpl implements ICacheEntry {
 		buffer.clear();
 		buffer = null;
 	}
+	@Override
+	public Serializable getPayload() {
+		return payLoad;
+	}
+	@Override
+	public void moveOffHeap() throws IOException {
+		byte[] source = SerializationUtils.serializeObject(payLoad);
+		ByteBuffer buffer = ByteBuffer.allocateDirect(source.length);
+		buffer.put(source);
+		size = source.length;
+		payLoad = null;
+	}	
 }

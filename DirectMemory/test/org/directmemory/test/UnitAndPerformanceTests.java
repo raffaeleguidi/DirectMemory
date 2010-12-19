@@ -46,7 +46,7 @@ public class UnitAndPerformanceTests {
 			cacheSize = new Integer(mb2useFromCommandLine)*1024*1024;
 			logger.debug("cacheSize=" + cacheSize);
 		}
-		cache = new CacheStoreImpl(cacheSize);
+		cache = new CacheStoreImpl(-1, cacheSize);
 //		cache.setDefaultDuration(1000);
 		logger.debug(cache.toString());
 	}
@@ -60,7 +60,7 @@ public class UnitAndPerformanceTests {
 
 		Long startedAt = Calendar.getInstance().getTimeInMillis();
 		
-		ICacheStore cache = new CacheStoreImpl(cacheSize);
+		ICacheStore cache = new CacheStoreImpl(-1, cacheSize);
 		cache.setSupervisor(supervisor);
 
 		logger.debug("started");
@@ -84,7 +84,7 @@ public class UnitAndPerformanceTests {
 
 		Long startedAt = Calendar.getInstance().getTimeInMillis();
 		
-		ICacheStore cache = new CacheStoreImpl(cacheSize);
+		ICacheStore cache = new CacheStoreImpl(-1, cacheSize);
 		cache.setSupervisor(supervisor);
 
 		logger.debug("started");

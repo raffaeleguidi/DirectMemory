@@ -1,19 +1,16 @@
 package org.directmemory.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.directmemory.ICacheEntry;
-import org.directmemory.ICacheSupervisor;
 import org.directmemory.ICacheStore;
+import org.directmemory.ICacheSupervisor;
+import org.directmemory.utils.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,18 +30,20 @@ public class CacheStoreImpl implements ICacheStore {
 	private static Logger logger=LoggerFactory.getLogger(CacheStoreImpl.class);
 	
 	private Map<String, ICacheEntry> entries;
-	private long capacity;
+	private long offHeapLimit;
+	private long inHeapEntriesLimit;
 	private AtomicLong usedMemory = new AtomicLong(0);
 	private int defaultDuration=-1;
 	
 	private ICacheSupervisor supervisor;
 	
-	private void setup(long capacity) {
-		this.capacity = capacity;
+	private void setup(long inHeapEntriesLimit, long offHeapLimit) {
+		this.inHeapEntriesLimit = inHeapEntriesLimit;
+		this.offHeapLimit = offHeapLimit;
 		// these params make things considerably worse
-//		entries = new ConcurrentHashMap <String, ICacheEntry>(60000, 0.75F, 30);
+		// entries = new ConcurrentHashMap <String, ICacheEntry>(60000, 0.75F, 30);
 		entries = new ConcurrentHashMap <String, ICacheEntry>();
-		logger.info("DirectCache allocated with " + capacity + " bytes buffer");
+		logger.info("DirectCache allocated with " + offHeapLimit + " bytes buffer");
 		usedMemory = new AtomicLong(0);
 		if (supervisor == null) {
 			supervisor = new SimpleCacheSupervisor();
@@ -53,6 +52,24 @@ public class CacheStoreImpl implements ICacheStore {
 		}
 	}
 		
+//	private Serializable deserialize(byte[] b) throws IOException, ClassNotFoundException {
+//		ByteArrayInputStream bis = new ByteArrayInputStream(b);
+//		ObjectInputStream ois = new ObjectInputStream(bis);
+//		Serializable obj = (Serializable) ois.readObject();
+//		ois.close();
+//		return obj;
+//	}
+//	
+//	private byte[] serializeObject(Serializable obj) throws IOException {
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		ObjectOutputStream oos = new ObjectOutputStream(baos);
+//		oos.writeObject(obj);
+//		oos.close();
+//		byte[] b = baos.toByteArray();
+//		logger.debug("object serialized");
+//		return b;		
+//	}
+
 	@Override
 	public void dispose() {
 		entries.clear();
@@ -62,14 +79,14 @@ public class CacheStoreImpl implements ICacheStore {
 		
 	public CacheStoreImpl() {
 		// defaults to 50mb
-		setup(50*1024*1024);
+		setup(-1, 50*1024*1024);
 	}
-	public CacheStoreImpl(int capacity) {
-		setup(capacity);
+	public CacheStoreImpl(long inHeapEntriesLimit, long offHeapLimit) {
+		setup(inHeapEntriesLimit, offHeapLimit);
 	}
 	
 	public void reset() {
-		setup(capacity);
+		setup(inHeapEntriesLimit, offHeapLimit);
 	}
 
 	public int getDefaultDuration() {
@@ -82,35 +99,29 @@ public class CacheStoreImpl implements ICacheStore {
 		return this.entries;
 	}
 
-	private byte[] serializeObject(Serializable obj) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(obj);
-		oos.close();
-		byte[] b = baos.toByteArray();
-		logger.debug("object serialized");
-		return b;		
-	}
-
 	public ICacheEntry put(String key, Serializable obj) throws IOException {
 		return put(key, obj, defaultDuration);
 	}
 	
 	public ICacheEntry put(String key, Serializable obj, int duration) throws IOException {
 
+		// RpG
+		// modify to insert in heap and then call entry.moveOffheap
+		// the latter could also be performed later by the supervisor
+		
 		logger.info("serializing object with key '" + key + "'");
 
 		byte source[] = null;
 
 		try {
-			source = serializeObject(obj);
+			source = SerializationUtils.serializeObject(obj);
 			logger.info("object with key '" + key + "' serialized (" + source.length + ") bytes");
 		} catch (IOException e) {
 			logger.error("error serializing object with key '" + key + "': " + e.getMessage());
 			throw new IOException();
 		}
 		
-		if (usedMemory.get() + source.length >= capacity) {
+		if (usedMemory.get() + source.length >= offHeapLimit) {
 			logger.debug("we are over capacity: removing one expired entry - no room for entry with key '" + key + "'");
 			makeRoomForObject(source.length);
 		}
@@ -127,6 +138,7 @@ public class CacheStoreImpl implements ICacheStore {
 
 		entries.put(key, newEntry);
 		signalWeInserted(newEntry);
+		
 		usedMemory.addAndGet(source.length);
 
 		source = null;
@@ -172,21 +184,25 @@ public class CacheStoreImpl implements ICacheStore {
 			return null;
 		}
 		
-		byte[] dest = entry.getBuffer();
-		
-		if (dest == null) { 
-			logger.error("invalid buffer");
-			return null;
-		}
-		
 		try {
-			Serializable obj = deserialize(dest);
-			logger.info("retrieved object with key '" + key + "' (" + 
-					dest.length + " bytes)");
+			Serializable obj = null;
 			
+			if (entry.offHeap()) {
+				obj = entry.getPayload();
+				logger.info("retrieved object with key '" + key + "' from heap");
+			} else {
+				byte[] dest = entry.getBuffer();
+				if (dest == null) { 
+					logger.error("invalid buffer");
+					return null;
+				}
+				obj = SerializationUtils.deserialize(dest);
+				logger.info("retrieved object with key '" + key + "' (" + 
+						dest.length + " bytes)");
+			} 
 			signalWeRetrevied(entry);
-
 			return obj;
+			
 		} catch (EOFException ex) {
 			logger.error("EOFException deserializing object with key '"
 					+ key + "' with size " + entry.size());
@@ -199,14 +215,6 @@ public class CacheStoreImpl implements ICacheStore {
 					+ key + "' with size " + entry.size());
 		}
 		return null;
-	}
-	
-	private Serializable deserialize(byte[] b) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream bis = new ByteArrayInputStream(b);
-		ObjectInputStream ois = new ObjectInputStream(bis);
-		Serializable obj = (Serializable) ois.readObject();
-		ois.close();
-		return obj;
 	}
 	
 	public long  signalCollectExpiredNeeded(long bytesToFree) {	
@@ -239,7 +247,7 @@ public class CacheStoreImpl implements ICacheStore {
 	}
 	
 	public long remaining() {
-		return capacity-usedMemory.get();
+		return offHeapLimit-usedMemory.get();
 	}
 	public long usedMemory() {
 		return usedMemory.get();
@@ -255,8 +263,8 @@ public class CacheStoreImpl implements ICacheStore {
 		sb.append(", entries: ");
 		sb.append(entries().size());
 		sb.append(", ");
-		sb.append("capacity (mb): ");
-		sb.append(capacity()/1024/1024);
+		sb.append("limit (mb): ");
+		sb.append(offHeapLimit()/1024/1024);
 		sb.append(", ");
 		sb.append("size (mb): ");
 		sb.append(usedMemory()/1024/1024);
@@ -269,8 +277,8 @@ public class CacheStoreImpl implements ICacheStore {
 	}
 
 	@Override
-	public long capacity() {
-		return capacity;
+	public long offHeapLimit() {
+		return offHeapLimit;
 	}
 
 	public void setSupervisor(ICacheSupervisor supervisor) {

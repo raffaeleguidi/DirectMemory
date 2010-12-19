@@ -28,7 +28,7 @@ public interface ICacheStore {
 
 	public abstract long usedMemory();
 
-	public abstract long capacity();
+	public abstract long offHeapLimit();
 
 	public abstract void dispose();
 	

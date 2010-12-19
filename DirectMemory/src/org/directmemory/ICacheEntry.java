@@ -1,5 +1,7 @@
 package org.directmemory;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 
 public interface ICacheEntry {
@@ -22,10 +24,6 @@ public interface ICacheEntry {
 
 	public abstract void setSize(int size);
 
-	public abstract int getPosition();
-
-	public abstract void setPosition(int position);
-
 	public abstract Date getTimeStamp();
 
 	public abstract boolean expired();
@@ -33,5 +31,11 @@ public interface ICacheEntry {
 	public abstract int size();
 
 	public abstract void dispose();
+	
+	public abstract Serializable getPayload();
+	
+	public abstract boolean offHeap();
+	
+	public abstract void moveOffHeap() throws IOException;
 
 }
