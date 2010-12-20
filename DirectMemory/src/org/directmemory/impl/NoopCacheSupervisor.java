@@ -36,7 +36,6 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalLRUCollectionNeeded(org.directcache.impl.DirectCacheImpl, int)
 	 */
-	@Override
 	public long signalLRUCollectionNeeded(ICacheStore store, long bytesToFree) {
 		return fakeButFastCollectLRU(store, bytesToFree);
 	}
@@ -45,7 +44,6 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeDeleted(java.lang.String)
 	 */
-	@Override
 	public void signalWeDeleted(String key) {
 //		entriesInInsertOrder.remove(key);
 	}
@@ -54,7 +52,6 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeInserted(org.directcache.impl.CacheEntryImpl)
 	 */
-	@Override
 	public void signalWeInserted(ICacheEntry newEntry) {
 //		entriesInInsertOrder.put(newEntry.getKey(), newEntry);
 	}
@@ -63,19 +60,16 @@ public class NoopCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeRetrevied(org.directcache.ICacheEntry)
 	 */
-	@Override
 	public void signalWeRetrieved(ICacheEntry entry) {
 		entry.touch();
 	}
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalReset()
 	 */
-	@Override
 	public void signalReset(){
 //		entriesInInsertOrder.reset();
 	}
 
-	@Override
 	public long signalCollectExpiredNeeded(ICacheStore store, long bytesToFree) {
 
 		//		List<CacheEntry> expiredList = filter(

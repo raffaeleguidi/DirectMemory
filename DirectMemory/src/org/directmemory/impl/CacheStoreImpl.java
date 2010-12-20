@@ -52,7 +52,6 @@ public class CacheStoreImpl implements ICacheStore {
 		}
 	}
 
-	@Override
 	public void dispose() {
 		entries.clear();
 		usedMemory.set(0);
@@ -245,7 +244,6 @@ public class CacheStoreImpl implements ICacheStore {
 		return sb.toString();
 	}
 
-	@Override
 	public long offHeapLimit() {
 		return offHeapLimit;
 	}

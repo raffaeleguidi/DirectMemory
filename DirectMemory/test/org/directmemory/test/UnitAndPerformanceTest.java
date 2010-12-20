@@ -27,9 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class UnitAndPerformanceTests {
+public class UnitAndPerformanceTest {
 	
-	private static Logger logger=LoggerFactory.getLogger(UnitAndPerformanceTests.class);
+	private static Logger logger=LoggerFactory.getLogger(UnitAndPerformanceTest.class);
 
 	@Rule
     public ContiPerfRule i = new ContiPerfRule(new EmptyExecutionLogger());
@@ -37,7 +37,7 @@ public class UnitAndPerformanceTests {
 	static CacheStoreImpl cache = null;
 	static int objectsSize = 2048*2;
 	static Random generator = new Random();
-	static int cacheSize = 490*1024*1024;
+	static int cacheSize = 50*1024*1024;
 	
 	public static void allocateMemory() {
 		String mb2useFromCommandLine = System.getProperty("mb2use");
@@ -196,7 +196,7 @@ public class UnitAndPerformanceTests {
 	
     @Test
     @PerfTest(duration = 10000, threads = 5)
-    @Required(max = 750, average = 0.5)
+    @Required(max = 750, average = 1)
     public void onlyReads() { 	
     	@SuppressWarnings("unused")
 		DummyObject randomPick = (DummyObject)cache.get(randomKey());
@@ -204,16 +204,17 @@ public class UnitAndPerformanceTests {
     
     @Test
     @PerfTest(duration = 10000, threads = 10)
-    @Required(max = 750, average = 0.5)
+    @Required(max = 750, average = 1)
     public void onlyReads10Threads() { 	
     	onlyReads();
     }
     
     @Test
     @PerfTest(duration = 10000, threads = 20)
-    @Required(max = 1100, average = 0.5)
+    @Required(max = 1100, average = 1)
     public void onlyReads20Threads() { 	
     	onlyReads();
+    	Thread.yield();
     }
 
     @Test

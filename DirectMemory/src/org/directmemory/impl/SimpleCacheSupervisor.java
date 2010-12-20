@@ -63,7 +63,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalLRUCollectionNeeded(org.directcache.impl.DirectCacheImpl, int)
 	 */
-	@Override
 	public long signalLRUCollectionNeeded(ICacheStore store, long bytesToFree) {
 		if (countLruRequests.compareAndSet(1000, 0)) {
 			logger.debug("Collecting LRU for " + bytesToFree);
@@ -81,7 +80,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeDeleted(java.lang.String)
 	 */
-	@Override
 	public void signalWeDeleted(String key) {
 		synchronized (entriesInInsertOrder) {
 			entriesInInsertOrder.remove(key);
@@ -92,7 +90,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeInserted(org.directcache.impl.CacheEntryImpl)
 	 */
-	@Override
 	public void signalWeInserted(ICacheEntry newEntry) {
 		synchronized (entriesInInsertOrder) {
 			entriesInInsertOrder.put(newEntry.getKey(), newEntry);
@@ -103,7 +100,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalWeRetrevied(org.directcache.ICacheEntry)
 	 */
-	@Override
 	public void signalWeRetrieved(ICacheEntry entry) {
 		synchronized (entriesInInsertOrder) {
 			// put it in the bottom of the LRU queue
@@ -116,7 +112,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	/* (non-Javadoc)
 	 * @see org.directcache.impl.ICacheSupervisor#signalReset()
 	 */
-	@Override
 	public void signalReset(){
 		entriesInInsertOrder.reset();
 		totalBytesToFree.set(0);
@@ -145,7 +140,6 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 		return bytesFreed;
 	}
 	
-	@Override
 	public long signalCollectExpiredNeeded(ICacheStore store, long bytesToFree) {
 		if (countCollectExpiredRequests.compareAndSet(1000, 0)) {
 			logger.debug("expired: removing " + bytesToFree + " bytes");

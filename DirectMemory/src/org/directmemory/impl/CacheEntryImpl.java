@@ -121,29 +121,23 @@ public class CacheEntryImpl implements ICacheEntry {
 		return buffer != null;
 	}
 	
-	@Override
 	public void touch() {
 		created = Calendar.getInstance().getTime();		
 	}
 
-	@Override
 	public Date getLastUsed() {
 		return lastUsed;
 	}
-	@Override
 	public Date lastUsed() {
 		return lastUsed;
 	}
-	@Override
 	public int size() {
 		return size;
 	}
-	@Override
 	public void dispose() {
 		buffer.clear();
 		buffer = null;
 	}
-	@Override
 	public Serializable getPayload() {
 		if (offHeap()) {
 			try {
@@ -156,7 +150,6 @@ public class CacheEntryImpl implements ICacheEntry {
 		} 
 		return payLoad;
 	}
-	@Override
 	public void moveOffHeap() throws IOException {
 		byte[] source = SerializationUtils.serializeObject(payLoad);
 		ByteBuffer buffer = ByteBuffer.allocateDirect(source.length);
@@ -164,7 +157,6 @@ public class CacheEntryImpl implements ICacheEntry {
 		size = source.length;
 		payLoad = null;
 	}
-	@Override
 	public void moveInHeap() throws IOException, ClassNotFoundException {
 		payLoad = SerializationUtils.deserialize(getBuffer());
 		buffer.clear();
