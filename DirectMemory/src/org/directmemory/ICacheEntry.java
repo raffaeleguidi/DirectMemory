@@ -14,7 +14,11 @@ public interface ICacheEntry {
 
 	public abstract int getDuration();
 
-	public abstract void setDuration(int duration);
+	public abstract void setDuration(int position);
+
+	public abstract int getPosition();
+
+	public abstract void setPosition(int position);
 
 	public abstract String getKey();
 

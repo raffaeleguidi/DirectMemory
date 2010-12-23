@@ -21,7 +21,8 @@ public class CacheEntryImpl implements ICacheEntry {
 	private Serializable payLoad = null;
 	private Date created = Calendar.getInstance().getTime();
 	private Date lastUsed = null;
-
+	private int position;
+	
 	ByteBuffer buffer = null;
 
 	public int getDuration() {
@@ -33,13 +34,15 @@ public class CacheEntryImpl implements ICacheEntry {
 	public CacheEntryImpl(String key, int size, int position) {
 		this.key = key;
 		this.size = size;
+		this.position = position;
 		this.duration = -1;
 	}
 
-	public CacheEntryImpl (String key, byte[] source, int duration) throws OutOfMemoryError {
+	public CacheEntryImpl (String key, byte[] source, int position, int duration) throws OutOfMemoryError {
 		this.key = key;
 		this.size = source.length;
 		this.duration = duration;
+		this.position = position;
 		this.buffer = ByteBuffer.allocateDirect(this.size);
 		this.buffer.put(source);
 	}
@@ -48,6 +51,7 @@ public class CacheEntryImpl implements ICacheEntry {
 		this.key = key;
 		this.size = -1;
 		this.payLoad = payLoad;
+		this.position = -1;
 		this.duration = duration;
 	}
 	
@@ -55,6 +59,7 @@ public class CacheEntryImpl implements ICacheEntry {
 		this.key = key;
 		this.buffer = buffer;
 		this.duration = duration;
+		this.position = -1;
 		this.size = buffer.capacity();
 	}
 	
@@ -162,5 +167,11 @@ public class CacheEntryImpl implements ICacheEntry {
 		buffer.clear();
 		buffer = null;
 		size = -1;
+	}
+	public int getPosition() {
+		return position;
+	}
+	public void setPosition(int position) {
+		this.position = position;
 	}	
 }
