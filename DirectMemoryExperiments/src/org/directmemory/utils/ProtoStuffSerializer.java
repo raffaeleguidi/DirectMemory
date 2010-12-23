@@ -2,8 +2,6 @@ package org.directmemory.utils;
 
 import java.io.IOException;
 
-import org.directmemory.misc.DummyPojo;
-
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
@@ -38,11 +36,11 @@ public class ProtoStuffSerializer implements Serializer {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException {
-		final DummyPojo obj2 = new DummyPojo();
+	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		final Object object = clazz.newInstance();
 		@SuppressWarnings("rawtypes")
 		Schema schema = RuntimeSchema.getSchema(clazz);
-		ProtostuffIOUtil.mergeFrom(source, obj2, schema);
-		return obj2;
+		ProtostuffIOUtil.mergeFrom(source, object, schema);
+		return object;
 	}
 }

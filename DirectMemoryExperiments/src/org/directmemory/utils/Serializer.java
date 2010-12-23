@@ -9,6 +9,6 @@ public interface Serializer {
 
 	public abstract Object deserialize(byte[] source,
 			@SuppressWarnings("rawtypes") Class clazz) throws IOException,
-			ClassNotFoundException;
+			ClassNotFoundException, InstantiationException, IllegalAccessException;
 
 }
