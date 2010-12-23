@@ -21,9 +21,9 @@ public class SerializationUtils {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(obj);
+		oos.flush();
 		oos.close();
-		byte[] dest = baos.toByteArray();
-		return dest;		
+		return baos.toByteArray();		
 	}
 
 }

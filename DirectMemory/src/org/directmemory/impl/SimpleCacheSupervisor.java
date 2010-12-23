@@ -17,6 +17,9 @@ public class SimpleCacheSupervisor implements ICacheSupervisor {
 	
 	private static Logger logger=LoggerFactory.getLogger(SimpleCacheSupervisor.class);
 	private FastMap<String, ICacheEntry> entriesInInsertOrder = new FastMap<String, ICacheEntry>();
+	//provare con
+	//ConcurrentSkipListSet
+	// - sembra perfetta
 //	private LinkedHashMap<String, ICacheEntry> entriesInInsertOrder = new LinkedHashMap<String, ICacheEntry>();
 	private AtomicInteger countLruRequests = new AtomicInteger(0);
 	private AtomicInteger countCollectExpiredRequests = new AtomicInteger(0);
