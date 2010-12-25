@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.directmemory.CacheEntry;
-import org.directmemory.utils.StandardSerializer;
+import org.directmemory.serialization.StandardSerializer;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
-import org.directmemory.utils.ProtoStuffSerializer;
+import org.directmemory.serialization.ProtoStuffSerializer;
 import org.junit.Test;
 
 public class BasicSingleThreadedTest {

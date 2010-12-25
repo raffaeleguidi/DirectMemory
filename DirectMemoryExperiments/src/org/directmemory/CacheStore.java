@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.directmemory.utils.StandardSerializer;
-import org.directmemory.utils.Serializer;
+import org.directmemory.serialization.Serializer;
+import org.directmemory.serialization.StandardSerializer;
 
 public class CacheStore {
 	ByteBuffer buffer;
@@ -79,8 +79,11 @@ public class CacheStore {
 
 	private ByteBuffer getBufferFor(CacheEntry entry) {
 		CacheEntry slot = slots.higher(entry);
-//		if (slot == null)
-//			throw new Exception("Couldn't find a free slot");
+		if (slot == null) {
+			// should try allocating a new buffer?
+			// what if no buffer available?
+			return null;
+		}
 		ByteBuffer freeBuffer = slot.buffer.duplicate();
 		freeBuffer.position(slot.position);
 		slot.buffer.position(slot.position);
@@ -89,13 +92,14 @@ public class CacheStore {
 		return freeBuffer;
 	}
 
-	private void makeRoomInOffHeapMemory(int bytes2add) {
+	private void makeRoomInOffHeapMemory(int bytesNeeded) {
 		int freedBytes = 0;
-		int bytes2free = (usedMemory.get() + bytes2add)-buffer.limit();
+		int bytes2free = (usedMemory.get() + bytesNeeded)-buffer.limit();
 		
 		while (freedBytes < bytes2free) {
 			CacheEntry removedEntry = removeLastOffHeap();
 			freedBytes += removedEntry.size;
+			// should save to disk
 		}
 	}
 	
@@ -111,8 +115,13 @@ public class CacheStore {
 	
 	public CacheEntry getEntry(String key) {
 		CacheEntry entry = entries.get(key);
-		if (entry == null)
+		if (entry == null) {
 			return null;
+		}
+		if (entry.expired()) {
+			remove(key);
+			return null;
+		}
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
@@ -125,6 +134,7 @@ public class CacheStore {
 	
 	public Object get(String key) {
 		CacheEntry entry = getEntry(key);
+		
 		if (entry.inHeap()) {
 			return entry.object;
 		} else {
