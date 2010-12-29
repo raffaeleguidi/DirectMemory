@@ -19,7 +19,7 @@ public class CacheStore {
 	ConcurrentLinkedQueue<CacheEntry> lruOffheapQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
 	private AtomicInteger usedMemory = new AtomicInteger(0);
-	private AtomicInteger offHeapEntries = new AtomicInteger(0);
+//	private AtomicInteger offHeapEntries = new AtomicInteger(0);
 	int entriesLimit = -1;
 	
 	public Serializer serializer = null;
@@ -49,13 +49,13 @@ public class CacheStore {
 	private void checkHeapLimits() {
 		if (entriesLimit == -1)
 			return;
-		if ((entries.size() - offHeapEntries.get()) >= entriesLimit) {
+		if ((entries.size() - offHeapEntriesCount()) >= entriesLimit) {
 			CacheEntry entry = removeLast();
-			saveOffheap(entry);
+			moveOffheap(entry);
 		}
 	}
 	
-	protected void saveOffheap(CacheEntry entry) {
+	protected void moveOffheap(CacheEntry entry) {
 		byte[] array = null;
 		try {
 			array = serializer.serialize((Serializable)entry.object, entry.object.getClass());
@@ -71,10 +71,38 @@ public class CacheStore {
 		entry.buffer = getBufferFor(entry);
 		entry.position = entry.buffer.position();
 		entry.buffer.put(array);
+		lruQueue.remove(entry);
 		lruOffheapQueue.add(entry);
 		usedMemory.addAndGet(entry.size);
-		offHeapEntries.addAndGet(1);
+//		offHeapEntries.addAndGet(1);
 		entries.put(entry.key, entry);
+	}
+	
+	protected void moveInHeap(CacheEntry entry) {
+		entry.buffer.position(entry.position);
+		byte[] source = new byte[entry.size]; 
+		entry.buffer.get(source);
+		try {
+			checkHeapLimits();
+			entry.object = serializer.deserialize(source, entry.clazz);
+//			offHeapEntries.decrementAndGet();
+			usedMemory.addAndGet(-source.length);
+			lruOffheapQueue.remove(entry);
+			lruQueue.remove(entry);
+			lruQueue.add(entry);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private ByteBuffer getBufferFor(CacheEntry entry) {
@@ -99,7 +127,7 @@ public class CacheStore {
 		while (freedBytes < bytes2free) {
 			CacheEntry removedEntry = removeLastOffHeap();
 			freedBytes += removedEntry.size;
-			// should save to disk
+			// should save to disk or demote to next layer
 		}
 	}
 	
@@ -122,42 +150,19 @@ public class CacheStore {
 			remove(key);
 			return null;
 		}
-		if (entry.inHeap()) {
+		if (!entry.inHeap()) {
+			moveInHeap(entry);
+		} else {
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
-		} else {
-			lruOffheapQueue.remove(entry);
-			lruOffheapQueue.add(entry);
 		}
+
 		return entries.get(key);
 	}
 	
 	public Object get(String key) {
 		CacheEntry entry = getEntry(key);
-		
-		if (entry.inHeap()) {
-			return entry.object;
-		} else {
-			entry.buffer.position(entry.position);
-			byte[] source = new byte[entry.size]; 
-			entry.buffer.get(source);
-			try {
-				return serializer.deserialize(source, entry.clazz);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
+		return entry.object;
 	}
 	
 	public CacheEntry remove(String key) {
@@ -165,7 +170,7 @@ public class CacheStore {
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
 		} else {
-			offHeapEntries.addAndGet(-1);
+//			offHeapEntries.addAndGet(-1);
 			usedMemory.addAndGet(-entry.size);
 			lruOffheapQueue.remove(entry);
 			slots.add(entry);
@@ -181,7 +186,7 @@ public class CacheStore {
 	
 	public CacheEntry removeLastOffHeap() {
 		CacheEntry last = lruOffheapQueue.poll();
-		offHeapEntries.addAndGet(-1);
+//		offHeapEntries.addAndGet(-1);
 		usedMemory.addAndGet(-last.size);
 		entries.remove(last.key);
 		slots.add(last);
@@ -189,11 +194,13 @@ public class CacheStore {
 	}
 	
 	public int heapEntriesCount() {
-		return entries.size() - offHeapEntries.get();
+//		return entries.size() - offHeapEntries.get();
+		return lruQueue.size();
 	}
 	
 	public int offHeapEntriesCount() {
-		return offHeapEntries.get();
+//		return offHeapEntries.get();
+		return lruOffheapQueue.size();
 	}
 	
 	public int usedMemory() {
@@ -202,6 +209,6 @@ public class CacheStore {
 	
 	@Override
 	public String toString() {
-		return "CacheStore: {heap entries=" + heapEntriesCount() + ", off heap entries=" + offHeapEntries.get() + ", usedMemory=" + usedMemory.get() + ", limit=" + entriesLimit + ", cacheSize=" + buffer.limit() +"}";
+		return "CacheStore: {heap entries=" + heapEntriesCount() + ", off heap entries=" + offHeapEntriesCount() + ", usedMemory=" + usedMemory.get() + ", limit=" + entriesLimit + ", cacheSize=" + buffer.limit() +"}";
 	}
 }
