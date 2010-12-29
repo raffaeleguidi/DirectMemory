@@ -1,5 +1,6 @@
 package org.directmemory.serialization;
 
+import java.io.EOFException;
 import java.io.IOException;
 
 public interface Serializer {
@@ -9,6 +10,6 @@ public interface Serializer {
 
 	public abstract Object deserialize(byte[] source,
 			@SuppressWarnings("rawtypes") Class clazz) throws IOException,
-			ClassNotFoundException, InstantiationException, IllegalAccessException;
+			ClassNotFoundException, InstantiationException, IllegalAccessException, EOFException;
 
 }

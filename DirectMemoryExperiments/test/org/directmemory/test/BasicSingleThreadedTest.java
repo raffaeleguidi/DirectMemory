@@ -8,6 +8,9 @@ import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
+import org.javasimon.SimonManager;
+import org.javasimon.Stopwatch;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 public class BasicSingleThreadedTest {
@@ -95,9 +98,9 @@ public class BasicSingleThreadedTest {
 		
 	}
 	@Test public void goOverTheLimitPutAndGet() {
-		int limit = 10;
-		CacheStore store = new CacheStore(limit, 1 * 1024 * 1024);
-		for (int i = 1; i <= limit + 1; i++) {
+		int limit = 1000;
+		CacheStore store = new CacheStore(limit, 10 * 1024 * 1024);
+		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			store.put("test" + i, pojo);
 			if (i <= limit) {
@@ -109,17 +112,20 @@ public class BasicSingleThreadedTest {
 
 		System.out.println("goOverTheLimitPutAndGet " + store);
 		
-		for (int i = 1; i <= limit + 1; i++) {
+		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
+			@SuppressWarnings("unused")
 			DummyPojo newPojo = (DummyPojo)store.get("test" + i);
-			System.out.println(newPojo);
 		}
+		assertEquals(limit, store.heapEntriesCount());
+		assertEquals(570500, store.usedMemory());
 	}
+	
 	@Test public void goOverTheLimitPutAndGetWithProtostuff() {
-		int limit = 10;
-		CacheStore store = new CacheStore(limit, 1 * 1024 * 1024, new ProtoStuffSerializer());
-		for (int i = 1; i <= limit + 1; i++) {
+		int limit = 1000;
+		CacheStore store = new CacheStore(limit, 10 * 1024 * 1024, new ProtoStuffSerializer());
+		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			store.put("test" + i, pojo);
 			if (i <= limit) {
@@ -131,15 +137,31 @@ public class BasicSingleThreadedTest {
 
 		System.out.println("goOverTheLimitPutAndGet " + store);
 		
-		for (int i = 1; i <= limit + 1; i++) {
+		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
+			@SuppressWarnings("unused")
 			DummyPojo newPojo = (DummyPojo)store.get("test" + i);
-			System.out.println(newPojo);
 		}
 		
 		assertEquals(limit, store.heapEntriesCount());
-		assertEquals(1, store.offHeapEntriesCount());
-		assertEquals(1037, store.usedMemory());
+		assertEquals(518500, store.usedMemory());
+	}
+	
+	public static void showAverage(Stopwatch sw) {
+		double average = ((double)sw.getTotal() / (double)sw.getCounter() /1000000);
+		System.out.println(sw.getName() + " - average " + average);
+	}
+	
+	
+	@AfterClass
+	public static void checkPerformance() {
+		showAverage(SimonManager.getStopwatch("get"));
+		showAverage(SimonManager.getStopwatch("put"));
+		showAverage(SimonManager.getStopwatch("remove"));
+		showAverage(SimonManager.getStopwatch("protostuff-serialize"));
+		showAverage(SimonManager.getStopwatch("protostuff-deserialize"));
+		showAverage(SimonManager.getStopwatch("java-serialize"));
+		showAverage(SimonManager.getStopwatch("java-deserialize"));
 	}
 }

@@ -1,7 +1,10 @@
 package org.directmemory;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
+import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
+import org.javasimon.SimonManager;
+import org.javasimon.Split;
+import org.javasimon.Stopwatch;
 
 public class CacheStore {
 	ByteBuffer buffer;
@@ -47,12 +53,17 @@ public class CacheStore {
 	}
 	
 	private void checkHeapLimits() {
-		if (entriesLimit == -1)
+        Stopwatch stopWatch = SimonManager.getStopwatch("checkheaplimits");
+		Split split = stopWatch.start();
+		if (entriesLimit == -1) {
+			split.stop();
 			return;
+		}
 		if ((entries.size() - offHeapEntriesCount()) >= entriesLimit) {
 			CacheEntry entry = removeLast();
 			moveOffheap(entry);
 		}
+		split.stop();
 	}
 	
 	protected void moveOffheap(CacheEntry entry) {
@@ -64,32 +75,44 @@ public class CacheStore {
 			e.printStackTrace();
 		}
 		makeRoomInOffHeapMemory(array.length);
-		
 		entry.clazz = entry.object.getClass();
 		entry.size = array.length;
 		entry.object = null;
-		entry.buffer = getBufferFor(entry);
-		entry.position = entry.buffer.position();
-		entry.buffer.put(array);
+		ByteBuffer buf = getBufferFor(entry);
+		entry.position = buf.position();
+		buf.put(array);
+		entry.buffer = buf;
 		lruQueue.remove(entry);
 		lruOffheapQueue.add(entry);
 		usedMemory.addAndGet(entry.size);
-//		offHeapEntries.addAndGet(1);
 		entries.put(entry.key, entry);
 	}
 	
 	protected void moveInHeap(CacheEntry entry) {
-		entry.buffer.position(entry.position);
-		byte[] source = new byte[entry.size]; 
-		entry.buffer.get(source);
+		checkHeapLimits();
+		byte[] source = null; 
+		source = new byte[entry.size]; 
 		try {
-			checkHeapLimits();
-			entry.object = serializer.deserialize(source, entry.clazz);
-//			offHeapEntries.decrementAndGet();
+			ByteBuffer buf = entry.buffer.duplicate();
+			entry.buffer.clear();
+			entry.buffer = null;
+			buf.position(entry.position);
+			buf.get(source);
+			Object obj = serializer.deserialize(source, entry.clazz);
+			entry.object = obj;
 			usedMemory.addAndGet(-source.length);
 			lruOffheapQueue.remove(entry);
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
+		} catch (UTFDataFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (EOFException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,12 +135,14 @@ public class CacheStore {
 			// what if no buffer available?
 			return null;
 		}
-		ByteBuffer freeBuffer = slot.buffer.duplicate();
-		freeBuffer.position(slot.position);
-		slot.buffer.position(slot.position);
-		slot.position += entry.size;
-		slot.size -= entry.size;
-		return freeBuffer;
+		synchronized (slot) {
+			ByteBuffer freeBuffer = slot.buffer.duplicate();
+			freeBuffer.position(slot.position);
+			slot.buffer.position(slot.position);
+			slot.position += entry.size;
+			slot.size -= entry.size;
+			return freeBuffer;
+		}
 	}
 
 	private void makeRoomInOffHeapMemory(int bytesNeeded) {
@@ -132,12 +157,15 @@ public class CacheStore {
 	}
 	
 	public CacheEntry put(String key, Object object) {
+        Stopwatch stopWatch = SimonManager.getStopwatch("put");
+		Split split = stopWatch.start();
 		checkHeapLimits();
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
 		lruQueue.add(entry);
 		entries.put(key, entry);
+		split.stop();
 		return entry;
 	}
 	
@@ -157,24 +185,32 @@ public class CacheStore {
 			lruQueue.add(entry);
 		}
 
-		return entries.get(key);
+		return entry;
 	}
 	
 	public Object get(String key) {
+        Stopwatch stopWatch = SimonManager.getStopwatch("get");
+		Split split = stopWatch.start();
 		CacheEntry entry = getEntry(key);
+		split.stop();
+		if (entry == null)
+			return null;
+		
 		return entry.object;
 	}
 	
 	public CacheEntry remove(String key) {
+        Stopwatch stopWatch = SimonManager.getStopwatch("remove");
+		Split split = stopWatch.start();
 		CacheEntry entry = entries.remove(key);
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
 		} else {
-//			offHeapEntries.addAndGet(-1);
 			usedMemory.addAndGet(-entry.size);
 			lruOffheapQueue.remove(entry);
 			slots.add(entry);
 		}
+		split.stop();
 		return entry;
 	}
 	
