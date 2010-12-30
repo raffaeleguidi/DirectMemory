@@ -13,7 +13,6 @@ import org.javasimon.Stopwatch;
 
 public class StandardSerializer implements Serializer {
 	
-	@Override
 	public byte[] serialize(Object obj, @SuppressWarnings("rawtypes") Class clazz) throws IOException {
         Stopwatch stopWatch = SimonManager.getStopwatch("serializer.javaSerialize");
 		Split split = stopWatch.start();

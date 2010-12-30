@@ -34,7 +34,6 @@ public class TimedSupervisor implements Supervisor {
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
-	@Override
 	public void disposeOverflow(CacheStore cache) {
 		Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.timed.checkLimits");
 		Split split = stopWatch.start();

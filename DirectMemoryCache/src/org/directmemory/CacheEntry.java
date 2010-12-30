@@ -31,7 +31,6 @@ public class CacheEntry implements Comparable<CacheEntry> {
 		expiresOn = new Date(new Date().getTime() + milliseconds);
 	}	
 
-	@Override
 	public int compareTo(CacheEntry other) {
 		if (this.size < other.size)
 			return -1;

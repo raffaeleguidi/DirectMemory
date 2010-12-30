@@ -18,7 +18,6 @@ public class ProtoStuffSerializer implements Serializer {
 	/* (non-Javadoc)
 	 * @see org.directmemory.utils.Serializer#serialize(java.lang.Object, java.lang.Class)
 	 */
-	@Override
 	@SuppressWarnings("unchecked")
 	public byte[] serialize(Object obj, @SuppressWarnings("rawtypes") Class clazz) throws IOException {
         Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSSerialize");
@@ -40,7 +39,6 @@ public class ProtoStuffSerializer implements Serializer {
 	/* (non-Javadoc)
 	 * @see org.directmemory.utils.Serializer#deserialize(byte[], java.lang.Class)
 	 */
-	@Override
 	@SuppressWarnings("unchecked")
 	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSDeserialize");

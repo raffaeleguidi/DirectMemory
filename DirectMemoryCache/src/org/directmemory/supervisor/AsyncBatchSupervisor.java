@@ -31,7 +31,6 @@ public class AsyncBatchSupervisor implements Supervisor {
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
-	@Override
 	public void disposeOverflow(CacheStore cache) {
         Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.asyncbatch.checkLimits");
 		Split split = stopWatch.start();
