@@ -1,1 +1,1 @@
-DirectMemory - an off-heap cache implementation (a-la BigMemory) to enable  in memory serialization of a large number of java objects without affecting jvm garbage collection performance - released under the Apache Software License, Version 2.0
+DirectMemory Cache is a multi layered cache implementation featuring off-heap memory management (a-la BigMemory) to enable efficient handling of a large number of java objects without affecting jvm garbage collection performance. Released under the Apache Software License, Version 2.0
