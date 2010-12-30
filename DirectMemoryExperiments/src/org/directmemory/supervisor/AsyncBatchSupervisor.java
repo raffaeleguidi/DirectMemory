@@ -32,7 +32,7 @@ public class AsyncBatchSupervisor implements Supervisor {
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	@Override
-	public void checkLimits(CacheStore cache) {
+	public void disposeOverflow(CacheStore cache) {
         Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.asyncbatch.checkLimits");
 		Split split = stopWatch.start();
 		
@@ -41,8 +41,8 @@ public class AsyncBatchSupervisor implements Supervisor {
 			new ThreadUsingCache(cache) {
 				public void run() {
 					logger.debug("checking memory limits");
-					cache.checkHeapMemory();
-					cache.checkOffHeapMemory();
+					cache.disposeHeapOverflow();
+					cache.disposeOffHeapOverflow();
 				}
 			}.start();
 		}

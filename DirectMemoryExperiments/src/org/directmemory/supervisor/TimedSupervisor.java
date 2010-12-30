@@ -26,11 +26,16 @@ public class TimedSupervisor implements Supervisor {
 		public CacheStore cache;
 	}
 	
+	public TimedSupervisor (long batchInterval) {
+		this.batchInterval = batchInterval;
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	@Override
-	public void checkLimits(CacheStore cache) {
+	public void disposeOverflow(CacheStore cache) {
 		Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.timed.checkLimits");
 		Split split = stopWatch.start();
 		long passed = new Date().getTime() - lastCheck.getTime(); 
@@ -39,8 +44,8 @@ public class TimedSupervisor implements Supervisor {
 			new ThreadUsingCache(cache) {
 				public void run() {
 					logger.debug("checking memory limits");
-					cache.checkHeapMemory();
-					cache.checkOffHeapMemory();
+					cache.disposeHeapOverflow();
+					cache.disposeOffHeapOverflow();
 				}
 			}.start();
 		}

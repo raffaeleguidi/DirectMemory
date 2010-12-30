@@ -4,6 +4,6 @@ import org.directmemory.CacheStore;
 
 public interface Supervisor {
 
-	public abstract void checkLimits(CacheStore cache);
+	public abstract void disposeOverflow(CacheStore cache);
 
 }

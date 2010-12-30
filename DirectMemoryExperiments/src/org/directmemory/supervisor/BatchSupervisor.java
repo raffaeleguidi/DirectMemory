@@ -23,15 +23,15 @@ public class BatchSupervisor implements Supervisor {
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	@Override
-	public void checkLimits(CacheStore cache) {
+	public void disposeOverflow(CacheStore cache) {
         Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.batch.checkLimits");
 		Split split = stopWatch.start();
 		
 		if (totalCalls++ >= batchSize) {
 			totalCalls = 0;
 			logger.debug("checking memory limits");
-			cache.checkHeapMemory();
-			cache.checkOffHeapMemory();
+			cache.disposeHeapOverflow();
+			cache.disposeOffHeapOverflow();
 		}
 		split.stop();
 	}

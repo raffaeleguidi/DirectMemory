@@ -37,45 +37,37 @@ public class CacheStore {
 	public int pages = 0;
 	public int maxPages = 0;
 	
-	public Serializer serializer = null;
-	public Supervisor supervisor;
+	public Serializer serializer = new StandardSerializer();
+	public Supervisor supervisor = new SimpleSupervisor();
 	
 	
-	public CacheStore () {
-		
+	private CacheEntry addMemoryPageAndGetFirstSlot() {		
+		if (pages < maxPages) {
+			logger.info("allocating a new memory page");
+			this.pages++;
+			CacheEntry firstSlot = new CacheEntry();
+			firstSlot.position = 0;
+			firstSlot.size = pageSize;
+			firstSlot.buffer = ByteBuffer.allocateDirect(pageSize);
+			slots.add(firstSlot);
+			return firstSlot;
+		} else {
+			logger.warn("no memory pages left");
+			return null;
+		}
 	}
 	
 	public CacheStore (int entriesLimit, int pageSize, int maxPages) {
-		this.serializer = new StandardSerializer(); 
-		this.supervisor = new SimpleSupervisor();
+		logger.info("Cache initialization started");
+		this.entriesLimit = entriesLimit;
 		this.pageSize = pageSize;
 		this.maxPages = maxPages;
-		this.entriesLimit = entriesLimit;
-		ByteBuffer buffer = ByteBuffer.allocateDirect(pageSize);
-		this.pages = 1;
-		CacheEntry firstSlot = new CacheEntry();
-		firstSlot.position = 0;
-		firstSlot.size = pageSize;
-		firstSlot.buffer = buffer.duplicate();
-		slots.add(firstSlot);
+		addMemoryPageAndGetFirstSlot();
+		logger.info("Cache initialization ok");
 	}
 	
-//	public CacheStore (int entriesLimit, int pageSize, int maxPages, Serializer serializer) {
-//		this.pageSize = pageSize;
-//		this.maxPages = maxPages;
-//		this.serializer = serializer; 
-//		this.supervisor = new SimpleSupervisor();
-//		this.entriesLimit = entriesLimit;
-//		ByteBuffer buffer = ByteBuffer.allocateDirect(pageSize);
-//		CacheEntry firstSlot = new CacheEntry();
-//		firstSlot.position = 0;
-//		firstSlot.size = pageSize;
-//		firstSlot.buffer = buffer.duplicate();
-//		slots.add(firstSlot);
-//	}
-	
-	public void checkHeapMemory() {
-        Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkHeapLimit");
+	public void disposeHeapOverflow() {
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeHeapOverflow");
 		Split split = stopWatch.start();
 		if (entriesLimit == -1) {
 			split.stop();
@@ -88,8 +80,8 @@ public class CacheStore {
 		split.stop();
 	}
 	
-	public void checkOffHeapMemory() {
-        Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkOffHeapLimit");
+	public void disposeOffHeapOverflow() {
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeOffHeapOverflow");
 		Split split = stopWatch.start();
 		int freedBytes = 0;
 		int bytes2free = usedMemory.get()-(pageSize*pages);
@@ -101,10 +93,10 @@ public class CacheStore {
 		split.stop();
 	}
 	
-	public void checkLimits() {
-        Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkLimits");
+	public void disposeOverflow() {
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeOverflow");
 		Split split = stopWatch.start();
-		supervisor.checkLimits(this);
+		supervisor.disposeOverflow(this);
 		split.stop();
 	}
 	
@@ -121,12 +113,12 @@ public class CacheStore {
 			e.printStackTrace();
 		}
 		
-		checkLimits();
+		disposeOverflow();
 
 		entry.clazz = entry.object.getClass();
 		entry.size = array.length;
 		entry.object = null;
-		ByteBuffer buf = getBufferFor(entry);
+		ByteBuffer buf = bufferFor(entry);
 		entry.position = buf.position();
 		buf.put(array);
 		entry.buffer = buf;
@@ -140,7 +132,7 @@ public class CacheStore {
 	protected void moveInHeap(CacheEntry entry) {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveinheap");
 		Split split = stopWatch.start();
-		checkLimits();
+		disposeOverflow();
 		byte[] source = null; 
 		source = new byte[entry.size]; 
 		try {
@@ -180,21 +172,16 @@ public class CacheStore {
 		split.stop();
 	}
 
-	private ByteBuffer getBufferFor(CacheEntry entry) {
+	private ByteBuffer bufferFor(CacheEntry entry) {
+		// look for the smaller free buffer that can contain entry
 		CacheEntry slot = slots.higher(entry);
 		if (slot == null) {
-			// allocate a new buffer
-			// should put a limit on it
-			ByteBuffer buf = ByteBuffer.allocateDirect(pageSize);
-			CacheEntry firstSlot = new CacheEntry();
-			firstSlot.position = 0;
-			firstSlot.size = pageSize;
-			firstSlot.buffer = buf.duplicate();
-			slots.add(firstSlot);
-			pages++;
-			return firstSlot.buffer;
+			slot = addMemoryPageAndGetFirstSlot();
+			if (slot == null) {
+				// no free memory left
+				return null;
+			}
 		}
-		
 		synchronized (slot) {
 			ByteBuffer freeBuffer = slot.buffer.duplicate();
 			freeBuffer.position(slot.position);
@@ -208,7 +195,7 @@ public class CacheStore {
 	public CacheEntry put(String key, Object object) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
 		Split split = stopWatch.start();
-		checkLimits();
+		disposeOverflow();
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
@@ -240,7 +227,7 @@ public class CacheStore {
 	public Object get(String key) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
 		Split split = stopWatch.start();
-		checkLimits();
+		disposeOverflow();
 		CacheEntry entry = getEntry(key);
 		split.stop();
 		if (entry == null)
@@ -252,7 +239,7 @@ public class CacheStore {
 	public CacheEntry remove(String key) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
 		Split split = stopWatch.start();
-		checkLimits();
+		disposeOverflow();
 		CacheEntry entry = entries.remove(key);
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
@@ -319,14 +306,21 @@ public class CacheStore {
 		showTiming(SimonManager.getStopwatch("serializer.PSDeserialize"));
 		showTiming(SimonManager.getStopwatch("serializer.javaSerialize"));
 		showTiming(SimonManager.getStopwatch("serializer.javaDeserialize"));
-		showTiming(SimonManager.getStopwatch("detail.checkLimits"));		
-		showTiming(SimonManager.getStopwatch("detail.checkHeapLimit"));		
-		showTiming(SimonManager.getStopwatch("detail.checkOffHeapLimit"));		
+		showTiming(SimonManager.getStopwatch("detail.disposeOverflow"));		
+		showTiming(SimonManager.getStopwatch("detail.disposeHeapOverflow"));		
+		showTiming(SimonManager.getStopwatch("detail.disposeOffHeapOverflow"));		
 		showTiming(SimonManager.getStopwatch("detail.moveoffheap"));		
 		showTiming(SimonManager.getStopwatch("detail.moveinheap"));		
 		showTiming(SimonManager.getStopwatch("detail.removelast"));		
 		showTiming(SimonManager.getStopwatch("detail.removelastoffheap"));		
 		showTiming(SimonManager.getStopwatch("detail.makeroominoffheap"));		
+	}
+	
+	public void dispose() {
+		logger.warn("Off heap memory is not freed. Shout at the programmer!");
+		lruQueue.clear();
+		entries.clear();
+		logger.info("Cache disposed");
 	}
 	
 }

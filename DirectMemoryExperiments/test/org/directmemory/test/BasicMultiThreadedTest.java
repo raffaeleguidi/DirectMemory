@@ -4,6 +4,7 @@ import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.supervisor.AsyncBatchSupervisor;
+import org.directmemory.supervisor.TimedSupervisor;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -31,11 +32,10 @@ public class BasicMultiThreadedTest {
 	
 	@BeforeClass
 	public static void setup() {
-        Stopwatch stopWatch = SimonManager.getStopwatch("test");
-        wholeTestSplit = stopWatch.start();
 		cache = new CacheStore(100, 10 * 1024 * 1024, 1);
 		cache.serializer = new ProtoStuffSerializer();
-		cache.supervisor = new AsyncBatchSupervisor(500);
+//		cache.supervisor = new AsyncBatchSupervisor(750);
+		cache.supervisor = new TimedSupervisor(1500);
 	}
 
 	
@@ -104,11 +104,13 @@ public class BasicMultiThreadedTest {
 			Thread.yield();		
 
 		logger.debug(cache.toString());
+		
 	}
 	
 	@AfterClass
 	public static void checkPerformance() {
-		wholeTestSplit.stop();
 		CacheStore.displayTimings();
+		logger.debug(cache.toString());
+		cache.dispose();
 	}
 }
