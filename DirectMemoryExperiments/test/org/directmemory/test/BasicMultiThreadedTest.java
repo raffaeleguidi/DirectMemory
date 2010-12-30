@@ -3,6 +3,7 @@ package org.directmemory.test;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
+import org.directmemory.supervisor.AsyncBatchSupervisor;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -32,10 +33,9 @@ public class BasicMultiThreadedTest {
 	public static void setup() {
         Stopwatch stopWatch = SimonManager.getStopwatch("test");
         wholeTestSplit = stopWatch.start();
-		cache = new CacheStore(100, 10 * 1024 * 1024, 1, new ProtoStuffSerializer());
-		cache.batchInterval = 500;
-		cache.batchSize = 750;
-//		cache = new CacheStore(100, 10 * 1024 * 1024);
+		cache = new CacheStore(100, 10 * 1024 * 1024, 1);
+		cache.serializer = new ProtoStuffSerializer();
+		cache.supervisor = new AsyncBatchSupervisor(500);
 	}
 
 	

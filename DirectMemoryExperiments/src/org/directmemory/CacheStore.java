@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
+import org.directmemory.supervisor.SimpleSupervisor;
+import org.directmemory.supervisor.Supervisor;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -36,12 +37,17 @@ public class CacheStore {
 	public int pages = 0;
 	public int maxPages = 0;
 	
-	public long batchInterval = 0;
-	
 	public Serializer serializer = null;
+	public Supervisor supervisor;
+	
+	
+	public CacheStore () {
+		
+	}
 	
 	public CacheStore (int entriesLimit, int pageSize, int maxPages) {
-		serializer = new StandardSerializer(); 
+		this.serializer = new StandardSerializer(); 
+		this.supervisor = new SimpleSupervisor();
 		this.pageSize = pageSize;
 		this.maxPages = maxPages;
 		this.entriesLimit = entriesLimit;
@@ -54,20 +60,21 @@ public class CacheStore {
 		slots.add(firstSlot);
 	}
 	
-	public CacheStore (int entriesLimit, int pageSize, int maxPages, Serializer serializer) {
-		this.pageSize = pageSize;
-		this.maxPages = maxPages;
-		this.serializer = serializer; 
-		this.entriesLimit = entriesLimit;
-		ByteBuffer buffer = ByteBuffer.allocateDirect(pageSize);
-		CacheEntry firstSlot = new CacheEntry();
-		firstSlot.position = 0;
-		firstSlot.size = pageSize;
-		firstSlot.buffer = buffer.duplicate();
-		slots.add(firstSlot);
-	}
+//	public CacheStore (int entriesLimit, int pageSize, int maxPages, Serializer serializer) {
+//		this.pageSize = pageSize;
+//		this.maxPages = maxPages;
+//		this.serializer = serializer; 
+//		this.supervisor = new SimpleSupervisor();
+//		this.entriesLimit = entriesLimit;
+//		ByteBuffer buffer = ByteBuffer.allocateDirect(pageSize);
+//		CacheEntry firstSlot = new CacheEntry();
+//		firstSlot.position = 0;
+//		firstSlot.size = pageSize;
+//		firstSlot.buffer = buffer.duplicate();
+//		slots.add(firstSlot);
+//	}
 	
-	private void checkHeapMemory() {
+	public void checkHeapMemory() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkHeapLimit");
 		Split split = stopWatch.start();
 		if (entriesLimit == -1) {
@@ -81,7 +88,7 @@ public class CacheStore {
 		split.stop();
 	}
 	
-	private void checkOffHeapMemory() {
+	public void checkOffHeapMemory() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkOffHeapLimit");
 		Split split = stopWatch.start();
 		int freedBytes = 0;
@@ -94,54 +101,14 @@ public class CacheStore {
 		split.stop();
 	}
 	
-	Date lastCheck = new Date();
-	
-	long checkCalls = 0;
-	
-	public long batchSize = 0;
-	
-	private abstract class ThreadUsingCache extends Thread {
-		public ThreadUsingCache(CacheStore cache) {
-			super();
-			this.cache = cache;
-		}
-
-		public CacheStore cache;
-	}
-
 	public void checkLimits() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkLimits");
 		Split split = stopWatch.start();
-		
-		if (checkCalls++ >= batchSize) {
-			checkCalls = 0;
-			new ThreadUsingCache(this) {
-				public void run() {
-					logger.debug("checking memory limits");
-					cache.checkHeapMemory();
-					cache.checkOffHeapMemory();
-				}
-			}.start();
-		}
+		supervisor.checkLimits(this);
 		split.stop();
 	}
 	
-//	public void checkLimits() {
-//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.checkLimits");
-//		Split split = stopWatch.start();
-//		long passed = new Date().getTime() - lastCheck.getTime(); 
-//		if (passed >= batchInterval) {
-//			lastCheck = new Date();
-//			new ThreadUsingCache(this) {
-//				public void run() {
-//					logger.debug("checking memory limits");
-//					cache.checkHeapMemory();
-//					cache.checkOffHeapMemory();
-//				}
-//			}.start();
-//		}
-//		split.stop();
-//	}
+
 	
 	protected void moveOffheap(CacheEntry entry) {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveoffheap");
@@ -236,25 +203,10 @@ public class CacheStore {
 			slot.size -= entry.size;
 			return freeBuffer;
 		}
-	}
-
-//	private void makeRoomInOffHeapMemory(int bytesNeeded) {
-//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.makeroominoffheap");
-//		Split split = stopWatch.start();
-//		int freedBytes = 0;
-//		int bytes2free = (usedMemory.get() + bytesNeeded)-buffer.limit();
-//		
-//		while (freedBytes < bytes2free) {
-//			CacheEntry removedEntry = removeLastOffHeap();
-//			freedBytes += removedEntry.size;
-//			// should save to disk or demote to next layer
-//		}
-//		split.stop();
-//	}
-	
+	}	
 	
 	public CacheEntry put(String key, Object object) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("put");
+        Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
 		Split split = stopWatch.start();
 		checkLimits();
 		CacheEntry entry = new CacheEntry();
@@ -286,7 +238,7 @@ public class CacheStore {
 	}
 	
 	public Object get(String key) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("get");
+        Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
 		Split split = stopWatch.start();
 		checkLimits();
 		CacheEntry entry = getEntry(key);
@@ -298,7 +250,7 @@ public class CacheStore {
 	}
 	
 	public CacheEntry remove(String key) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("remove");
+        Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
 		Split split = stopWatch.start();
 		checkLimits();
 		CacheEntry entry = entries.remove(key);
@@ -360,9 +312,9 @@ public class CacheStore {
 	}
 	
 	public static void displayTimings() {
-		showTiming(SimonManager.getStopwatch("put"));
-		showTiming(SimonManager.getStopwatch("get"));
-		showTiming(SimonManager.getStopwatch("remove"));
+		showTiming(SimonManager.getStopwatch("cache.put"));
+		showTiming(SimonManager.getStopwatch("cache.get"));
+		showTiming(SimonManager.getStopwatch("cache.remove"));
 		showTiming(SimonManager.getStopwatch("serializer.PSSerialize"));
 		showTiming(SimonManager.getStopwatch("serializer.PSDeserialize"));
 		showTiming(SimonManager.getStopwatch("serializer.javaSerialize"));

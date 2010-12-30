@@ -75,79 +75,83 @@ public class BasicSingleThreadedTest {
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			store.put("test" + i, pojo);
-//			if (i <= limit ) {
-//				assertEquals(i, store.heapEntriesCount());
-//			} else {
-//				assertEquals(limit, store.heapEntriesCount());
-//			}
+			if (i <= limit ) {
+				assertEquals(i, store.heapEntriesCount());
+			} else {
+				assertEquals(limit, store.heapEntriesCount());
+			}
 			logger.debug("goOverTheLimit " + store);
 		}
 		
 	}
+	
 	@Test public void goOverTheLimitWithProtostuff() {
 		int limit = 10;
-		CacheStore store = new CacheStore(limit, 1 * 1024 * 1024, 1, new ProtoStuffSerializer());
+		CacheStore store = new CacheStore(limit, 1 * 1024 * 1024, 1);
+		store.serializer = new ProtoStuffSerializer();
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			store.put("test" + i, pojo);
-//			if (i <= limit) {
-//				assertEquals(store.heapEntriesCount(), i);
-//			} else {
-//				assertEquals(limit, store.heapEntriesCount());
-//			}
+			if (i <= limit) {
+				assertEquals(store.heapEntriesCount(), i);
+			} else {
+				assertEquals(limit, store.heapEntriesCount());
+			}
 			logger.debug("goOverTheLimit " + store);
 		}
-		store.displayTimings();
+		CacheStore.displayTimings();
 	}
+	
 	@Test public void goOverTheLimitPutAndGet() {
 		int limit = 1000;
-		CacheStore store = new CacheStore(limit, 10 * 1024 * 1024, 1);
+		CacheStore cache = new CacheStore(limit, 10 * 1024 * 1024, 1);
 		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
-			store.put("test" + i, pojo);
-//			if (i <= limit) {
-//				assertEquals(store.heapEntriesCount(), i);
-//			} else {
-//				assertEquals(limit, store.heapEntriesCount());
-//			}
+			cache.put("test" + i, pojo);
+			if (i <= limit) {
+				assertEquals(cache.heapEntriesCount(), i);
+			} else {
+				assertEquals(limit, cache.heapEntriesCount());
+			}
 		}
 
-		logger.debug("goOverTheLimitPutAndGet " + store);
+		logger.debug("goOverTheLimitPutAndGet " + cache.toString());
 		
 		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			@SuppressWarnings("unused")
-			DummyPojo newPojo = (DummyPojo)store.get("test" + i);
+			DummyPojo newPojo = (DummyPojo)cache.get("test" + i);
 		}
-		assertEquals(limit, store.heapEntriesCount());
-		assertEquals(570500, store.usedMemory());
+		assertEquals(limit, cache.heapEntriesCount());
+		assertEquals(570500, cache.usedMemory());
 	}
 	
 	@Test public void goOverTheLimitPutAndGetWithProtostuff() {
 		int limit = 1000;
-		CacheStore store = new CacheStore(limit, 10 * 1024 * 1024, 1, new ProtoStuffSerializer());
+		CacheStore cache = new CacheStore(limit, 10 * 1024 * 1024, 1);
+		cache.serializer = new ProtoStuffSerializer();
 		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
-			store.put("test" + i, pojo);
-//			if (i <= limit) {
-//				assertEquals(store.heapEntriesCount(), i);
-//			} else {
-//				assertEquals(limit, store.heapEntriesCount());
-//			}
+			cache.put("test" + i, pojo);
+			if (i <= limit) {
+				assertEquals(cache.heapEntriesCount(), i);
+			} else {
+				assertEquals(limit, cache.heapEntriesCount());
+			}
 		}
 
-		logger.debug("goOverTheLimitPutAndGet " + store);
+		logger.debug("goOverTheLimitPutAndGet " + cache.toString());
 		
 		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
 			@SuppressWarnings("unused")
-			DummyPojo newPojo = (DummyPojo)store.get("test" + i);
+			DummyPojo newPojo = (DummyPojo)cache.get("test" + i);
 		}
 		
-		assertEquals(limit, store.heapEntriesCount());
-		assertEquals(518500, store.usedMemory());
+		assertEquals(limit, cache.heapEntriesCount());
+		assertEquals(518500, cache.usedMemory());
 	}
 	
 	
