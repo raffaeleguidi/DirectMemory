@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 public class SimpleSupervisor implements Supervisor {
 
 	private static Logger logger=LoggerFactory.getLogger(SimpleSupervisor.class);
+	
+	private int checkForExpiredEvery = 100;
+	private int count = 0;
+	
 
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
@@ -22,8 +26,14 @@ public class SimpleSupervisor implements Supervisor {
 		logger.debug("checking memory limits");
 		cache.disposeHeapOverflow();
 		cache.disposeOffHeapOverflow();
-		logger.debug("checking expired entries");
-		cache.disposeExpired();
+		
+		if (count >= checkForExpiredEvery) {
+			count = 0;
+			logger.debug("checking expired entries");
+			cache.disposeExpired();
+		} else {
+			count++;
+		}
 		split.stop();
 	}
 }

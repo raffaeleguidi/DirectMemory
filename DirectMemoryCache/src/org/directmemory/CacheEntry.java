@@ -9,6 +9,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public int position = -1;
 	public Object object = null;
 	public ByteBuffer buffer = null;
+	public byte[] array = null;
 	public Date expiresOn = null;
 	
 	

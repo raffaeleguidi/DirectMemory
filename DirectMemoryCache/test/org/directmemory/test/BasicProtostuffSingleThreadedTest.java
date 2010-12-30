@@ -37,7 +37,7 @@ public class BasicProtostuffSingleThreadedTest {
 		CacheStore cache = new CacheStore(limit, 10 * 1024 * 1024, 1);
 		cache.serializer = new ProtoStuffSerializer();
 		for (int i = 1; i <= limit * 1.5; i++) {
-			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
+			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
 			cache.put("test" + i, pojo);
 			if (i <= limit) {
 				assertEquals(cache.heapEntriesCount(), i);
@@ -50,7 +50,7 @@ public class BasicProtostuffSingleThreadedTest {
 		
 		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
-			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
+			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
 			@SuppressWarnings("unused")
 			DummyPojo newPojo = (DummyPojo)cache.get("test" + i);
 		}

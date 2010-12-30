@@ -2,7 +2,6 @@ package org.directmemory;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
@@ -53,7 +52,7 @@ public class CacheStore {
 			slots.add(firstSlot);
 			return firstSlot;
 		} else {
-			logger.warn("no memory pages left");
+			logger.debug("no memory pages left");
 			return null;
 		}
 	}
@@ -80,17 +79,49 @@ public class CacheStore {
 		
 		split.stop();
 	}	
+	
+	private void moveItemsOffHeap(int entries2move) {
+		if (entries2move < 1) return;
+		
+		for (int i = 0; i < entries2move; i++) {
+			CacheEntry entry = lruQueue.peek();
+			synchronized (entry) {
+				CacheEntry newEntry = new CacheEntry();
+				try {
+					newEntry.array = serializer.serialize(entry.object, entry.object.getClass());
+					newEntry.size = newEntry.array.length;
+					newEntry.clazz = entry.object.getClass();
+					newEntry.key = entry.key;
+					newEntry.buffer = bufferFor(newEntry);
+					newEntry.position = newEntry.buffer.position();
+					newEntry.buffer.put(newEntry.array);
+					newEntry.array = null;
+
+					usedMemory.addAndGet(newEntry.size);
+					lruQueue.remove(entry);
+					entries.put(newEntry.key, newEntry);
+					lruOffheapQueue.add(newEntry);
+
+					logger.debug("moved off heap " + newEntry.key + ": pos=" + newEntry.position + " size=" + newEntry.size);
+					
+				} catch (Exception e) {
+					logger.debug("no room for " + entry.key + " - skipping");
+					lruQueue.remove(entry);
+					lruQueue.add(entry);
+				}
+			}
+		}
+	}
+	
 	public void disposeHeapOverflow() {
-        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeHeapOverflow");
-		Split split = stopWatch.start();
 		if (entriesLimit == -1) {
-			split.stop();
 			return;
 		}
-		while ((entries.size() - offHeapEntriesCount()) >= entriesLimit) {
-			CacheEntry entry = removeLast();
-			moveOffheap(entry);
-		}
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeHeapOverflow");
+		Split split = stopWatch.start();
+		
+		moveItemsOffHeap(lruQueue.size() - entriesLimit);
+
 		split.stop();
 	}
 	
@@ -107,7 +138,7 @@ public class CacheStore {
 		split.stop();
 	}
 	
-	public void disposeOverflow() {
+	public void askSupervisorToDisposeOverflow() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeOverflow");
 		Split split = stopWatch.start();
 		supervisor.disposeOverflow(this);
@@ -116,49 +147,56 @@ public class CacheStore {
 	
 
 	
-	protected void moveOffheap(CacheEntry entry) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveoffheap");
-		Split split = stopWatch.start();
-		byte[] array = null;
-		try {
-			array = serializer.serialize((Serializable)entry.object, entry.object.getClass());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		disposeOverflow();
-
-		entry.clazz = entry.object.getClass();
-		entry.size = array.length;
-		entry.object = null;
-		ByteBuffer buf = bufferFor(entry);
-		entry.position = buf.position();
-		buf.put(array);
-		entry.buffer = buf;
-		lruQueue.remove(entry);
-		lruOffheapQueue.add(entry);
-		usedMemory.addAndGet(entry.size);
-		entries.put(entry.key, entry);
-		split.stop();
-	}
+//	protected void moveOffheap(CacheEntry entry) {
+//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveoffheap");
+//		Split split = stopWatch.start();
+//		byte[] array = null;
+//		try {
+//			array = serializer.serialize((Serializable)entry.object, entry.object.getClass());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		entry.clazz = entry.object.getClass();
+//		entry.size = array.length;
+//		entry.object = null;
+//		ByteBuffer buf = bufferFor(entry);
+//		entry.position = buf.position();
+//		buf.put(array);
+//		entry.buffer = buf;
+//		lruQueue.remove(entry);
+//		lruOffheapQueue.add(entry);
+//		usedMemory.addAndGet(entry.size);
+//		entries.put(entry.key, entry); // needed? it seems so...
+////		logger.info(entry.key + " position " + entry.position + " size " + entry.size);
+//		split.stop();
+//	}
 	
 	protected void moveInHeap(CacheEntry entry) {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveinheap");
 		Split split = stopWatch.start();
-		disposeOverflow();
 		byte[] source = null; 
 		source = new byte[entry.size]; 
 		try {
-			ByteBuffer buf = entry.buffer.duplicate();
-			entry.buffer.clear();
-			entry.buffer = null;
-			buf.position(entry.position);
-			buf.get(source);
-			Object obj = serializer.deserialize(source, entry.clazz);
-			entry.object = obj;
-			usedMemory.addAndGet(-source.length);
+			synchronized (entry) {
+				ByteBuffer buf = entry.buffer;
+				buf.position(entry.position);
+				buf.get(source);
+				Object obj = serializer.deserialize(source, entry.clazz);
+				entry.object = obj;
+				entry.buffer = null;
+				CacheEntry freeSlot = new CacheEntry();
+				freeSlot.buffer = buf;
+				freeSlot.position = entry.position;
+				freeSlot.buffer.position(freeSlot.position);
+				freeSlot.size = entry.size;
+				slots.add(freeSlot);
+			}
+
 			lruOffheapQueue.remove(entry);
+			
+			usedMemory.addAndGet(-source.length);
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
 		} catch (UTFDataFormatException e) {
@@ -185,36 +223,72 @@ public class CacheStore {
 		}
 		split.stop();
 	}
+	
+//	private CacheEntry forceRoomFor(CacheEntry entry) {
+//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.forceMakeRoomFor");
+//		Split split = stopWatch.start();
+//		//detail.forceMakeRoomFor
+//		
+//		// should remove only the larger ones
+//		// and some defrag would be needed sooner or later
+//		CacheEntry last = removeLastOffHeap();
+//		if (last == null) {
+//			logger.warn("no slots off heap available");
+//			split.stop();
+//			return null;
+//		}
+//		while (last != null && last.size <= entry.size ) { 
+//			last = removeLastOffHeap();
+//		}
+//		split.stop();
+//		return last;
+//	}
 
 	private ByteBuffer bufferFor(CacheEntry entry) {
 		// look for the smaller free buffer that can contain entry
+		// it fails for almost equal buffers!!!
 		CacheEntry slot = slots.higher(entry);
+		
 		if (slot == null) {
+			// no free slots left free the last recently used
+			CacheEntry first = slots.first();
+			CacheEntry last = slots.last();
+			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
+			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
+//			slot = forceRoomFor(entry);
+		}
+		if (slot == null) {
+			// no large enough slots left at all
 			slot = addMemoryPageAndGetFirstSlot();
-			if (slot == null) {
-				// no free memory left
-				return null;
-			}
 		}
-		synchronized (slot) {
-			ByteBuffer freeBuffer = slot.buffer.duplicate();
-			freeBuffer.position(slot.position);
-			slot.buffer.position(slot.position);
-			slot.position += entry.size;
-			slot.size -= entry.size;
-			return freeBuffer;
+		if (slot == null) {
+			// no free memory left - I quit trying
+			return null;
 		}
+		
+		return slice(slot, entry);
 	}	
 	
+	private ByteBuffer slice(CacheEntry slot2Slice, CacheEntry entry) {
+		synchronized (slot2Slice) {
+			slot2Slice.size = slot2Slice.size - entry.size;
+			slot2Slice.position = slot2Slice.position + entry.size;
+			ByteBuffer buf = slot2Slice.buffer.duplicate();
+			slot2Slice.buffer.position(slot2Slice.position);
+			return buf;
+		}
+		
+	}
+
 	public CacheEntry put(String key, Object object) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
 		Split split = stopWatch.start();
-		disposeOverflow();
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
-		lruQueue.add(entry);
 		entries.put(key, entry);
+		lruQueue.add(entry);
+		askSupervisorToDisposeOverflow();
 		split.stop();
 		return entry;
 	}
@@ -241,19 +315,19 @@ public class CacheStore {
 	public Object get(String key) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
 		Split split = stopWatch.start();
-		disposeOverflow();
 		CacheEntry entry = getEntry(key);
+		askSupervisorToDisposeOverflow();
 		split.stop();
-		if (entry == null)
+		if (entry == null) {
 			return null;
-		
-		return entry.object;
+		} else {
+			return entry.object;
+		}
 	}
 	
 	public CacheEntry remove(String key) {
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
 		Split split = stopWatch.start();
-		disposeOverflow();
 		CacheEntry entry = entries.remove(key);
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
@@ -262,6 +336,7 @@ public class CacheStore {
 			lruOffheapQueue.remove(entry);
 			slots.add(entry);
 		}
+		askSupervisorToDisposeOverflow();
 		split.stop();
 		return entry;
 	}
@@ -269,6 +344,11 @@ public class CacheStore {
 	public CacheEntry removeLast() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.removelast");
 		Split split = stopWatch.start();
+		CacheEntry next = lruQueue.peek();
+		if (next.size > slots.last().size) {
+			split.stop();
+			return null;
+		}
 		CacheEntry last = lruQueue.poll();
 		entries.remove(last.key);
 		split.stop();
@@ -281,6 +361,8 @@ public class CacheStore {
 		CacheEntry last = lruOffheapQueue.poll();
 		if (last == null) {
 			logger.warn("no lru from off heap");
+			split.stop();
+			return null;
 		}
 		
 		usedMemory.addAndGet(-last.size);
@@ -304,7 +386,9 @@ public class CacheStore {
 	
 	@Override
 	public String toString() {
-		return "CacheStore: {heap entries=" + heapEntriesCount() + ", off heap entries=" + offHeapEntriesCount() + ", usedMemory=" + usedMemory.get() + ", limit=" + entriesLimit + ", cacheSize=" + (pageSize * pages) +"}";
+		return "CacheStore: {heap entries=" + heapEntriesCount() + "/" + entriesLimit + 
+				" memory=" + usedMemory.get() + "/" + (pageSize * pages) +  
+				" in " + offHeapEntriesCount() + " off heap entries}";
 	}
 	
 	private static void showTiming(Stopwatch sw) {
@@ -328,7 +412,7 @@ public class CacheStore {
 		showTiming(SimonManager.getStopwatch("detail.moveinheap"));		
 		showTiming(SimonManager.getStopwatch("detail.removelast"));		
 		showTiming(SimonManager.getStopwatch("detail.removelastoffheap"));		
-		showTiming(SimonManager.getStopwatch("detail.makeroominoffheap"));		
+		showTiming(SimonManager.getStopwatch("detail.forceMakeRoomFor"));		
 	}
 	
 	public void dispose() {
@@ -336,6 +420,10 @@ public class CacheStore {
 		lruQueue.clear();
 		entries.clear();
 		logger.info("Cache disposed");
+	}
+	
+	public static int MB(int size) {
+		return size * 1024 * 1024;
 	}
 	
 }
