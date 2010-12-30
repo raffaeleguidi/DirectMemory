@@ -14,7 +14,7 @@
     </encoder>
   </appender>
     
-  <logger name="org.directmemory.impl" level="warn">
+  <logger name="org.directmemory.CacheStore" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>

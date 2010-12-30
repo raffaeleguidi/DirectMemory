@@ -4,13 +4,18 @@ import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.javasimon.SimonManager;
+import org.javasimon.Split;
 import org.javasimon.Stopwatch;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BasicMultiThreadedTest {
-	
+
+	private static Logger logger=LoggerFactory.getLogger(BasicMultiThreadedTest.class);
+
 	private abstract class ThreadUsingCache extends Thread {
 		public ThreadUsingCache(ThreadGroup group, String name, CacheStore cache) {
 			super(group, name);
@@ -21,11 +26,16 @@ public class BasicMultiThreadedTest {
 	}
 	
 	public static CacheStore cache = null;
+	public static Split wholeTestSplit = null;
 	
 	@BeforeClass
 	public static void setup() {
-//		cache = new CacheStore(100, 10 * 1024 * 1024, new ProtoStuffSerializer());
-		cache = new CacheStore(100, 10 * 1024 * 1024);
+        Stopwatch stopWatch = SimonManager.getStopwatch("test");
+        wholeTestSplit = stopWatch.start();
+		cache = new CacheStore(100, 10 * 1024 * 1024, 1, new ProtoStuffSerializer());
+		cache.batchInterval = 500;
+		cache.batchSize = 750;
+//		cache = new CacheStore(100, 10 * 1024 * 1024);
 	}
 
 	
@@ -61,7 +71,7 @@ public class BasicMultiThreadedTest {
 		while (group.activeCount() > 0)
 			Thread.yield();
 		
-		System.out.println(cache);
+		logger.debug(cache.toString());
 	}
 	
 	@Test
@@ -93,25 +103,12 @@ public class BasicMultiThreadedTest {
 		while (group.activeCount() > 0)
 			Thread.yield();		
 
-		System.out.println(cache);
+		logger.debug(cache.toString());
 	}
-	
-	public static void showAverage(Stopwatch sw) {
-		double average = ((double)sw.getTotal() / (double)sw.getCounter() /1000000);
-		System.out.println(sw.getName() + " total time: " + (sw.getTotal()/1000000) + " " + sw.getCounter() + " hits - average " + average + " - max active:" + sw.getMaxActive());
-	}
-	
 	
 	@AfterClass
 	public static void checkPerformance() {
-		showAverage(SimonManager.getStopwatch("put"));
-		showAverage(SimonManager.getStopwatch("checkheaplimits"));
-		showAverage(SimonManager.getStopwatch("get"));
-		showAverage(SimonManager.getStopwatch("remove"));
-		showAverage(SimonManager.getStopwatch("protostuff-serialize"));
-		showAverage(SimonManager.getStopwatch("protostuff-deserialize"));
-		showAverage(SimonManager.getStopwatch("java-serialize"));
-		showAverage(SimonManager.getStopwatch("java-deserialize"));
-		
+		wholeTestSplit.stop();
+		CacheStore.displayTimings();
 	}
 }

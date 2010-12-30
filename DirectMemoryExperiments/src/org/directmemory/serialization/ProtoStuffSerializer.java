@@ -21,7 +21,7 @@ public class ProtoStuffSerializer implements Serializer {
 	@Override
 	@SuppressWarnings("unchecked")
 	public byte[] serialize(Object obj, @SuppressWarnings("rawtypes") Class clazz) throws IOException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("protostuff-serialize");
+        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSSerialize");
 		Split split = stopWatch.start();
 		@SuppressWarnings("rawtypes")
 		Schema schema = RuntimeSchema.getSchema(clazz);
@@ -43,7 +43,7 @@ public class ProtoStuffSerializer implements Serializer {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("protostuff-deserialize");
+        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSDeserialize");
 		Split split = stopWatch.start();
 		final Object object = clazz.newInstance();
 		@SuppressWarnings("rawtypes")
