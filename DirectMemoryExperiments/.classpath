@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/protostuff/protostuff-api-1.0.0.M6.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff/protostuff-core-1.0.0.M6.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff/protostuff-runtime-1.0.0.M6.jar"/>
+	<classpathentry kind="lib" path="lib/javasimon/eval-0.5.jar"/>
+	<classpathentry kind="lib" path="lib/javasimon/javasimon-core-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/javasimon/sjsxp.jar"/>
+	<classpathentry kind="lib" path="lib/javasimon/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j/logback-classic-0.9.26.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j/logback-core-0.9.26.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
