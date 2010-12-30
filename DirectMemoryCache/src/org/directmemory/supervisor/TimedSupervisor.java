@@ -28,7 +28,6 @@ public class TimedSupervisor implements Supervisor {
 	
 	public TimedSupervisor (long batchInterval) {
 		this.batchInterval = batchInterval;
-		
 	}
 	
 	/* (non-Javadoc)
@@ -45,6 +44,8 @@ public class TimedSupervisor implements Supervisor {
 					logger.debug("checking memory limits");
 					cache.disposeHeapOverflow();
 					cache.disposeOffHeapOverflow();
+					logger.debug("checking expired entries");
+					cache.disposeExpired();
 				}
 			}.start();
 		}

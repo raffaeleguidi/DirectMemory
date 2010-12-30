@@ -42,6 +42,8 @@ public class AsyncBatchSupervisor implements Supervisor {
 					logger.debug("checking memory limits");
 					cache.disposeHeapOverflow();
 					cache.disposeOffHeapOverflow();
+					logger.debug("checking expired entries");
+					cache.disposeExpired();
 				}
 			}.start();
 		}

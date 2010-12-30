@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -66,6 +67,19 @@ public class CacheStore {
 		logger.info("Cache initialization ok");
 	}
 	
+	public void disposeExpired() {
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeExpired");
+		Split split = stopWatch.start();
+		
+		for (Iterator<CacheEntry> iterator = entries.values().iterator(); iterator.hasNext();) {
+			CacheEntry entry = iterator.next();
+			if (entry.expired()) {
+				remove(entry.key);
+			}
+		}
+		
+		split.stop();
+	}	
 	public void disposeHeapOverflow() {
         Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeHeapOverflow");
 		Split split = stopWatch.start();
@@ -309,6 +323,7 @@ public class CacheStore {
 		showTiming(SimonManager.getStopwatch("detail.disposeOverflow"));		
 		showTiming(SimonManager.getStopwatch("detail.disposeHeapOverflow"));		
 		showTiming(SimonManager.getStopwatch("detail.disposeOffHeapOverflow"));		
+		showTiming(SimonManager.getStopwatch("detail.disposeExpired"));		
 		showTiming(SimonManager.getStopwatch("detail.moveoffheap"));		
 		showTiming(SimonManager.getStopwatch("detail.moveinheap"));		
 		showTiming(SimonManager.getStopwatch("detail.removelast"));		
