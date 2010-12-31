@@ -1,23 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DirectMemoryCache</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.iam.jdt.core.mavenIncrementalBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.iam.jdt.core.mavenNature</nature>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
+  <name>DirectMemoryCache</name>
+  <comment>DirectMemory Cache is a multi layered cache implementation featuring off-heap memory management (a-la BigMemory) to enable efficient handling of a large number of java objects without affecting jvm garbage collection performance. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.iam.jdt.core.mavenIncrementalBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.iam.jdt.core.mavenNature</nature>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>

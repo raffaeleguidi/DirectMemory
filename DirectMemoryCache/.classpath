@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.iam.jdt.core.mavenClasspathContainer"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="var" path="M2_REPO/net/java/dev/eval/eval/0.5/eval-0.5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/javasimon/javasimon-core/2.3.0/javasimon-core-2.3.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.7/junit-4.7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-classic/0.9.26/logback-classic-0.9.26.jar"/>
+	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-core/0.9.26/logback-core-0.9.26.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/dyuproject/protostuff/protostuff-api/1.0.0.M6/protostuff-api-1.0.0.M6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/dyuproject/protostuff/protostuff-core/1.0.0.M6/protostuff-core-1.0.0.M6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/dyuproject/protostuff/protostuff-runtime/1.0.0.M6/protostuff-runtime-1.0.0.M6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
