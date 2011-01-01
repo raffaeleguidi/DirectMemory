@@ -15,13 +15,17 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	
 	@SuppressWarnings("rawtypes")
 	public Class clazz = null;
+	public String path = null;
 	
+	public boolean onDisk() {
+		return path != null;
+	}
 	public boolean inHeap() {
-		return !offHeap();
+		return object != null;
 	}
 	
 	public boolean offHeap() {
-		return object == null;
+		return object == null && !onDisk();
 	}
 	
 	public boolean expired() {
@@ -39,6 +43,26 @@ public class CacheEntry implements Comparable<CacheEntry> {
 			return 0;
 		return 1;
 	}
+	
+	public byte[] rawData() {
+		if (buffer != null) {
+			final byte[] temp = new byte[size];
+			buffer.position(position);
+			buffer.get(temp);
+			return temp;
+		}		
+		if (array != null) {
+			return array;
+		}
+		return null;
+	}
 
+	@SuppressWarnings("unchecked")
+	public Class<? extends Object> clazz() {
+		if (object != null) {
+			clazz = object.getClass();
+		}
+		return clazz;
+	}
 }
 
