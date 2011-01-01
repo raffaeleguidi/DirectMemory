@@ -16,6 +16,7 @@ public class BasicStorageTest {
 
 	private static Logger logger=LoggerFactory.getLogger(BasicStorageTest.class);
 	
+	@SuppressWarnings("unused")
 	private Random random = new Random();
 
 	private int fixedSize() {
