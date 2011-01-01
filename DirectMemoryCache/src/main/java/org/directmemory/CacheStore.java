@@ -141,8 +141,11 @@ public class CacheStore {
 	}
 		
 	private void moveEntriesToDisk(int bytes2free) {
+        Stopwatch stopWatch = SimonManager.getStopwatch("detail.move2disk");
+		Split split = null;
 		int freedBytes = 0;
 		while (freedBytes < bytes2free) {
+			split = stopWatch.start();
 			CacheEntry last = lruOffheapQueue.poll();
 			if (last == null) {
 				logger.warn("no lru entries in off heap slots");
@@ -160,6 +163,7 @@ public class CacheStore {
 			slots.add(slot);			
 			logger.debug("created free slot of " + slot.size + " bytes");
 			freedBytes += last.size;
+			split.stop();
 		}
 	}
 
@@ -438,14 +442,16 @@ public class CacheStore {
 	
 	@Override
 	public String toString() {
-		return "CacheStore: { entries: " + entries.size() +
-				" heap: " + heapEntriesCount() + "/" + entriesLimit + 
-				" memory: " + usedMemory.get() + "/" + (pageSize * pages) + 
-				" in " + offHeapEntriesCount() + " off-heap" +
-				" and " + onDiskEntriesCount() + " on disk entries" +
-				"} + \r\n" +
-				"-> free slots=" + slots.size() + " first size is: " + slots.first().size + " last size=" + slots.last().size
-				;
+		final String crLf = "\r\n";
+		return "CacheStore stats: " + 
+				"{ " + crLf + 
+				"   entries: " + entries.size() + crLf + 
+				"   heap: " + heapEntriesCount() + "/" + entriesLimit + crLf +  
+				"   memory: " + usedMemory.get() + "/" + (pageSize * pages) + crLf + 
+				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
+				"   free slots: " + slots.size() + " first size is: " + slots.first().size + " last size=" + slots.last().size + crLf + 
+				"}" + crLf
+			;
 	}
 	
 	private long onDiskEntriesCount() {
@@ -469,8 +475,10 @@ public class CacheStore {
 		showTiming(SimonManager.getStopwatch("detail.disposeHeapOverflow"));		
 		showTiming(SimonManager.getStopwatch("detail.disposeOffHeapOverflow"));		
 		showTiming(SimonManager.getStopwatch("detail.disposeExpired"));		
-		showTiming(SimonManager.getStopwatch("detail.moveoffheap"));		
 		showTiming(SimonManager.getStopwatch("detail.moveinheap"));		
+		showTiming(SimonManager.getStopwatch("detail.moveoffheap"));		
+		showTiming(SimonManager.getStopwatch("detail.move2disk"));		
+		showTiming(SimonManager.getStopwatch("detail.movefromdisk"));		
 		showTiming(SimonManager.getStopwatch("detail.removelast"));		
 		showTiming(SimonManager.getStopwatch("detail.removelastoffheap"));		
 		showTiming(SimonManager.getStopwatch("detail.forceMakeRoomFor"));		
@@ -483,11 +491,11 @@ public class CacheStore {
 		logger.info("Cache reset");
 	}
 	
-	public static int MB(int mega) {
-		return mega * 1024 * 1024;
+	public static int MB(double mega) {
+		return (int)mega * 1024 * 1024;
 	}
 	
-	public static int KB(int kilo) {
-		return kilo * 1024;
+	public static int KB(double kilo) {
+		return (int)kilo * 1024;
 	}
 }

@@ -14,12 +14,12 @@
     </encoder>
   </appender>
     
-  <logger name="org.directmemory.CacheStore" level="warn">
+  <logger name="org.directmemory.CacheStore" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
 
-  <logger name="org.directmemory.storage" level="debug">
+  <logger name="org.directmemory.storage" level="warn">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
