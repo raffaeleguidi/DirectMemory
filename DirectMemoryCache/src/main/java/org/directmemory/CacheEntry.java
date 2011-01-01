@@ -17,12 +17,15 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public Class clazz = null;
 	public String path = null;
 	
+	public boolean onDisk() {
+		return path != null;
+	}
 	public boolean inHeap() {
-		return !offHeap();
+		return object != null;
 	}
 	
 	public boolean offHeap() {
-		return object == null;
+		return object == null && !onDisk();
 	}
 	
 	public boolean expired() {

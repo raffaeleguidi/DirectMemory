@@ -108,6 +108,6 @@ public class BasicMultiThreadedTest {
 	public static void checkPerformance() {
 		CacheStore.displayTimings();
 		logger.debug(cache.toString());
-		cache.dispose();
+		cache.reset();
 	}
 }

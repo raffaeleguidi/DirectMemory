@@ -18,10 +18,10 @@ public class BasicSingleThreadedTest {
 
 	private static Logger logger=LoggerFactory.getLogger(BasicSingleThreadedTest.class);
 	
-	private Random val = new Random();
+	private Random random = new Random();
 
 	private int randomSize() {
-		return 1024 + val.nextInt(1024);
+		return 1024 + random.nextInt(1024);
 	}
 	
 	@Test
@@ -40,7 +40,7 @@ public class BasicSingleThreadedTest {
 		assertNotNull(pojo3);
 		assertEquals("test3", pojo3.name);
 		logger.debug("addAndRetrieve " + cache.toString());
-		cache.dispose();
+		cache.reset();
 	}
 	
 	
@@ -63,22 +63,11 @@ public class BasicSingleThreadedTest {
 		for (int i = 1; i <= limit * 2; i++) {
 			String key = "test" + i;
 			DummyPojo newPojo = (DummyPojo)cache.get(key);
-			
-			if (newPojo != null) {
-//				logger.debug("got " + newPojo.name + " " + cache.toString());
-			} else {
-				logger.debug("missed " + key + " " + cache.toString());
-			}
-			
-
-			//			assertNotNull(newPojo);
-//			logger.debug(newPojo.name);
-//			assertEquals("test"+i, newPojo.name);
+			assertNotNull(newPojo);
+			assertEquals("test"+i, newPojo.name);
 		}
 		logger.debug("finally " + cache.toString());
-//		assertEquals(limit, cache.heapEntriesCount());
-//		assertEquals(570500, cache.usedMemory());
-		cache.dispose();
+		cache.reset();
 	}	
 	
 
@@ -99,7 +88,7 @@ public class BasicSingleThreadedTest {
 		last = cache.removeLast();
 		// so the last should be now test3
 		assertEquals("test3", last.key);
-		cache.dispose();
+		cache.reset();
 	}
 	
 	@Test
@@ -110,7 +99,7 @@ public class BasicSingleThreadedTest {
 		assertEquals("test1", entry.key);
 		entry = cache.getEntry("test1");
 		assertNull(entry);
-		cache.dispose();
+		cache.reset();
 	}
 	
 	@Test public void reachLimit() {
@@ -124,7 +113,7 @@ public class BasicSingleThreadedTest {
 			}
 			logger.debug("reachLimit " + cache);
 		}
-		cache.dispose();
+		cache.reset();
 	}
 	
 	@Test public void goOverTheLimit() {
@@ -140,7 +129,7 @@ public class BasicSingleThreadedTest {
 			}
 			logger.debug("goOverTheLimit " + cache);
 		}
-		cache.dispose();		
+		cache.reset();		
 	}
 	
 	
@@ -162,12 +151,12 @@ public class BasicSingleThreadedTest {
 		for (int i = 1; i <= limit * 1.5; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
-			@SuppressWarnings("unused")
 			DummyPojo newPojo = (DummyPojo)cache.get("test" + i);
-		}
+			assertNotNull(newPojo);
+			assertEquals("test"+i, newPojo.name);
+	}
 		assertEquals(limit, cache.heapEntriesCount());
-//		assertEquals(570500, cache.usedMemory());
-		cache.dispose();
+		cache.reset();
 	}	
 
 	

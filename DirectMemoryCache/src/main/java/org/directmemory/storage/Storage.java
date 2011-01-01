@@ -20,9 +20,13 @@ public abstract class Storage {
 	protected abstract boolean restore(CacheEntry entry);
 
 	public boolean put(CacheEntry entry) {
-		if (store(entry)) {
+		if (entry.key == null) {
+			logger.warn("why an entry with a null key?!?");
+		}
+		if (store(entry)) {		
 			logger.debug("stored entry " + entry.key);
-			return lruQueue.add(entries.put(entry.key, entry));
+			entries.put(entry.key, entry);
+			return lruQueue.add(entry);
 		} else {
 			logger.debug("failed to store entry " + entry.key);
 			return false;
@@ -30,12 +34,16 @@ public abstract class Storage {
 	}
 	
 	public boolean remove(CacheEntry entry) {
-		logger.debug("delete entry " + entry.key);
-		return lruQueue.remove(entry);
+		logger.debug("remove entry " + entry.key);
+		if (restore(entry)) {
+			return lruQueue.remove(entry);
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean remove(String key) {
-		logger.debug("delete entry with key " + key);
+		logger.debug("remove entry with key " + key);
 		CacheEntry entry = entries.get(key);
 		return lruQueue.remove(entry);
 	}
@@ -48,7 +56,7 @@ public abstract class Storage {
 			logger.debug("retrieve entry with key " + key);
 			return entry;
 		} else {
-			logger.debug("failed retrieve entry with key " + key);
+			logger.debug("failed to retrieve entry with key " + key);
 			return null;
 		}
 	}
@@ -73,6 +81,9 @@ public abstract class Storage {
 	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
 		CacheEntry entry = get(key); 
 		moveButKeepTrackOfEntryTo(entry, storage);
+	}
+	public long count() {
+		return lruQueue.size();
 	}
 
 }
