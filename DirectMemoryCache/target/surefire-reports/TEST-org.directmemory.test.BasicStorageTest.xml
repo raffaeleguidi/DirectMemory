@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="7.5" errors="0" skipped="0" tests="2" name="org.directmemory.test.BasicMultiThreadedTest">
+<testsuite failures="0" time="0.062" errors="0" skipped="0" tests="1" name="org.directmemory.test.BasicStorageTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin"/>
@@ -59,6 +59,5 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
   </properties>
-  <testcase time="1.094" classname="org.directmemory.test.BasicMultiThreadedTest" name="get"/>
-  <testcase time="6.156" classname="org.directmemory.test.BasicMultiThreadedTest" name="put"/>
+  <testcase time="0.062" classname="org.directmemory.test.BasicStorageTest" name="addAndRetrieve"/>
 </testsuite>
