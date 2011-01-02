@@ -25,6 +25,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/DirectMemoryCache/DirectMemoryCache">
             <dependency-type>uses</dependency-type>
         </dependent-module>
