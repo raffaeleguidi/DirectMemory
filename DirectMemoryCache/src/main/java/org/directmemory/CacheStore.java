@@ -335,15 +335,15 @@ public class CacheStore {
 	}
 
 	public CacheEntry put(String key, Object object) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
-		Split split = stopWatch.start();
+//        Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
+//		Split split = stopWatch.start();
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
 		entries.put(key, entry);
 		lruQueue.add(entry);
 		askSupervisorForDisposal();
-		split.stop();
+//		split.stop();
 		return entry;
 	}
 	
@@ -367,11 +367,11 @@ public class CacheStore {
 	}
 	
 	public Object get(String key) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
-		Split split = stopWatch.start();
+//        Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
+//		Split split = stopWatch.start();
 		CacheEntry entry = getEntry(key);
 		askSupervisorForDisposal();
-		split.stop();
+//		split.stop();
 		if (entry == null) {
 			return null;
 		} else {
@@ -380,8 +380,8 @@ public class CacheStore {
 	}
 	
 	public CacheEntry remove(String key) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
-		Split split = stopWatch.start();
+//      Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
+//		Split split = stopWatch.start();
 		CacheEntry entry = entries.remove(key);
 		if (entry.inHeap()) {
 			lruQueue.remove(entry);
@@ -392,7 +392,7 @@ public class CacheStore {
 			logger.debug("added slot of " + entry.size + " bytes");
 		}
 		askSupervisorForDisposal();
-		split.stop();
+//		split.stop();
 		return entry;
 	}
 	

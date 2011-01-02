@@ -13,7 +13,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public Date expiresOn = null;
 	
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "rawtypes" })
 	public Class clazz = null;
 	public String path = null;
 	
