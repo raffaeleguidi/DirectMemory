@@ -10,7 +10,7 @@
   <name>DirectMemory Cache</name>
   <version>0.5.2-SNAPSHOT</version>
   <description>DirectMemory Cache is a multi layered cache implementation featuring off-heap memory management (a-la BigMemory) to enable efficient handling of a large number of java objects without affecting jvm garbage collection performance</description>
-  <url>https://github.com/raffaeleguidi/DirectMemory</url>
+  <url>http://github.com/raffaeleguidi/DirectMemory</url>
   <organization>
   	<name>Raffaele P. Guidi</name>
   	<url>http://twitter.com/raffaeleguidi</url>

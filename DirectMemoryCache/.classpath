@@ -7,7 +7,11 @@
 	<classpathentry kind="var" path="M2_REPO/net/java/dev/eval/eval/0.5/eval-0.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/javasimon/javasimon-core/2.3.0/javasimon-core-2.3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/4.7/junit-4.7.jar"/>
-	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-classic/0.9.26/logback-classic-0.9.26.jar"/>
+	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-classic/0.9.26/logback-classic-0.9.26.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/ch/qos/logback/logback-core/0.9.26/logback-core-0.9.26.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/dyuproject/protostuff/protostuff-api/1.0.0.M6/protostuff-api-1.0.0.M6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/dyuproject/protostuff/protostuff-core/1.0.0.M6/protostuff-core-1.0.0.M6.jar"/>
