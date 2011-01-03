@@ -28,6 +28,9 @@ public class CacheStore {
 	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	ConcurrentLinkedQueue<CacheEntry> lruOffheapQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
+	ConcurrentLinkedQueue<ByteBuffer> memoryPages = new ConcurrentLinkedQueue<ByteBuffer>(); 
+	public int maxPages = 0;
+		
 	private AtomicInteger usedMemory = new AtomicInteger(0);
 	
 	Storage entriesOnDisk = new FileStorage();
@@ -35,23 +38,34 @@ public class CacheStore {
 	int entriesLimit = -1;
 
 	public int pageSize = 0;
-	public int pages = 0;
-	public int maxPages = 0;
 	
 	public Serializer serializer = new StandardSerializer();
 	public Supervisor supervisor = new SimpleSupervisor();
 
 	private int defaultExpirationTime = -1;
 	
+	private CacheEntry slotForBuffer(ByteBuffer buffer) {
+		CacheEntry newSlot = new CacheEntry();
+		newSlot.position = buffer.position();
+		newSlot.size = buffer.limit();
+		newSlot.buffer = buffer.duplicate();
+		return newSlot;
+	}
+	
 	
 	private CacheEntry addMemoryPageAndGetFirstSlot() {		
-		if (pages < maxPages) {
+		if (memoryPages.size() < maxPages) {
 			logger.info("allocating a new memory page");
-			this.pages++;
-			CacheEntry firstSlot = new CacheEntry();
-			firstSlot.position = 0;
-			firstSlot.size = pageSize;
-			firstSlot.buffer = ByteBuffer.allocateDirect(pageSize);
+			
+			ByteBuffer page = ByteBuffer.allocateDirect(pageSize);
+			// setup beginning and limit of buffer
+			page.position(0);
+			page.mark();
+			page.limit(pageSize);
+			page.reset();
+
+			CacheEntry firstSlot = slotForBuffer(page);
+			memoryPages.add(page);
 			slots.add(firstSlot);
 			return firstSlot;
 		} else {
@@ -88,6 +102,7 @@ public class CacheStore {
 					newEntry.array = serializer.serialize(entry.object, entry.object.getClass());
 					newEntry.size = newEntry.array.length;
 					
+					// change buffer size and position management
 					newEntry.clazz = entry.clazz();
 					newEntry.key = entry.key;
 					newEntry.buffer = bufferFor(newEntry);
@@ -119,7 +134,7 @@ public class CacheStore {
 	}
 	
 	public void disposeOffHeapOverflow() {
-		int bytes2free = usedMemory.get()-(pageSize*pages);
+		int bytes2free = usedMemory.get()-(pageSize*memoryPages.size());
 		moveEntriesToDisk(bytes2free);
 	}
 		
@@ -202,6 +217,7 @@ public class CacheStore {
 				Object obj = serializer.deserialize(source, entry.clazz);
 				entry.object = obj;
 				entry.buffer = null;
+				// change buffer size and position management
 				CacheEntry freeSlot = new CacheEntry();
 				freeSlot.buffer = buf;
 				freeSlot.position = entry.position;
@@ -290,6 +306,7 @@ public class CacheStore {
 	
 	private ByteBuffer slice(CacheEntry slot2Slice, CacheEntry entry) {
 		synchronized (slot2Slice) {
+			// change buffer size and position management
 			logger.debug("we removed it? " + slots.remove(slot2Slice));
 			slot2Slice.size = slot2Slice.size - entry.size;
 			slot2Slice.position = slot2Slice.position + entry.size;
@@ -410,7 +427,7 @@ public class CacheStore {
 				"{ " + crLf + 
 				"   entries: " + entries.size() + crLf + 
 				"   heap: " + heapEntriesCount() + "/" + entriesLimit + crLf +  
-				"   memory: " + usedMemory.get() + "/" + (pageSize * pages) + crLf + 
+				"   memory: " + usedMemory.get() + "/" + (pageSize * memoryPages.size()) + crLf + 
 				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
 				"   free slots: " + slots.size() + " first size is: " + slots.first().size + " last size=" + slots.last().size + crLf + 
 				"}" 
@@ -444,10 +461,15 @@ public class CacheStore {
 	}
 	
 	public void reset() {
-		logger.warn("Off heap memory is not freed. Shout at the programmer!");
 		lruQueue.clear();
 		entries.clear();
+		slots.clear();
+		for (Iterator<ByteBuffer> iterator = memoryPages.iterator(); iterator.hasNext();) {
+			ByteBuffer page = iterator.next();
+			slots.add(slotForBuffer(page));
+		}
 		logger.info("Cache reset");
+		logger.info(toString());
 	}
 	
 	public static int MB(double mega) {
