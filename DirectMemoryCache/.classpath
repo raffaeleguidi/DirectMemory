@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="config"/>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/aspect"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="testConfig"/>
 	<classpathentry kind="var" path="M2_REPO/net/java/dev/eval/eval/0.5/eval-0.5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/javasimon/javasimon-core/2.3.0/javasimon-core-2.3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/4.7/junit-4.7.jar"/>

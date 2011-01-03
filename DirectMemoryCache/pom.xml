@@ -29,7 +29,7 @@
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <testResources>
     	<testResource>
-    		<directory>config</directory>
+    		<directory>testConfig</directory>
     		<includes>
     			<include>*</include>
     		</includes>

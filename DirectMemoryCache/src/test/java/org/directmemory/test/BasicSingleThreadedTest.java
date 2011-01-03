@@ -40,6 +40,7 @@ public class BasicSingleThreadedTest {
 		assertNotNull(pojo3);
 		assertEquals("test3", pojo3.name);
 		logger.debug("addAndRetrieve " + cache.toString());
+		CacheStore.displayTimings();
 		cache.reset();
 	}
 	
