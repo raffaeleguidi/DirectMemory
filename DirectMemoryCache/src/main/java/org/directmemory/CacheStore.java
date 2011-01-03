@@ -90,7 +90,7 @@ public class CacheStore {
 				remove(entry.key);
 			}
 		}
-	}	
+	}
 	
 	private void moveEntriesOffHeap(int entries2move) {
 		if (entries2move < 1) return;
@@ -102,10 +102,12 @@ public class CacheStore {
 					newEntry.array = serializer.serialize(entry.object, entry.object.getClass());
 					newEntry.size = newEntry.array.length;
 					
-					// change buffer size and position management
+					// TODO: change buffer size and position management
 					newEntry.clazz = entry.clazz();
 					newEntry.key = entry.key;
 					newEntry.buffer = bufferFor(newEntry);
+					//TODO: check this
+					newEntry.buffer.reset();
 					newEntry.position = newEntry.buffer.position();
 					newEntry.buffer.put(newEntry.array);
 					newEntry.array = null;
@@ -160,57 +162,27 @@ public class CacheStore {
 			freedBytes += last.size;
 		}
 	}
-
-//	public void oldDisposeOffHeapOverflow() {
-//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.disposeOffHeapOverflow");
-//		Split split = stopWatch.start();
-//		int freedBytes = 0;
-//		int bytes2free = usedMemory.get()-(pageSize*pages);
-//		
-//		while (freedBytes < bytes2free) {
-//			CacheEntry removedEntry = removeLastOffHeap();
-//			freedBytes += removedEntry.size;
-//		}
-//		split.stop();
-//	}
 	
 	public void askSupervisorForDisposal() {
 		supervisor.disposeOverflow(this);
 	}
-	
-
-	
-//	protected void moveOffheap(CacheEntry entry) {
-//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.moveoffheap");
-//		Split split = stopWatch.start();
-//		byte[] array = null;
-//		try {
-//			array = serializer.serialize((Serializable)entry.object, entry.object.getClass());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		entry.clazz = entry.object.getClass();
-//		entry.size = array.length;
-//		entry.object = null;
-//		ByteBuffer buf = bufferFor(entry);
-//		entry.position = buf.position();
-//		buf.put(array);
-//		entry.buffer = buf;
-//		lruQueue.remove(entry);
-//		lruOffheapQueue.add(entry);
-//		usedMemory.addAndGet(entry.size);
-//		entries.put(entry.key, entry); // needed? it seems so...
-////		logger.info(entry.key + " position " + entry.position + " size " + entry.size);
-//		split.stop();
-//	}
 	
 	protected void moveInHeap(CacheEntry entry) {
 		byte[] source = null; 
 		source = new byte[entry.size]; 
 		try {
 			synchronized (entry) {
+				if (entry.buffer == null) {
+					// sometimes this is null: why? already in heap?
+					if (entry.object != null) {
+						// yes
+						logger.warn("entry is already in heap" );
+					} else {
+						// no!
+						logger.error("entry is in non consistent state");
+					}
+					return;
+				}
 				ByteBuffer buf = entry.buffer;
 				buf.position(entry.position);
 				buf.get(source);
@@ -219,10 +191,14 @@ public class CacheStore {
 				entry.buffer = null;
 				// change buffer size and position management
 				CacheEntry freeSlot = new CacheEntry();
+				
 				freeSlot.buffer = buf;
 				freeSlot.position = entry.position;
-				freeSlot.buffer.position(freeSlot.position);
+				// TODO: check this
+				freeSlot.buffer.reset();
+				//freeSlot.buffer.position(freeSlot.position);
 				freeSlot.size = entry.size;
+
 				slots.add(freeSlot);
 				logger.debug("added slot of " + freeSlot.size + " bytes");
 			}
@@ -254,28 +230,8 @@ public class CacheStore {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		split.stop();
 	}
 	
-//	private CacheEntry forceRoomFor(CacheEntry entry) {
-//        Stopwatch stopWatch = SimonManager.getStopwatch("detail.forceMakeRoomFor");
-//		Split split = stopWatch.start();
-//		//detail.forceMakeRoomFor
-//		
-//		// should remove only the larger ones
-//		// and some defrag would be needed sooner or later
-//		CacheEntry last = removeLastOffHeap();
-//		if (last == null) {
-//			logger.warn("no slots off heap available");
-//			split.stop();
-//			return null;
-//		}
-//		while (last != null && last.size <= entry.size ) { 
-//			last = removeLastOffHeap();
-//		}
-//		split.stop();
-//		return last;
-//	}
 
 	private ByteBuffer bufferFor(CacheEntry entry) {
 		// look for the smaller free buffer that can contain entry
@@ -292,7 +248,6 @@ public class CacheStore {
 			CacheEntry last = slots.last();
 			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
 			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
-//			slot = forceRoomFor(entry);
 			moveEntriesToDisk(entry.size);
 			slot = slots.ceiling(entry);
 		}
@@ -306,12 +261,14 @@ public class CacheStore {
 	
 	private ByteBuffer slice(CacheEntry slot2Slice, CacheEntry entry) {
 		synchronized (slot2Slice) {
-			// change buffer size and position management
+			// TODO: change buffer size and position management
 			logger.debug("we removed it? " + slots.remove(slot2Slice));
 			slot2Slice.size = slot2Slice.size - entry.size;
 			slot2Slice.position = slot2Slice.position + entry.size;
 			ByteBuffer buf = slot2Slice.buffer.duplicate();
 			slot2Slice.buffer.position(slot2Slice.position);
+			// TODO: check this
+			slot2Slice.buffer.mark();
 			if (slot2Slice.size > 0) {
 				slots.add(slot2Slice);
 				logger.debug("added sliced slot of " + slot2Slice.size + " bytes");
