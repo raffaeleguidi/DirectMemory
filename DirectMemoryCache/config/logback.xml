@@ -13,13 +13,13 @@
       <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class.%method - %msg%n</Pattern>
     </encoder>
   </appender>
-    
-  <logger name="org.directmemory.profiling" level="info">
+  
+  <logger name="org.directmemory.profiling" level="all">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="org.directmemory" level="info">
+  <logger name="org.directmemory" level="all">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>

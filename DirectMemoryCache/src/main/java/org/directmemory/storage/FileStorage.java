@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.directmemory.CacheEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FileStorage extends Storage {
 	
@@ -94,6 +92,28 @@ public class FileStorage extends Storage {
 		}
 		logger.debug("succesfully restored entry " + entry.key + " from disk (" + baseDir + "/" + entry.key + ".object)");
 		return true;
+	}
+	@Override
+	public void reset() {
+		super.reset();
+		// TODO: a unit test would be useful
+		File baseFolder = new File(baseDir);
+		for (String fileName : baseFolder.list()) {
+			new File(fileName).delete();
+		}
+		baseFolder.delete();
+		logger.debug("file storage reset");
+	}
+	
+	@Override
+	public boolean remove(String key) {
+		CacheEntry entry = entries.get(key);
+		if (entry != null) {
+			File file2delete = new File(entry.path);
+			file2delete.delete();
+			return super.remove(key);
+		}
+		return false;
 	}
 
 }

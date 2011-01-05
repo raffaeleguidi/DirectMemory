@@ -90,5 +90,14 @@ public abstract class Storage {
 	public long count() {
 		return lruQueue.size();
 	}
+	public void reset() {
+		lruQueue.clear();
+		entries.clear();
+	}
+	public CacheEntry removeLast() {
+		CacheEntry last = lruQueue.poll();
+		entries.remove(last.key);
+		return last;
+	}
 
 }

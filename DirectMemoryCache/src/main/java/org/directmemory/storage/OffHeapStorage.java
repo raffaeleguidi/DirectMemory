@@ -15,13 +15,35 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class OffHeapStorage extends Storage {
 
-	ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
+	public ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
 	ConcurrentLinkedQueue<ByteBuffer> memoryPages = new ConcurrentLinkedQueue<ByteBuffer>(); 
 	public int maxPages = 0;
 	public int pageSize = 0;
+	
+	public ConcurrentSkipListSet<CacheEntry> slots() {
+		return slots;
+	}
 
 	private AtomicInteger usedMemory = new AtomicInteger(0);
 	
+	public OffHeapStorage(int pageSize, int maxPages) {
+		this.pageSize = pageSize;
+		this.maxPages = maxPages;
+		addMemoryPageAndGetFirstSlot();
+	}
+	
+	public int capacity() {
+		return maxPages * pageSize;
+	}
+	
+	public int remaining() {
+		return capacity() - usedMemory.get();
+	}
+	
+	public int usedMemory() {
+		return usedMemory.get();
+	}
+
 	private CacheEntry slotForBuffer(ByteBuffer buffer) {
 		CacheEntry newSlot = new CacheEntry();
 		newSlot.position = buffer.position();
@@ -80,11 +102,12 @@ public class OffHeapStorage extends Storage {
 		// look for the smaller free buffer that can contain entry
 		// it fails for almost equal buffers!!!
 		CacheEntry slot = slots.ceiling(entry);
-		
+
 		if (slot == null) {
 			// no large enough slots left at all
 			slot = addMemoryPageAndGetFirstSlot();
 		}
+
 		if (slot == null) {
 			// no free slots left free the last recently used
 			CacheEntry first = slots.first();
@@ -99,6 +122,8 @@ public class OffHeapStorage extends Storage {
 			return null;
 		}
 		
+		logger.debug("got slot at position " + slot.position);
+		
 		return slice(slot, entry);
 	}	
 	
@@ -109,24 +134,25 @@ public class OffHeapStorage extends Storage {
 	@Override
 	protected boolean store(CacheEntry entry) {
 		synchronized(entry) {
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Class clazz = entry.clazz();
+			try {
+				entry.array = serializer.serialize(entry.object, entry.object.getClass());
+			} catch (IOException e) {
+				logger.debug("error serializing " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
+				return false;
+			}
+			entry.size = entry.array.length;
 			ByteBuffer buf = bufferFor(entry); 
 			if (buf != null){
-				@SuppressWarnings({"rawtypes", "unchecked"})
-				Class clazz = entry.clazz();
-				try {
-					entry.array = serializer.serialize(entry.object, entry.object.getClass());
-				} catch (IOException e) {
-					logger.debug("error serializing " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
-					return false;
-				}
 				entry.buffer = buf;
-				entry.size = entry.array.length;
+//				entry.size = entry.array.length;
 				
 				// TODO: change buffer size and position management
 				entry.clazz = clazz;
 				//TODO: check this
 				entry.buffer.reset();
-				entry.position = entry.buffer.position();
+//				entry.position = entry.buffer.position();
 				entry.buffer.put(entry.array);
 				entry.array = null;
 	
@@ -193,8 +219,59 @@ public class OffHeapStorage extends Storage {
 		} catch (IllegalAccessException e) {
 			logger.error(e.getMessage());
 		}
-		// everything shuld be fine even in case of errors
+		// everything should be fine even in case of errors
 		return true;
 	}
-
+	
+	@Override
+	public void reset() {
+		super.reset();
+		slots.clear();
+		for (ByteBuffer buffer : memoryPages) {
+			buffer.clear();
+		}
+		memoryPages.clear();
+		addMemoryPageAndGetFirstSlot();
+		logger.debug("off heap storage reset");
+	}
+	
+	@Override
+	public void moveEntryTo(CacheEntry entry, Storage storage) {
+		super.moveEntryTo(entry, storage);
+		usedMemory.addAndGet(-entry.size);
+		CacheEntry slot = new CacheEntry();
+		slot.buffer = entry.buffer.duplicate();
+		slot.size = entry.size;
+		slot.position = entry.position;
+		slot.buffer.position(slot.position);
+		entry.buffer = null;
+		slots.add(slot);			
+		logger.debug("created free slot of " + slot.size + " bytes");
+	}
+	
+	@Override
+	public boolean remove(String key) {
+		CacheEntry entry = entries.get(key);
+		if (entry != null) {
+			usedMemory.addAndGet(-entry.size);
+			slots.add(entry);
+			logger.debug("added slot of " + entry.size + " bytes");
+			return super.remove(key);
+		}
+		return false;
+	}
+	
+	@Override
+	public CacheEntry removeLast() {
+		CacheEntry last = lruQueue.poll();
+		if (last == null) {
+			logger.warn("no lru from off heap");
+			return null;
+		}		
+		usedMemory.addAndGet(-last.size);
+		entries.remove(last.key);
+		slots.add(last);
+		logger.debug("added slot of " + last.size + " bytes");
+		return last;
+	}
 }
