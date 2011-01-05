@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 
 public class FileStorage extends Storage {
 	
-	private static Logger logger=LoggerFactory.getLogger(Storage.class);
-
 	public String baseDir = "data";
 	
 	public FileStorage() {

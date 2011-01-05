@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.storage.FileStorage;
+import org.directmemory.storage.OffHeapStorage;
 import org.directmemory.storage.Storage;
 import org.directmemory.supervisor.SimpleSupervisor;
 import org.directmemory.supervisor.Supervisor;
@@ -27,17 +28,19 @@ public class CacheStore {
 	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
 	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	ConcurrentLinkedQueue<CacheEntry> lruOffheapQueue = new ConcurrentLinkedQueue<CacheEntry>();
+
+	// related to off-heap storage
 	ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
 	ConcurrentLinkedQueue<ByteBuffer> memoryPages = new ConcurrentLinkedQueue<ByteBuffer>(); 
 	public int maxPages = 0;
-		
+	public int pageSize = 0;
 	private AtomicInteger usedMemory = new AtomicInteger(0);
+	// should be replaced by:
+	Storage entriesOffHeap = new OffHeapStorage();
 	
 	Storage entriesOnDisk = new FileStorage();
 
 	int entriesLimit = -1;
-
-	public int pageSize = 0;
 	
 	public Serializer serializer = new StandardSerializer();
 	public Supervisor supervisor = new SimpleSupervisor();
@@ -175,11 +178,9 @@ public class CacheStore {
 				if (entry.buffer == null) {
 					// sometimes this is null: why? already in heap?
 					if (entry.object != null) {
-						// yes
-						logger.warn("entry is already in heap" );
+						logger.warn("entry is already in heap" ); // yes
 					} else {
-						// no!
-						logger.error("entry is in non consistent state");
+						logger.error("entry is in non consistent state"); // no!
 					}
 					return;
 				}
@@ -396,25 +397,7 @@ public class CacheStore {
 	}
 
 	public static void displayTimings() {
-		// replaced by a dedicated aspect
-//		showTiming(SimonManager.getStopwatch("cache.put"));
-//		showTiming(SimonManager.getStopwatch("cache.get"));
-//		showTiming(SimonManager.getStopwatch("cache.remove"));
-//		showTiming(SimonManager.getStopwatch("serializer.PSSerialize"));
-//		showTiming(SimonManager.getStopwatch("serializer.PSDeserialize"));
-//		showTiming(SimonManager.getStopwatch("serializer.javaSerialize"));
-//		showTiming(SimonManager.getStopwatch("serializer.javaDeserialize"));
-//		showTiming(SimonManager.getStopwatch("detail.disposeOverflow"));		
-//		showTiming(SimonManager.getStopwatch("detail.disposeHeapOverflow"));		
-//		showTiming(SimonManager.getStopwatch("detail.disposeOffHeapOverflow"));		
-//		showTiming(SimonManager.getStopwatch("detail.disposeExpired"));		
-//		showTiming(SimonManager.getStopwatch("detail.moveinheap"));		
-//		showTiming(SimonManager.getStopwatch("detail.moveoffheap"));		
-//		showTiming(SimonManager.getStopwatch("detail.move2disk"));		
-//		showTiming(SimonManager.getStopwatch("detail.movefromdisk"));		
-//		showTiming(SimonManager.getStopwatch("detail.removelast"));		
-//		showTiming(SimonManager.getStopwatch("detail.removelastoffheap"));		
-//		showTiming(SimonManager.getStopwatch("detail.forceMakeRoomFor"));		
+		// replaced by a dedicated aspect	
 	}
 	
 	public void reset() {

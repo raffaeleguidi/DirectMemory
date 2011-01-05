@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class Storage {
-	private static Logger logger=LoggerFactory.getLogger(Storage.class);
+	protected static Logger logger=LoggerFactory.getLogger(Storage.class);
 	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
 	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	public Serializer serializer = new StandardSerializer();
@@ -26,7 +26,12 @@ public abstract class Storage {
 		if (store(entry)) {		
 			logger.debug("stored entry " + entry.key);
 			entries.put(entry.key, entry);
-			return lruQueue.add(entry);
+			// remove it to make sure it will not get duplicated
+			lruQueue.remove(entry);
+			// and then add it to the top of the tail
+			lruQueue.add(entry);
+			// everything's fine
+			return true;
 		} else {
 			logger.debug("failed to store entry " + entry.key);
 			return false;
