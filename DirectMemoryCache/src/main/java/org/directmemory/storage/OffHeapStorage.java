@@ -168,6 +168,8 @@ public class OffHeapStorage extends Storage {
 	
 				usedMemory.addAndGet(entry.size);
 				entries.put(entry.key, entry);
+				lruQueue.remove(entry);
+				lruQueue.add(entry);
 				logger.debug("stored off heap " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
 			} else {
 				logger.debug("no room to store " + entry.key + " - skipping");
@@ -199,19 +201,20 @@ public class OffHeapStorage extends Storage {
 				buf.get(source);
 				Object obj = serializer.deserialize(source, entry.clazz);
 				entry.object = obj;
-				entry.buffer = null;
+//				entry.buffer = null;
 				// change buffer size and position management
-				CacheEntry freeSlot = new CacheEntry();
-				
-				freeSlot.buffer = buf;
-				freeSlot.position = entry.position;
-				// TODO: check this
-				freeSlot.buffer.reset();
-				//freeSlot.buffer.position(freeSlot.position);
-				freeSlot.size = entry.size;
+//				CacheEntry freeSlot = new CacheEntry();
+//				
+//				freeSlot.buffer = buf;
+//				freeSlot.position = entry.position;
+//				// TODO: check this
+//				freeSlot.buffer.reset();
+//				//freeSlot.buffer.position(freeSlot.position);
+//				freeSlot.size = entry.size;
 
-				slots.add(freeSlot);
-				logger.debug("added slot of " + freeSlot.size + " bytes");
+				// todo: rpg
+//				slots.add(freeSlot);
+				logger.debug("freed slot of " + entry.size + " bytes");
 			}
 			usedMemory.addAndGet(-source.length);
 			remove(entry);
@@ -266,7 +269,7 @@ public class OffHeapStorage extends Storage {
 	}
 	
 	@Override
-	public boolean delete(String key) {
+	public CacheEntry delete(String key) {
 		CacheEntry entry = entries.get(key);
 		if (entry != null) {
 			usedMemory.addAndGet(-entry.size);
@@ -274,7 +277,7 @@ public class OffHeapStorage extends Storage {
 			logger.debug("added slot of " + entry.size + " bytes");
 			return super.delete(key);
 		}
-		return false;
+		return null;
 	}
 	
 	@Override
@@ -295,7 +298,7 @@ public class OffHeapStorage extends Storage {
 	}
 
 	@Override
-	int overflow() {
+	public int overflow() {
 		return (usedMemory.get() + pendingAllocation.get()) - capacity();
 	}
 }

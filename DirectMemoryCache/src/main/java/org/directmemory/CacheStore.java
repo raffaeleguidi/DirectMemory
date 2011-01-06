@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.storage.FileStorage;
+import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
 import org.directmemory.storage.Storage;
 import org.directmemory.supervisor.SimpleSupervisor;
@@ -18,14 +19,12 @@ import org.slf4j.LoggerFactory;
 public class CacheStore {	
 	private static Logger logger=LoggerFactory.getLogger(CacheStore.class);
 
-	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
-	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
-	ConcurrentLinkedQueue<CacheEntry> lruOffheapQueue = new ConcurrentLinkedQueue<CacheEntry>();
+//	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
+//	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
 
-	Storage entriesOffHeap;
-	Storage entriesOnDisk;
-
-	int entriesLimit = -1;
+	HeapStorage heapStore;
+	Storage offHeapStore;
+	Storage diskStore;
 	
 	private Serializer serializer;
 	private Supervisor supervisor;
@@ -34,17 +33,21 @@ public class CacheStore {
 	
 	public CacheStore (int entriesLimit, int pageSize, int maxPages) {
 		logger.info("Cache initialization started");
-		this.entriesLimit = entriesLimit;
-		entriesOffHeap = new OffHeapStorage(pageSize, maxPages);
-		entriesOnDisk = new FileStorage();
+		heapStore = new HeapStorage(entriesLimit);
+		offHeapStore = new OffHeapStorage(pageSize, maxPages);
+		diskStore = new FileStorage();
+		heapStore().next = offHeapStore;
+		offHeapStore.next = diskStore;
+		offHeapStore.first = heapStore;
+		diskStore.first = heapStore;
 		setSerializer(new StandardSerializer());
 		setSupervisor(new SimpleSupervisor());
-		entriesOffHeap.next = entriesOnDisk;
+		offHeapStore.next = diskStore;
 		logger.info("Cache initialization ok");
 	}
 	
 	public void disposeExpired() {
-		for (Iterator<CacheEntry> iterator = entries.values().iterator(); iterator.hasNext();) {
+		for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
 			CacheEntry entry = iterator.next();
 			if (entry.expired()) {
 				remove(entry.key);
@@ -55,9 +58,9 @@ public class CacheStore {
 	private void moveEntriesOffHeap(int entries2move) {
 		if (entries2move < 1) return;
 		for (int i = 0; i < entries2move; i++) {
-			CacheEntry entry = lruQueue.peek();
-			if (entriesOffHeap.put(entry)) {
-				lruQueue.remove(entry);
+			CacheEntry entry = heapStore.peek();
+			if (entry != null && offHeapStore.put(entry)) {
+				heapStore.delete(entry.key);
 				logger.debug("moved off heap " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
 			} else {
 				logger.debug("no room for " + entry.key + " - skipping");
@@ -66,33 +69,15 @@ public class CacheStore {
 	}
 	
 	public void disposeHeapOverflow() {
-		if (entriesLimit == -1) {
-			return;
-		}
-		moveEntriesOffHeap(lruQueue.size() - entriesLimit);
+		heapStore.overflowToNext();
 	}
 	
 	public void disposeOffHeapOverflow() {
-		//int bytes2free = usedMemory.get()-(pageSize*memoryPages.size());
-		// totally nonsense: choose a strategy
-		//moveEntriesToDisk(bytes2free);
+		offHeapStore.overflowToNext();
 	}
-		
-//	private void moveEntriesToDisk(int bytes2free) {
-//		int freedBytes = 0;
-//		while (freedBytes < bytes2free) {
-//			CacheEntry last = lruOffheapQueue.poll();
-//			if (last == null) {
-//				logger.warn("no lru entries in off heap slots");
-//				return;
-//			}			
-//			entriesOffHeap.moveEntryTo(last, entriesOnDisk);
-//			freedBytes += last.size;
-//		}
-//	}
-	
+
 	public void askSupervisorForDisposal() {
-		getSupervisor().disposeOverflow(this);
+		supervisor.disposeOverflow(this);
 	}
 	
 //	protected void moveInHeap(CacheEntry entry) {
@@ -111,31 +96,26 @@ public class CacheStore {
 		entry.key = key;
 		entry.object = object;
 		entry.expiresIn(expiresIn);
-		entries.put(key, entry);
-		lruQueue.add(entry);
+		heapStore.put(entry);
 		askSupervisorForDisposal();
 		return entry;
 	} 
 	
 	public CacheEntry getEntry(String key) {
-		CacheEntry entry = entries.get(key);
+		CacheEntry entry = heapStore.get(key);
 		if (entry == null) {
 			return null;
 		} else if (entry.expired()) {
 			remove(key);
 			return null;
 		} else if (entry.inHeap()) {
-			lruQueue.remove(entry);
-			lruQueue.add(entry);
+			// do nothing
+			// or: heapStore.touch(entry);
 		} else if (entry.offHeap()) {
-			if (entriesOffHeap.moveToHeap(entry)) {
-				lruQueue.remove(entry);
-				lruQueue.add(entry);
+			if (offHeapStore.moveToHeap(entry)) {
 			}
 		} else if (entry.onDisk()) {
-			if (entriesOnDisk.moveToHeap(entry)) {
-				lruQueue.remove(entry);
-				lruQueue.add(entry);
+			if (diskStore.moveToHeap(entry)) {
 			}
 		}
 		return entry;
@@ -152,45 +132,45 @@ public class CacheStore {
 	}
 	
 	public CacheEntry remove(String key) {
-		CacheEntry entry = entries.remove(key);
+		CacheEntry entry = heapStore.delete(key);
 		if (entry == null) {
 			return null;
 		} else if (entry.inHeap()) {
-			lruQueue.remove(entry);
+			//lruQueue.remove(entry);
+			// do nothing
 		} else if (entry.offHeap()){
-			entriesOffHeap.delete(key);
+			offHeapStore.delete(key);
 		} else if (entry.onDisk()) {
-			entriesOnDisk.delete(key);
+			diskStore.delete(key);
 		}
 		askSupervisorForDisposal();
 		return entry;
 	}
 	
 	public CacheEntry removeLast() {
-		CacheEntry next = lruQueue.peek();
+		CacheEntry last = heapStore.peek();
+		 //should we look for the last size?
 		// todo: do we need it? put it somewhere else
-		if (next.size > ((OffHeapStorage)entriesOffHeap).slots().last().size) {
+		if (last.size > ((OffHeapStorage)offHeapStore).slots().last().size) {
 			return null;
 		}
-		CacheEntry last = lruQueue.poll();
-		entries.remove(last.key);
-		return last;
+		return heapStore.delete(last.key);
 	}
 	
 	public CacheEntry removeLastOffHeap() {
-		return entriesOffHeap.removeLast();
+		return offHeapStore.removeLast();
 	}
 	
-	public int heapEntriesCount() {
-		return lruQueue.size();
+	public long heapEntriesCount() {
+		return heapStore.count();
 	}
 	
 	public long offHeapEntriesCount() {
-		return entriesOffHeap.count();
+		return offHeapStore.count();
 	}
 	
 	public int usedMemory() {
-		return ((OffHeapStorage)entriesOffHeap).usedMemory();
+		return ((OffHeapStorage)offHeapStore).usedMemory();
 	}
 	
 	@Override
@@ -198,17 +178,17 @@ public class CacheStore {
 		final String crLf = "\r\n";
 		return "CacheStore stats: " + 
 				"{ " + crLf + 
-				"   entries: " + entries.size() + crLf + 
-				"   heap: " + heapEntriesCount() + "/" + entriesLimit + crLf +  
-				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)entriesOffHeap).capacity() + crLf + 
+				"   entries: " + heapStore.entries().size() + crLf + 
+				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
+				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
 				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
-				"   free slots: " + ((OffHeapStorage)entriesOffHeap).slots().size() + " first size is: " + ((OffHeapStorage)entriesOffHeap).slots().first().size + " last size=" + ((OffHeapStorage)entriesOffHeap).slots().last().size + crLf + 
+				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
 				"}" 
 			;
 	}
 	
 	public long onDiskEntriesCount() {
-		return entriesOnDisk.count();
+		return diskStore.count();
 	}
 
 	public static void displayTimings() {
@@ -216,10 +196,9 @@ public class CacheStore {
 	}
 	
 	public void reset() {
-		lruQueue.clear();
-		entries.clear();
-		entriesOffHeap.reset();
-		entriesOnDisk.reset();
+		heapStore.reset();
+		offHeapStore.reset();
+		diskStore.reset();
 		logger.info("Cache reset - " + toString());
 	}
 	
@@ -232,8 +211,9 @@ public class CacheStore {
 	}
 
 	public void setSupervisor(Supervisor supervisor) {
-		entriesOnDisk.supervisor = supervisor;
-		entriesOffHeap.supervisor = supervisor;
+		heapStore.supervisor = supervisor;
+		offHeapStore.supervisor = supervisor;
+		diskStore.supervisor = supervisor;
 		this.supervisor = supervisor;
 	}
 
@@ -242,12 +222,23 @@ public class CacheStore {
 	}
 
 	public void setSerializer(Serializer serializer) {
-		entriesOffHeap.serializer = serializer;
-		entriesOnDisk.serializer = serializer;
+		offHeapStore.serializer = serializer;
+		diskStore.serializer = serializer;
 		this.serializer = serializer;
 	}
 
 	public Serializer getSerializer() {
 		return serializer;
+	}
+
+	public Storage heapStore() {
+		return heapStore;
+	}
+
+	public Storage offHeapStore() {
+		return offHeapStore;
+	}
+	public Storage diskStore() {
+		return diskStore;
 	}
 }

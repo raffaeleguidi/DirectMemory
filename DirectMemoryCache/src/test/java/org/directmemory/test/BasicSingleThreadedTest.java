@@ -25,19 +25,34 @@ public class BasicSingleThreadedTest {
 	}
 	
 	@Test
+	public void simple() {
+		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
+		DummyPojo pojo = new DummyPojo("test1", 500);
+		Object retVal = cache.put("test1", pojo);
+		assertNotNull(retVal);
+		assertEquals(1, cache.heapStore().count());
+		DummyPojo check = (DummyPojo)cache.get("test1");
+		assertNotNull(check);
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(pojo, check);
+	}
+
+	@Test
 	public void addAndRetrieve() {
 		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
-		assertEquals(1, cache.heapEntriesCount());
-		assertEquals(0, cache.offHeapEntriesCount());
-		assertEquals(0, cache.onDiskEntriesCount());
+		assertEquals(1, cache.heapStore().count());
+		assertEquals(0, cache.offHeapStore().count());
+		assertEquals(0, cache.diskStore().count());
+		logger.debug(cache.toString());
 		
 		@SuppressWarnings("unused")
 		CacheEntry entry = cache.put("test2", new DummyPojo("test2", randomSize()));
-		assertEquals(1, cache.heapEntriesCount());
-		assertEquals(1, cache.offHeapEntriesCount());
+		logger.debug(cache.toString());
+		assertEquals(1, cache.heapStore().count());
+		assertEquals(1, cache.offHeapStore().count());
 		assert(cache.usedMemory() > 0);
-		assertEquals(0, cache.onDiskEntriesCount());
+		assertEquals(0, cache.diskStore().count());
 		logger.debug(cache.toString());
 		
 		cache.put("test3", new DummyPojo("test3", randomSize()));
@@ -48,6 +63,11 @@ public class BasicSingleThreadedTest {
 		
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
 		logger.debug(cache.toString());
+		
+		for (CacheEntry ohEntry : cache.offHeapStore().entries().values()) {
+			logger.debug(ohEntry.key + " is offheap? " + ohEntry.offHeap());
+		}
+		
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(2, cache.offHeapEntriesCount());
 		assertEquals(0, cache.onDiskEntriesCount());

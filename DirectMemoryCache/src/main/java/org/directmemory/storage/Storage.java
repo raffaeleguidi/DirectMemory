@@ -15,24 +15,41 @@ public abstract class Storage {
 	protected static Logger logger=LoggerFactory.getLogger(Storage.class);
 	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
 	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
+	
 	public Serializer serializer = new StandardSerializer();
 	
 	public Supervisor supervisor;
 	public Storage next;
+	public Storage first;
+	
+	protected int entriesLimit = -1;
+	
+	public int entriesLimit() {
+		return entriesLimit;
+	}
+	
+	public Map<String, CacheEntry> entries() {
+		return entries;
+	}
+
+	public void touch(CacheEntry entry) {
+		first.lruQueue.remove(entry);
+		first.lruQueue.add(entry);
+	}
 	
 	protected abstract boolean moveIn(CacheEntry entry);
 	public abstract boolean moveToHeap(CacheEntry entry);
 
 	public boolean put(CacheEntry entry) {
-		if (entry.key == null) {
-			logger.warn("why an entry with a null key?!?");
+		if (entry == null || entry.key == null) {
+			logger.warn("not valid or null entry");
 		}
 		if (moveIn(entry)) {		
 			logger.debug("stored entry " + entry.key);
 			entries.put(entry.key, entry);
 			// remove it to make sure it will not get duplicated
-			lruQueue.remove(entry);
 			// and then add it to the top of the tail
+			lruQueue.remove(entry);
 			lruQueue.add(entry);
 			// everything's fine
 			return true;
@@ -42,18 +59,25 @@ public abstract class Storage {
 		}
 	}
 
-	public boolean remove(CacheEntry entry) {
+	public CacheEntry remove(CacheEntry entry) {
 		return delete(entry.key);
 	}
 	
-	public boolean delete(String key) {
+	public CacheEntry delete(String key) {
 		logger.debug("remove entry with key " + key);
 		CacheEntry entry = entries.remove(key);
-		return lruQueue.remove(entry);
+		lruQueue.remove(entry);
+		return entry;
 	}
 	
 	public CacheEntry get(String key) {
 		CacheEntry entry = entries.get(key);
+		
+		if (entry == null) {
+			return null;
+		}
+		
+		
 		if (moveToHeap(entry)) {
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
@@ -95,20 +119,42 @@ public abstract class Storage {
 	}
 	public CacheEntry removeLast() {
 		CacheEntry last = lruQueue.poll();
-		entries.remove(last.key);
+		logger.debug("remove last entry entry with key " + last.key);
+		if (first != null && first != this) {
+			logger.debug("but keeping track of it");
+			entries.remove(last.key);
+		}
 		return last;
 	}
 	public void overflowToNext() {
-		do {
+		while (overflow() > 0) {
 			CacheEntry last = removeLast();
-			if (next != null) {
-				moveEntryTo(last, next);
-				logger.debug("moved " + last.key + " to " + next.toString());
-			} else {
-				logger.debug("discarded " + last.key);
+			if (last == null) {
+				logger.debug("no entries to discard");
+				return;
 			}
-		} while (overflow() > 0);
+			if (next != null) {
+				if (first == null || first == this) {
+					moveButKeepTrackOfEntryTo(last, next);
+					logger.debug("moved but keeping track of " + last.key + " to " + next.toString());
+				} else {
+					moveEntryTo(last, next);
+					logger.debug("moved " + last.key + " to " + next.toString());
+				}
+			} else {
+				logger.debug("next storage is null: what should I do with " + last.key + "?");
+			}
+		}
 	}
-	abstract int overflow();
+	public int overflow() {
+		if (entriesLimit == -1)
+			return 0;
+		
+		return lruQueue.size() - entriesLimit;
+	}
+	
+	public CacheEntry peek() {
+		return lruQueue.peek();
+	}
 
 }

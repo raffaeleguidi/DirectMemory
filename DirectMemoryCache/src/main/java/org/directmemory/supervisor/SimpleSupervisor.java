@@ -25,8 +25,10 @@ public class SimpleSupervisor implements Supervisor {
 		Split split = stopWatch.start();
 		
 		logger.debug("checking memory limits");
-		cache.disposeHeapOverflow();
-		cache.disposeOffHeapOverflow();
+		cache.heapStore().overflowToNext();
+		cache.offHeapStore().overflowToNext();
+//		cache.disposeHeapOverflow();
+//		cache.disposeOffHeapOverflow();
 		
 		if (count >= checkForExpiredEvery) {
 			count = 0;
@@ -36,6 +38,7 @@ public class SimpleSupervisor implements Supervisor {
 			count++;
 		}
 		split.stop();
+		logger.debug("checking memory limits - done");
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.directmemory.CacheEntry;
+import org.directmemory.CacheStore;
 
 public class FileStorage extends Storage {
 	
@@ -109,21 +110,13 @@ public class FileStorage extends Storage {
 	}
 	
 	@Override
-	public boolean delete(String key) {
+	public CacheEntry delete(String key) {
 		CacheEntry entry = entries.get(key);
 		if (entry != null) {
 			File file2delete = new File(entry.path);
 			file2delete.delete();
 			return super.delete(key);
 		}
-		return false;
+		return entry;
 	}
-
-
-	@Override
-	int overflow() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

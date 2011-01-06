@@ -1,7 +1,10 @@
 package org.directmemory.test;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
@@ -107,6 +110,8 @@ public class BasicMultiThreadedTest {
 		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
 		cache.setSupervisor(new TimedSupervisor(1500));
+		final Map<String, DummyPojo> items = new ConcurrentHashMap<String, DummyPojo>();
+		
 		logger.debug("*** begin mixed 1-1");
 
 		ThreadGroup group = new ThreadGroup("test");
@@ -121,15 +126,21 @@ public class BasicMultiThreadedTest {
 				public void run() {
 					int i = 0;
 					try {
-						sleep((int)(pauseBetweenOps*500)); // give him some time to warmup
+						sleep((int)(pauseBetweenOps*5)); // give him some time to warmup
 						logger.debug("reader started");
 						int gots = 0;
 						int misseds = 0;
 						while (++i < numOps) {
 							String key = "test" + random.nextInt(numObjects);
 							DummyPojo pojo = (DummyPojo)cache.get(key);
-							if (pojo != null) {
-								org.junit.Assert.assertEquals(key, pojo.name);
+							DummyPojo check = items.get(key);
+							logger.debug("check item=" + check);
+							if (check != null) {
+								if (!check.name.equals(pojo.name)) {
+									logger.error("mismatch");
+								} else {
+									logger.debug("got it");									
+								}
 								gots++;
 							} else {
 								misseds++;
@@ -152,6 +163,8 @@ public class BasicMultiThreadedTest {
 							String key = "test" + random.nextInt(numObjects);
 							DummyPojo pojo = new DummyPojo(key,randomSize());
 							cache.put(pojo.name, pojo);
+							items.put(pojo.name, pojo);
+							logger.debug("should have added item " + key);									
 							sleep(pauseBetweenOps); 
 					    }
 						logger.debug("added " + i + " entries");
