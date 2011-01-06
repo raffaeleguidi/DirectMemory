@@ -85,6 +85,9 @@ public class OffHeapStorage extends Storage {
 			slot2Slice.buffer.mark();
 			if (slot2Slice.size > 0) {
 				slots.add(slot2Slice);
+				if (slot2Slice.buffer == null) {
+					logger.error("why null?!?");
+				}
 				logger.debug("added sliced slot of " + slot2Slice.size + " bytes");
 			} else {
 				logger.debug("size of slot is zero bytes");
@@ -114,25 +117,42 @@ public class OffHeapStorage extends Storage {
 			CacheEntry last = slots.last();
 			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
 			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
-			signalOverFlow(entry.size);
+			signalOverFlow(entry.size); // was called with entry.size, should use overflow() instead
+			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
 			slot = slots.ceiling(entry);
+			if (slot.buffer == null) {
+				logger.error("error: " + slot.key + " has an empty buffer");
+			}
+			
 		}
 		if (slot == null) {
 			// no free memory left - I quit trying
 			return null;
 		}
+
+		pendingAllocation.addAndGet(-entry.size);
 		
-		logger.debug("got slot at position " + slot.position);
+		logger.debug("got slot for " + entry.key + " at position " + slot.position);
+		
+		if (entry.key.equals("test2"))
+			logger.debug("aaa");
 		
 		return slice(slot, entry);
 	}	
 	
+	AtomicInteger pendingAllocation = new AtomicInteger(); 
+	
 	private void signalOverFlow(int size) {
-		throw new NotImplementedException();
+		pendingAllocation.addAndGet(size);
+		// should we pass it the supervisor or process it right now?
+		// well, let's keep it in the supervisor for now
+		logger.debug("overflow (before) is " + overflow());
+		supervisor.signalOverflow(this);
+		logger.debug("overflow (after) is " + overflow());
 	}
 
 	@Override
-	protected boolean store(CacheEntry entry) {
+	protected boolean moveIn(CacheEntry entry) {
 		synchronized(entry) {
 			@SuppressWarnings({"rawtypes", "unchecked"})
 			Class clazz = entry.clazz();
@@ -152,9 +172,10 @@ public class OffHeapStorage extends Storage {
 				entry.clazz = clazz;
 				//TODO: check this
 				entry.buffer.reset();
-//				entry.position = entry.buffer.position();
+				entry.position = entry.buffer.position();
 				entry.buffer.put(entry.array);
 				entry.array = null;
+				entry.object = null;
 	
 				usedMemory.addAndGet(entry.size);
 				entries.put(entry.key, entry);
@@ -169,7 +190,7 @@ public class OffHeapStorage extends Storage {
 	}
 
 	@Override
-	protected boolean restore(CacheEntry entry) {
+	public boolean moveToHeap(CacheEntry entry) {
 		byte[] source = null; 
 		source = new byte[entry.size]; 
 		try {
@@ -204,6 +225,7 @@ public class OffHeapStorage extends Storage {
 				logger.debug("added slot of " + freeSlot.size + " bytes");
 			}
 			usedMemory.addAndGet(-source.length);
+			remove(entry);
 		} catch (UTFDataFormatException e) {
 			logger.error(e.getMessage());
 		} catch (StreamCorruptedException e) {
@@ -231,32 +253,36 @@ public class OffHeapStorage extends Storage {
 			buffer.clear();
 		}
 		memoryPages.clear();
+		usedMemory.set(0);
 		addMemoryPageAndGetFirstSlot();
 		logger.debug("off heap storage reset");
 	}
 	
 	@Override
 	public void moveEntryTo(CacheEntry entry, Storage storage) {
-		super.moveEntryTo(entry, storage);
-		usedMemory.addAndGet(-entry.size);
 		CacheEntry slot = new CacheEntry();
 		slot.buffer = entry.buffer.duplicate();
 		slot.size = entry.size;
 		slot.position = entry.position;
 		slot.buffer.position(slot.position);
-		entry.buffer = null;
-		slots.add(slot);			
-		logger.debug("created free slot of " + slot.size + " bytes");
+		super.moveEntryTo(entry, storage);
+		usedMemory.addAndGet(-entry.size);
+		slots.add(slot);	
+		
+		if (slot.buffer == null) {
+			logger.error("why null?!?");
+		}
+		logger.debug("created free slot from " + entry.key + " of " + slot.size + " bytes");
 	}
 	
 	@Override
-	public boolean remove(String key) {
+	public boolean delete(String key) {
 		CacheEntry entry = entries.get(key);
 		if (entry != null) {
 			usedMemory.addAndGet(-entry.size);
 			slots.add(entry);
 			logger.debug("added slot of " + entry.size + " bytes");
-			return super.remove(key);
+			return super.delete(key);
 		}
 		return false;
 	}
@@ -271,7 +297,15 @@ public class OffHeapStorage extends Storage {
 		usedMemory.addAndGet(-last.size);
 		entries.remove(last.key);
 		slots.add(last);
+		if (last.buffer == null) {
+			logger.error("why null?!?");
+		}
 		logger.debug("added slot of " + last.size + " bytes");
 		return last;
+	}
+
+	@Override
+	int overflow() {
+		return (usedMemory.get() + pendingAllocation.get()) - capacity();
 	}
 }

@@ -2,11 +2,14 @@ package org.directmemory.supervisor;
 
 
 import org.directmemory.CacheStore;
+import org.directmemory.storage.Storage;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BatchSupervisor implements Supervisor {
 
@@ -35,5 +38,10 @@ public class BatchSupervisor implements Supervisor {
 			cache.disposeExpired();
 		}
 		split.stop();
+	}
+	
+	@Override
+	public void signalOverflow(Storage storage) {
+		throw new NotImplementedException();
 	}
 }

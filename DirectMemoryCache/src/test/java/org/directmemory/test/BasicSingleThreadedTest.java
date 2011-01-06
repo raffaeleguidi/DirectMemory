@@ -28,20 +28,52 @@ public class BasicSingleThreadedTest {
 	public void addAndRetrieve() {
 		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(0, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+		
 		cache.put("test2", new DummyPojo("test2", randomSize()));
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(1, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+		
 		cache.put("test3", new DummyPojo("test3", randomSize()));
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(2, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+		logger.debug(cache.toString());
+		
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
+		logger.debug(cache.toString());
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(2, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+		
 		DummyPojo pojo2 = (DummyPojo)cache.get("test2");
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(2, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+
 		DummyPojo pojo3 = (DummyPojo)cache.get("test3");
+		assertEquals(1, cache.heapEntriesCount());
+		assertEquals(2, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+
 		assertNotNull(pojo1);
 		assertEquals("test1", pojo1.name);
 		assertNotNull(pojo2);
 		assertEquals("test2", pojo2.name);
 		assertNotNull(pojo3);
 		assertEquals("test3", pojo3.name);
+
 		logger.debug("addAndRetrieve " + cache.toString());
 		CacheStore.displayTimings();
+		
 		cache.reset();
+		assertEquals(0, cache.heapEntriesCount());
+		assertEquals(0, cache.offHeapEntriesCount());
+		assertEquals(0, cache.onDiskEntriesCount());
+		assertEquals(0, cache.usedMemory());
 	}
 	
 	

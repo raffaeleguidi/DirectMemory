@@ -26,7 +26,7 @@ public class FileStorage extends Storage {
 	
 
 	@Override
-	protected boolean store(CacheEntry entry) {
+	protected boolean moveIn(CacheEntry entry) {
 		File output = new File(baseDir + "/" + entry.key + ".object");
 		FileOutputStream fos;
 		try {
@@ -59,7 +59,7 @@ public class FileStorage extends Storage {
 	}
 
 	@Override
-	protected boolean restore(CacheEntry entry) {
+	public boolean moveToHeap(CacheEntry entry) {
 		File input = new File(baseDir + "/" + entry.path);
 		FileInputStream fis;
 		try {
@@ -106,14 +106,21 @@ public class FileStorage extends Storage {
 	}
 	
 	@Override
-	public boolean remove(String key) {
+	public boolean delete(String key) {
 		CacheEntry entry = entries.get(key);
 		if (entry != null) {
 			File file2delete = new File(entry.path);
 			file2delete.delete();
-			return super.remove(key);
+			return super.delete(key);
 		}
 		return false;
+	}
+
+
+	@Override
+	int overflow() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

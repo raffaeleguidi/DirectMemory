@@ -2,6 +2,7 @@ package org.directmemory.supervisor;
 
 
 import org.directmemory.CacheStore;
+import org.directmemory.storage.Storage;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -35,5 +36,10 @@ public class SimpleSupervisor implements Supervisor {
 			count++;
 		}
 		split.stop();
+	}
+
+	@Override
+	public void signalOverflow(Storage storage) {
+		storage.overflowToNext();
 	}
 }

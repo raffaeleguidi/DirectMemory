@@ -36,8 +36,8 @@ public class CacheStore {
 
 	int entriesLimit = -1;
 	
-	public Serializer serializer = new StandardSerializer();
-	public Supervisor supervisor = new SimpleSupervisor();
+	private Serializer serializer;
+	private Supervisor supervisor;
 
 	private int defaultExpirationTime = -1;
 	
@@ -45,9 +45,10 @@ public class CacheStore {
 		logger.info("Cache initialization started");
 		this.entriesLimit = entriesLimit;
 		entriesOffHeap = new OffHeapStorage(pageSize, maxPages);
-		entriesOffHeap.serializer = serializer;
 		entriesOnDisk = new FileStorage();
-		entriesOnDisk.serializer = serializer;
+		setSerializer(new StandardSerializer());
+		setSupervisor(new SimpleSupervisor());
+		entriesOffHeap.next = entriesOnDisk;
 		logger.info("Cache initialization ok");
 	}
 	
@@ -100,12 +101,13 @@ public class CacheStore {
 	}
 	
 	public void askSupervisorForDisposal() {
-		supervisor.disposeOverflow(this);
+		getSupervisor().disposeOverflow(this);
 	}
 	
 	protected void moveInHeap(CacheEntry entry) {
-		if (entriesOffHeap.put(entry)) {
+		if (entriesOffHeap.moveToHeap(entry)) {
 			lruQueue.remove(entry);
+			lruQueue.add(entry);
 		}
 	}
 
@@ -160,9 +162,9 @@ public class CacheStore {
 		} else if (entry.inHeap()) {
 			lruQueue.remove(entry);
 		} else if (entry.offHeap()){
-			entriesOffHeap.remove(key);
+			entriesOffHeap.delete(key);
 		} else if (entry.onDisk()) {
-			entriesOnDisk.remove(key);
+			entriesOnDisk.delete(key);
 		}
 		askSupervisorForDisposal();
 		return entry;
@@ -209,7 +211,7 @@ public class CacheStore {
 			;
 	}
 	
-	private long onDiskEntriesCount() {
+	public long onDiskEntriesCount() {
 		return entriesOnDisk.count();
 	}
 
@@ -231,5 +233,25 @@ public class CacheStore {
 	
 	public static int KB(double kilo) {
 		return (int)kilo * 1024;
+	}
+
+	public void setSupervisor(Supervisor supervisor) {
+		entriesOnDisk.supervisor = supervisor;
+		entriesOffHeap.supervisor = supervisor;
+		this.supervisor = supervisor;
+	}
+
+	public Supervisor getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSerializer(Serializer serializer) {
+		entriesOffHeap.serializer = serializer;
+		entriesOnDisk.serializer = serializer;
+		this.serializer = serializer;
+	}
+
+	public Serializer getSerializer() {
+		return serializer;
 	}
 }

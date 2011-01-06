@@ -104,9 +104,9 @@ public class BasicMultiThreadedTest {
 	public void mixedScenario1and1() {
 
 		CacheStore cache = new CacheStore(100, CacheStore.MB(5), 1);
-		cache.serializer = new ProtoStuffSerializer();
+		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
-		cache.supervisor = new TimedSupervisor(1500);
+		cache.setSupervisor(new TimedSupervisor(1500));
 		logger.debug("*** begin mixed 1-1");
 
 		ThreadGroup group = new ThreadGroup("test");
@@ -174,9 +174,9 @@ public class BasicMultiThreadedTest {
 	public void mixedScenario10and1() {
 
 		CacheStore cache = new CacheStore(100, CacheStore.MB(2.5), 1);
-		cache.serializer = new ProtoStuffSerializer();
+		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
-		cache.supervisor = new TimedSupervisor(1500);
+		cache.setSupervisor(new TimedSupervisor(1500));
 		logger.debug("*** begin mixed 1-1");
 
 		ThreadGroup group = new ThreadGroup("test");

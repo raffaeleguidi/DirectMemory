@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.directmemory.CacheEntry;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
+import org.directmemory.supervisor.Supervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +17,17 @@ public abstract class Storage {
 	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
 	public Serializer serializer = new StandardSerializer();
 	
-	protected abstract boolean store(CacheEntry entry);
-	protected abstract boolean restore(CacheEntry entry);
+	public Supervisor supervisor;
+	public Storage next;
+	
+	protected abstract boolean moveIn(CacheEntry entry);
+	public abstract boolean moveToHeap(CacheEntry entry);
 
 	public boolean put(CacheEntry entry) {
 		if (entry.key == null) {
 			logger.warn("why an entry with a null key?!?");
 		}
-		if (store(entry)) {		
+		if (moveIn(entry)) {		
 			logger.debug("stored entry " + entry.key);
 			entries.put(entry.key, entry);
 			// remove it to make sure it will not get duplicated
@@ -37,25 +41,21 @@ public abstract class Storage {
 			return false;
 		}
 	}
-	
+
 	public boolean remove(CacheEntry entry) {
 		logger.debug("remove entry " + entry.key);
-		if (restore(entry)) {
-			return lruQueue.remove(entry);
-		} else {
-			return false;
-		}
+		return lruQueue.remove(entry);
 	}
 	
-	public boolean remove(String key) {
+	public boolean delete(String key) {
 		logger.debug("remove entry with key " + key);
-		CacheEntry entry = entries.get(key);
+		CacheEntry entry = entries.remove(key);
 		return lruQueue.remove(entry);
 	}
 	
 	public CacheEntry get(String key) {
 		CacheEntry entry = entries.get(key);
-		if (restore(entry)) {
+		if (moveToHeap(entry)) {
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
 			logger.debug("retrieve entry with key " + key);
@@ -69,7 +69,7 @@ public abstract class Storage {
 	public void moveEntryTo(CacheEntry entry, Storage storage) {
 		logger.debug("move entry " + entry.key + " to storage " + storage);
 		remove(entry);
-		storage.store(entry);
+		storage.moveIn(entry);
 	}
 	
 	public void moveEntryTo(String key, Storage storage) {
@@ -80,7 +80,7 @@ public abstract class Storage {
 	public void moveButKeepTrackOfEntryTo(CacheEntry entry, Storage storage) {
 		logger.debug("move but keep track of entry " + entry.key + " to storage " + storage);
 		lruQueue.remove(entry);
-		storage.store(entry);
+		storage.moveIn(entry);
 	}
 	
 	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
@@ -99,5 +99,17 @@ public abstract class Storage {
 		entries.remove(last.key);
 		return last;
 	}
+	public void overflowToNext() {
+		do {
+			CacheEntry last = removeLast();
+			if (next != null) {
+				moveEntryTo(last, next);
+				logger.debug("moved " + last.key + " to " + next.toString());
+			} else {
+				logger.debug("discarded " + last.key);
+			}
+		} while (overflow() > 0);
+	}
+	abstract int overflow();
 
 }
