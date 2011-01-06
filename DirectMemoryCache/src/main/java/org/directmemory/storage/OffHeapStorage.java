@@ -118,7 +118,6 @@ public class OffHeapStorage extends Storage {
 			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
 			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
 			signalOverFlow(entry.size); // was called with entry.size, should use overflow() instead
-			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
 			slot = slots.ceiling(entry);
 			if (slot.buffer == null) {
 				logger.error("error: " + slot.key + " has an empty buffer");
@@ -130,12 +129,7 @@ public class OffHeapStorage extends Storage {
 			return null;
 		}
 
-		pendingAllocation.addAndGet(-entry.size);
-		
 		logger.debug("got slot for " + entry.key + " at position " + slot.position);
-		
-		if (entry.key.equals("test2"))
-			logger.debug("aaa");
 		
 		return slice(slot, entry);
 	}	
@@ -147,7 +141,9 @@ public class OffHeapStorage extends Storage {
 		// should we pass it the supervisor or process it right now?
 		// well, let's keep it in the supervisor for now
 		logger.debug("overflow (before) is " + overflow());
-		supervisor.signalOverflow(this);
+		overflowToNext();
+//		supervisor.signalOverflow(this);
+		pendingAllocation.set(0);
 		logger.debug("overflow (after) is " + overflow());
 	}
 
@@ -268,10 +264,11 @@ public class OffHeapStorage extends Storage {
 		super.moveEntryTo(entry, storage);
 		usedMemory.addAndGet(-entry.size);
 		slots.add(slot);	
-		
-		if (slot.buffer == null) {
-			logger.error("why null?!?");
-		}
+		// let's try cleaning the buffer
+//		logger.debug("buffer of " + entry.key + " freed");
+//		entry.buffer = null;
+//		logger.debug("array of " + entry.key + " freed");
+//		entry.array = null;
 		logger.debug("created free slot from " + entry.key + " of " + slot.size + " bytes");
 	}
 	

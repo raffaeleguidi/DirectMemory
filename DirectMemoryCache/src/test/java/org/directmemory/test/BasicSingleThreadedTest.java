@@ -32,10 +32,12 @@ public class BasicSingleThreadedTest {
 		assertEquals(0, cache.offHeapEntriesCount());
 		assertEquals(0, cache.onDiskEntriesCount());
 		
-		cache.put("test2", new DummyPojo("test2", randomSize()));
+		CacheEntry entry = cache.put("test2", new DummyPojo("test2", randomSize()));
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		assert(cache.usedMemory() > 0);
 		assertEquals(0, cache.onDiskEntriesCount());
+		logger.debug(cache.toString());
 		
 		cache.put("test3", new DummyPojo("test3", randomSize()));
 		assertEquals(1, cache.heapEntriesCount());

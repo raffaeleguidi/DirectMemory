@@ -43,8 +43,7 @@ public abstract class Storage {
 	}
 
 	public boolean remove(CacheEntry entry) {
-		logger.debug("remove entry " + entry.key);
-		return lruQueue.remove(entry);
+		return delete(entry.key);
 	}
 	
 	public boolean delete(String key) {

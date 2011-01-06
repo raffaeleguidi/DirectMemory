@@ -5,8 +5,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
+import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
+import org.directmemory.storage.FileStorage;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,7 +26,19 @@ public class BasicStorageTest {
 	}
 	
 	@Test
-	public void addAndRetrieve() {
+	public void fileStorage() {
+		FileStorage storage = new FileStorage();
+		CacheEntry entry = new CacheEntry();
+		entry.object = new DummyPojo("test", 1024);
+		entry.key = ((DummyPojo)entry.object).name;
+		storage.put(entry);
+		
+		CacheEntry entry2 = storage.get("test");
+		assertEquals(entry.key, entry2.key);
+	}
+	
+	@Test
+	public void addAndRetrieve() throws Exception {
 		CacheStore cache = new CacheStore(1, CacheStore.KB(4), 1);
 		cache.put("test1", new DummyPojo("test1", fixedSize()));
 		assertEquals(1, cache.heapEntriesCount());
@@ -35,12 +49,19 @@ public class BasicStorageTest {
 		cache.put("test2", new DummyPojo("test2", fixedSize()));
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		if (cache.usedMemory() <= 0) {
+			throw new Exception();
+		}
 		assertEquals(0, cache.onDiskEntriesCount());
 		logger.debug("put test2 " + cache.toString());
 
 		cache.put("test3", new DummyPojo("test3", fixedSize()));
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		if (cache.usedMemory() <= 0) {
+			logger.debug(cache.toString());
+//			throw new Exception();
+		}
 		assertEquals(0, cache.onDiskEntriesCount());
 		logger.debug("put test3 " + cache.toString());
 
@@ -48,18 +69,31 @@ public class BasicStorageTest {
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		if (cache.usedMemory() <= 0) {
+//			throw new Exception();
+		}
 		assertEquals(0, cache.onDiskEntriesCount());
 		logger.debug("got test1 " + cache.toString());
 
 		DummyPojo pojo2 = (DummyPojo)cache.get("test2");
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		if (cache.usedMemory() <= 0) {
+//			throw new Exception();
+		}
 		assertEquals(0, cache.onDiskEntriesCount());
 		logger.debug("got test2 " + cache.toString());
+		assert(cache.usedMemory() > 0);
 
 		DummyPojo pojo3 = (DummyPojo)cache.get("test3");
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
+		assert(cache.usedMemory() > 0);
+		if (cache.usedMemory() <= 0) {
+//			throw new Exception();
+		}
+		logger.debug("used memory " + cache.usedMemory());
+		logger.debug("on disk " + cache.onDiskEntriesCount());
 		assertEquals(1, cache.onDiskEntriesCount());
 		logger.debug("got test3 " + cache.toString());
 

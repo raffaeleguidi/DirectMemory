@@ -104,12 +104,12 @@ public class CacheStore {
 		getSupervisor().disposeOverflow(this);
 	}
 	
-	protected void moveInHeap(CacheEntry entry) {
-		if (entriesOffHeap.moveToHeap(entry)) {
-			lruQueue.remove(entry);
-			lruQueue.add(entry);
-		}
-	}
+//	protected void moveInHeap(CacheEntry entry) {
+//		if (entriesOffHeap.moveToHeap(entry)) {
+//			lruQueue.remove(entry);
+//			lruQueue.add(entry);
+//		}
+//	}
 
 	public CacheEntry put(String key, Object object) {
 		return put(key, object, defaultExpirationTime);
@@ -137,10 +137,15 @@ public class CacheStore {
 			lruQueue.remove(entry);
 			lruQueue.add(entry);
 		} else if (entry.offHeap()) {
-			moveInHeap(entry);
+			if (entriesOffHeap.moveToHeap(entry)) {
+				lruQueue.remove(entry);
+				lruQueue.add(entry);
+			}
 		} else if (entry.onDisk()) {
-			entriesOnDisk.remove(entry);
-			lruQueue.add(entry);
+			if (entriesOnDisk.moveToHeap(entry)) {
+				lruQueue.remove(entry);
+				lruQueue.add(entry);
+			}
 		}
 		return entry;
 	}
@@ -204,7 +209,7 @@ public class CacheStore {
 				"{ " + crLf + 
 				"   entries: " + entries.size() + crLf + 
 				"   heap: " + heapEntriesCount() + "/" + entriesLimit + crLf +  
-				"   memory: " + ((OffHeapStorage)entriesOffHeap).usedMemory() + "/" + ((OffHeapStorage)entriesOffHeap).capacity() + crLf + 
+				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)entriesOffHeap).capacity() + crLf + 
 				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
 				"   free slots: " + ((OffHeapStorage)entriesOffHeap).slots().size() + " first size is: " + ((OffHeapStorage)entriesOffHeap).slots().first().size + " last size=" + ((OffHeapStorage)entriesOffHeap).slots().last().size + crLf + 
 				"}" 

@@ -43,6 +43,8 @@ public class FileStorage extends Storage {
 			// modify entry
 			entry.path = output.getName();
 			entry.array = null; // just to be sure
+			entry.object = null;
+			entry.size = data.length;
 			// also entry.buffer should be reset 
 			// but it must be reused - I leave it to the caller
 		} catch (FileNotFoundException e) {
@@ -64,7 +66,7 @@ public class FileStorage extends Storage {
 		FileInputStream fis;
 		try {
 			fis = new FileInputStream(input);
-			entry.array = new byte[entry.size];
+			entry.array = new byte[(int)input.length()];
 			fis.read(entry.array);
 			fis.close();
 			input.delete();
@@ -72,6 +74,7 @@ public class FileStorage extends Storage {
 			entry.object = serializer.deserialize(entry.array, entry.clazz());
 			entry.path = null;
 			entry.array = null; // just to be sure
+			entry.buffer = null;
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();
