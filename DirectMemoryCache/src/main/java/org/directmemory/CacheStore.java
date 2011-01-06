@@ -1,16 +1,9 @@
 package org.directmemory;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.StreamCorruptedException;
-import java.io.UTFDataFormatException;
-import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
@@ -21,8 +14,6 @@ import org.directmemory.supervisor.SimpleSupervisor;
 import org.directmemory.supervisor.Supervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jndi.ldap.EntryChangeResponseControl;
 
 public class CacheStore {	
 	private static Logger logger=LoggerFactory.getLogger(CacheStore.class);
@@ -87,18 +78,18 @@ public class CacheStore {
 		//moveEntriesToDisk(bytes2free);
 	}
 		
-	private void moveEntriesToDisk(int bytes2free) {
-		int freedBytes = 0;
-		while (freedBytes < bytes2free) {
-			CacheEntry last = lruOffheapQueue.poll();
-			if (last == null) {
-				logger.warn("no lru entries in off heap slots");
-				return;
-			}			
-			entriesOffHeap.moveEntryTo(last, entriesOnDisk);
-			freedBytes += last.size;
-		}
-	}
+//	private void moveEntriesToDisk(int bytes2free) {
+//		int freedBytes = 0;
+//		while (freedBytes < bytes2free) {
+//			CacheEntry last = lruOffheapQueue.poll();
+//			if (last == null) {
+//				logger.warn("no lru entries in off heap slots");
+//				return;
+//			}			
+//			entriesOffHeap.moveEntryTo(last, entriesOnDisk);
+//			freedBytes += last.size;
+//		}
+//	}
 	
 	public void askSupervisorForDisposal() {
 		getSupervisor().disposeOverflow(this);

@@ -11,8 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.CacheEntry;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class OffHeapStorage extends Storage {
 
 	public ConcurrentSkipListSet<CacheEntry> slots = new ConcurrentSkipListSet<CacheEntry>();
@@ -98,7 +96,6 @@ public class OffHeapStorage extends Storage {
 			}
 			return buf;
 		}
-		
 	}
 
 	private ByteBuffer bufferFor(CacheEntry entry) {
@@ -107,7 +104,7 @@ public class OffHeapStorage extends Storage {
 		CacheEntry slot = slots.ceiling(entry);
 
 		if (slot == null) {
-			// no large enough slots left at all
+			// no large enough slots left at all, try to allocate another page
 			slot = addMemoryPageAndGetFirstSlot();
 		}
 
@@ -117,16 +114,12 @@ public class OffHeapStorage extends Storage {
 			CacheEntry last = slots.last();
 			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
 			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
-			signalOverFlow(entry.size); // was called with entry.size, should use overflow() instead
+			signalOverFlow(entry.size); 
 			slot = slots.ceiling(entry);
 			if (slot.buffer == null) {
 				logger.error("error: " + slot.key + " has an empty buffer");
+				return null;
 			}
-			
-		}
-		if (slot == null) {
-			// no free memory left - I quit trying
-			return null;
 		}
 
 		logger.debug("got slot for " + entry.key + " at position " + slot.position);
