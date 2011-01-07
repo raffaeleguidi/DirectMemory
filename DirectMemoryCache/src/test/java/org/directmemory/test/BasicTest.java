@@ -9,6 +9,9 @@ import java.util.Random;
 import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
+import org.directmemory.serialization.ProtoStuffSerializer;
+import org.directmemory.serialization.Serializer;
+import org.directmemory.serialization.StandardSerializer;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,8 +28,19 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void simple() {
+	public void putAndGetWithJavaSerialization() {
+		putAndGet(new StandardSerializer());
+	}
+	
+	@Test
+	public void putAndGetWithProtostuffSerialization() {
+		putAndGet(new ProtoStuffSerializer());
+	}
+	
+	public void putAndGet(Serializer serializer) {
+		logger.debug("putAndGet with " + serializer.toString());
 		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
+		cache.setSerializer(serializer);
 		DummyPojo pojo = new DummyPojo("test1", 500);
 		Object retVal = cache.put("test1", pojo);
 		assertNotNull(retVal);
@@ -38,8 +52,19 @@ public class BasicTest {
 	}
 
 	@Test
-	public void addAndRetrieve() {
+	public void evictionWithJavaSerialization() {
+		eviction(new StandardSerializer());
+	}
+
+	@Test
+	public void evictionWithProtostuffSerialization() {
+		eviction(new ProtoStuffSerializer());
+	}
+
+	public void eviction(Serializer serializer) {
+		logger.debug("eviction with " + serializer.toString());
 		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
+		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
 		assertEquals(1, cache.heapStore().count());
 		assertEquals(0, cache.offHeapStore().count());
@@ -100,8 +125,19 @@ public class BasicTest {
 	}
 		
 	@Test
-	public void removeLast() {
+	public void removeLastWithJavaSerialization() {
+		removeLast(new StandardSerializer());
+	}
+
+	@Test
+	public void removeLastWithProtostuffSerialization() {
+		removeLast(new ProtoStuffSerializer());
+	}
+
+	public void removeLast(Serializer serializer) {
+		logger.debug("removeLast with " + serializer.toString());
 		CacheStore cache = new CacheStore(-1, 1 * 1024 * 1024, 1);
+		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", 1024));
 		cache.put("test2", new DummyPojo("test2", 1024));
 		cache.put("test3", new DummyPojo("test3", 1024));
@@ -119,8 +155,19 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void remove() {
+	public void removeWithJavaSerialization() {
+		remove(new StandardSerializer());
+	}
+
+	@Test
+	public void removeWithProtostuffSerialization() {
+		remove(new ProtoStuffSerializer());
+	}
+
+	public void remove(Serializer serializer) {
+		logger.debug("remove with " + serializer.toString());
 		CacheStore cache = new CacheStore(-1, 1 * 1024 * 1024, 1);
+		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", 1024));
 		CacheEntry entry = cache.remove("test1");
 		assertEquals("test1", entry.key);
