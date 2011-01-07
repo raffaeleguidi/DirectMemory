@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.directmemory.CacheEntry;
-import org.directmemory.CacheStore;
 
 public class FileStorage extends Storage {
 	

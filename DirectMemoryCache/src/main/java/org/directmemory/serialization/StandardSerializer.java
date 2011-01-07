@@ -7,10 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.javasimon.SimonManager;
-import org.javasimon.Split;
-import org.javasimon.Stopwatch;
-
 public class StandardSerializer implements Serializer {
 	
 	public byte[] serialize(Object obj, @SuppressWarnings({"rawtypes","unchecked"}) Class clazz) throws IOException {

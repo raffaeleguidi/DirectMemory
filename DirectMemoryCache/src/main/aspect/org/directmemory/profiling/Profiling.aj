@@ -74,12 +74,12 @@ public aspect Profiling {
 		return object;
 	}
 	
-	void around(CacheEntry entry): moveInHeapPointcut(entry) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeap");
-		Split split = stopWatch.start();
-		proceed(entry);
-		split.stop();
-    }	
+//	void around(CacheEntry entry): moveInHeapPointcut(entry) {
+//        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeap");
+//		Split split = stopWatch.start();
+//		proceed(entry);
+//		split.stop();
+//    }	
 	
 
 	private static String getTiming(Stopwatch sw) {

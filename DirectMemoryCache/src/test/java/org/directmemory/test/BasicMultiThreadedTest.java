@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.directmemory.CacheEntry;
 import org.directmemory.CacheStore;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
