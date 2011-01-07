@@ -16,14 +16,6 @@
   		<scope>test</scope>
   		<optional>false</optional>
   	</dependency>
-  	<dependency>
-  		<groupId>org.directmemory</groupId>
-  		<artifactId>DirectMemoryCache</artifactId>
-  		<version>0.5.2-SNAPSHOT</version>
-  		<type>jar</type>
-  		<scope>runtime</scope>
-  		<optional>false</optional>
-  	</dependency>
 	<dependency>
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-api</artifactId>
@@ -36,6 +28,14 @@
   		<version>2.4</version>
   		<type>jar</type>
   		<scope>provided</scope>
+  		<optional>false</optional>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.directmemory</groupId>
+  		<artifactId>DirectMemory-Cache</artifactId>
+  		<version>0.5.3-SNAPSHOT</version>
+  		<type>jar</type>
+  		<scope>runtime</scope>
   		<optional>false</optional>
   	</dependency>
   </dependencies>

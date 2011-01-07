@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 public class DemoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private int cacheSize = CacheStore.MB(10);
-	private CacheStore cache = new CacheStore(1000, cacheSize, 1);
+	private int cacheSize = CacheManager.MB(10);
+	private CacheManager cache = new CacheManager(1000, cacheSize, 1);
        
 	private static Logger logger=LoggerFactory.getLogger(DemoServlet.class);
 

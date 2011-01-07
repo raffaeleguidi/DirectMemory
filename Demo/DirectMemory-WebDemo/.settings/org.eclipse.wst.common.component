@@ -37,6 +37,12 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/DirectMemory-Cache/DirectMemory-Cache">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="DirectMemory-WebDemo"/>
         <property name="java-output-path" value="/DirectMemory-WebDemo/target/classes"/>
     </wb-module>

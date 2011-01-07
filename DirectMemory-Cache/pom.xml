@@ -6,7 +6,7 @@
                       
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.directmemory</groupId>
-  <artifactId>DirectMemoryCache</artifactId>
+  <artifactId>DirectMemory-Cache</artifactId>
   <name>DirectMemory Cache</name>
   <version>0.5.3-SNAPSHOT</version>
   <description>DirectMemory Cache is a multi layered cache implementation featuring off-heap memory management (a-la BigMemory) to enable efficient handling of a large number of java objects without affecting jvm garbage collection performance</description>

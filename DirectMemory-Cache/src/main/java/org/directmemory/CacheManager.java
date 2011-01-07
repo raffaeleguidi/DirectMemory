@@ -153,7 +153,7 @@ public class CacheManager {
 		return offHeapStore.count();
 	}
 	
-	public int usedMemory() {
+	public long usedMemory() {
 		return ((OffHeapStorage)offHeapStore).usedMemory();
 	}
 	
