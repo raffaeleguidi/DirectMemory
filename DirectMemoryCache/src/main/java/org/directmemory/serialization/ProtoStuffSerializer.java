@@ -20,8 +20,6 @@ public class ProtoStuffSerializer implements Serializer {
 	 */
 	@SuppressWarnings("unchecked")
 	public byte[] serialize(Object obj, @SuppressWarnings("rawtypes") Class clazz) throws IOException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSSerialize");
-		Split split = stopWatch.start();
 		@SuppressWarnings("rawtypes")
 		Schema schema = RuntimeSchema.getSchema(clazz);
 		final LinkedBuffer buffer = LinkedBuffer.allocate(serBufferSize);
@@ -32,7 +30,6 @@ public class ProtoStuffSerializer implements Serializer {
 		} finally {
 			buffer.clear();
 		}		
-		split.stop();
 		return protostuff;
 	}
 
@@ -41,13 +38,10 @@ public class ProtoStuffSerializer implements Serializer {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.PSDeserialize");
-		Split split = stopWatch.start();
 		final Object object = clazz.newInstance();
 		@SuppressWarnings("rawtypes")
 		final Schema schema = RuntimeSchema.getSchema(clazz);
 		ProtostuffIOUtil.mergeFrom(source, object, schema);
-		split.stop();
 		return object;
 	}	
 }

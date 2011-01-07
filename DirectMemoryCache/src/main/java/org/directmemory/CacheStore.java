@@ -55,19 +55,6 @@ public class CacheStore {
 		}
 	}
 	
-	private void moveEntriesOffHeap(int entries2move) {
-		if (entries2move < 1) return;
-		for (int i = 0; i < entries2move; i++) {
-			CacheEntry entry = heapStore.peek();
-			if (entry != null && offHeapStore.put(entry)) {
-				heapStore.delete(entry.key);
-				logger.debug("moved off heap " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
-			} else {
-				logger.debug("no room for " + entry.key + " - skipping");
-			}
-		}
-	}
-	
 	public void disposeHeapOverflow() {
 		heapStore.overflowToNext();
 	}

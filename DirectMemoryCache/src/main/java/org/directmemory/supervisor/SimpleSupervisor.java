@@ -3,9 +3,6 @@ package org.directmemory.supervisor;
 
 import org.directmemory.CacheStore;
 import org.directmemory.storage.Storage;
-import org.javasimon.SimonManager;
-import org.javasimon.Split;
-import org.javasimon.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +18,7 @@ public class SimpleSupervisor implements Supervisor {
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	public void disposeOverflow(CacheStore cache) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.asimple.checkLimits");
-		Split split = stopWatch.start();
-		
-		logger.debug("checking memory limits");
+		logger.debug("disposing overflow");
 		cache.heapStore().overflowToNext();
 		cache.offHeapStore().overflowToNext();
 //		cache.disposeHeapOverflow();
@@ -37,8 +31,7 @@ public class SimpleSupervisor implements Supervisor {
 		} else {
 			count++;
 		}
-		split.stop();
-		logger.debug("checking memory limits - done");
+		logger.debug("disposing overflow - done");
 	}
 
 	@Override

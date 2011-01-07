@@ -14,25 +14,18 @@ import org.javasimon.Stopwatch;
 public class StandardSerializer implements Serializer {
 	
 	public byte[] serialize(Object obj, @SuppressWarnings({"rawtypes","unchecked"}) Class clazz) throws IOException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.javaSerialize");
-		Split split = stopWatch.start();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(obj);
 		oos.flush();
 		oos.close();
-		split.stop();
 		return baos.toByteArray();		
 	}
 
 	public Serializable deserialize(byte[] source, @SuppressWarnings({"rawtypes","unchecked"}) Class clazz) throws IOException, ClassNotFoundException {
-        Stopwatch stopWatch = SimonManager.getStopwatch("serializer.javaDeserialize");
-		Split split = stopWatch.start();
 		ByteArrayInputStream bis = new ByteArrayInputStream(source);
 		ObjectInputStream ois = new ObjectInputStream(bis);
 		Serializable obj = (Serializable) ois.readObject();
 		ois.close();
-		split.stop();
 		return obj;
-	}
-}
+	}}

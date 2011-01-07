@@ -3,9 +3,6 @@ package org.directmemory.supervisor;
 
 import org.directmemory.CacheStore;
 import org.directmemory.storage.Storage;
-import org.javasimon.SimonManager;
-import org.javasimon.Split;
-import org.javasimon.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +32,6 @@ public class AsyncBatchSupervisor implements Supervisor {
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	public void disposeOverflow(CacheStore cache) {
-        Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.asyncbatch.checkLimits");
-		Split split = stopWatch.start();
-		
 		if (totalCalls++ >= batchSize) {
 			totalCalls = 0;
 			new ThreadUsingCache(cache) {
@@ -50,7 +44,6 @@ public class AsyncBatchSupervisor implements Supervisor {
 				}
 			}.start();
 		}
-		split.stop();
 	}
 	
 	@Override

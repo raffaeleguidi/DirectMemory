@@ -14,22 +14,22 @@
     </encoder>
   </appender>
     
-  <logger name="org.directmemory.profiling" level="all">
+  <logger name="org.directmemory.profiling" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
 
-  <logger name="org.directmemory.storage" level="all">
+  <logger name="org.directmemory.storage" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
 
-  <logger name="org.directmemory.test" level="all">
+  <logger name="org.directmemory.test" level="debug">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="org.directmemory" level="all">
+  <logger name="org.directmemory" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>

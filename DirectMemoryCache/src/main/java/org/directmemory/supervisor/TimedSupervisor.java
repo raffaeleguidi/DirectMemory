@@ -5,9 +5,6 @@ import java.util.Date;
 
 import org.directmemory.CacheStore;
 import org.directmemory.storage.Storage;
-import org.javasimon.SimonManager;
-import org.javasimon.Split;
-import org.javasimon.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +34,6 @@ public class TimedSupervisor implements Supervisor {
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
 	public void disposeOverflow(CacheStore cache) {
-		Stopwatch stopWatch = SimonManager.getStopwatch("supervisor.timed.checkLimits");
-		Split split = stopWatch.start();
 		long passed = new Date().getTime() - lastCheck.getTime(); 
 		if (passed >= batchInterval) {
 			lastCheck = new Date();
@@ -52,7 +47,6 @@ public class TimedSupervisor implements Supervisor {
 				}
 			}.start();
 		}
-		split.stop();
 	}
 	
 	@Override
