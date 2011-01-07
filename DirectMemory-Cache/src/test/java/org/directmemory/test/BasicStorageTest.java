@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Random;
 
 import org.directmemory.CacheEntry;
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.storage.FileStorage;
 import org.junit.AfterClass;
@@ -40,7 +40,7 @@ public class BasicStorageTest {
 	
 	@Test
 	public void addAndRetrieve() throws Exception {
-		CacheStore cache = new CacheStore(1, CacheStore.KB(4), 1);
+		CacheManager cache = new CacheManager(1, CacheManager.KB(4), 1);
 		cache.put("test1", new DummyPojo("test1", fixedSize()));
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(0, cache.offHeapEntriesCount());
@@ -110,6 +110,6 @@ public class BasicStorageTest {
 		
 	@AfterClass
 	public static void checkPerformance() {
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 	}
 }

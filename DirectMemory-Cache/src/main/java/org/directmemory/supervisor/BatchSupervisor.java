@@ -1,7 +1,7 @@
 package org.directmemory.supervisor;
 
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class BatchSupervisor implements Supervisor {
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
-	public void disposeOverflow(CacheStore cache) {
+	public void disposeOverflow(CacheManager cache) {
 		if (totalCalls++ >= batchSize) {
 			totalCalls = 0;
 			logger.debug("checking memory limits");

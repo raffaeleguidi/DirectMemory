@@ -1,7 +1,7 @@
 package org.directmemory.supervisor;
 
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,12 @@ public class AsyncBatchSupervisor implements Supervisor {
 	long totalCalls = 0;
 	
 	private abstract class ThreadUsingCache extends Thread {
-		public ThreadUsingCache(CacheStore cache) {
+		public ThreadUsingCache(CacheManager cache) {
 			super();
 			this.cache = cache;
 		}
 
-		public CacheStore cache;
+		public CacheManager cache;
 	}
 	
 	public AsyncBatchSupervisor(int batchSize) {
@@ -31,7 +31,7 @@ public class AsyncBatchSupervisor implements Supervisor {
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
-	public void disposeOverflow(CacheStore cache) {
+	public void disposeOverflow(CacheManager cache) {
 		if (totalCalls++ >= batchSize) {
 			totalCalls = 0;
 			new ThreadUsingCache(cache) {

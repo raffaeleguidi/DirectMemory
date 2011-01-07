@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.directmemory.CacheEntry;
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.serialization.StandardSerializer;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
@@ -30,7 +30,7 @@ public class Starter {
 	public static StandardSerializer serializer = new StandardSerializer();
 	
 	public static void main(String[] args) {
-		CacheStore cache = new CacheStore(100, CacheStore.MB(5), 1);
+		CacheManager cache = new CacheManager(100, CacheManager.MB(5), 1);
 		cache.put("test", "questo è un test");
 		cache.reset();
 	}

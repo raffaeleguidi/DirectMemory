@@ -3,7 +3,7 @@ package org.directmemory.supervisor;
 
 import java.util.Date;
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,12 @@ public class TimedSupervisor implements Supervisor {
 	Date lastCheck = new Date();
 			
 	private abstract class ThreadUsingCache extends Thread {
-		public ThreadUsingCache(CacheStore cache) {
+		public ThreadUsingCache(CacheManager cache) {
 			super();
 			this.cache = cache;
 		}
 
-		public CacheStore cache;
+		public CacheManager cache;
 	}
 	
 	public TimedSupervisor (long batchInterval) {
@@ -33,7 +33,7 @@ public class TimedSupervisor implements Supervisor {
 	/* (non-Javadoc)
 	 * @see org.directmemory.supervisor.Supervisor#checkLimits(org.directmemory.CacheStore)
 	 */
-	public void disposeOverflow(CacheStore cache) {
+	public void disposeOverflow(CacheManager cache) {
 		long passed = new Date().getTime() - lastCheck.getTime(); 
 		if (passed >= batchInterval) {
 			lastCheck = new Date();

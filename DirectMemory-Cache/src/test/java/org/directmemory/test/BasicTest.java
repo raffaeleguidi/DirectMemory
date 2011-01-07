@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Random;
 
 import org.directmemory.CacheEntry;
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
@@ -39,7 +39,7 @@ public class BasicTest {
 	
 	public void putAndGet(Serializer serializer) {
 		logger.debug("putAndGet with " + serializer.toString());
-		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
+		CacheManager cache = new CacheManager(1, CacheManager.MB(1), 1);
 		cache.setSerializer(serializer);
 		DummyPojo pojo = new DummyPojo("test1", 500);
 		Object retVal = cache.put("test1", pojo);
@@ -63,7 +63,7 @@ public class BasicTest {
 
 	public void eviction(Serializer serializer) {
 		logger.debug("eviction with " + serializer.toString());
-		CacheStore cache = new CacheStore(1, CacheStore.MB(1), 1);
+		CacheManager cache = new CacheManager(1, CacheManager.MB(1), 1);
 		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
 		assertEquals(1, cache.heapStore().count());
@@ -115,7 +115,7 @@ public class BasicTest {
 		assertEquals("test3", pojo3.name);
 
 		logger.debug("addAndRetrieve " + cache.toString());
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 		
 		cache.reset();
 		assertEquals(0, cache.heapEntriesCount());
@@ -136,7 +136,7 @@ public class BasicTest {
 
 	public void removeLast(Serializer serializer) {
 		logger.debug("removeLast with " + serializer.toString());
-		CacheStore cache = new CacheStore(-1, 1 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(-1, 1 * 1024 * 1024, 1);
 		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", 1024));
 		cache.put("test2", new DummyPojo("test2", 1024));
@@ -166,7 +166,7 @@ public class BasicTest {
 
 	public void remove(Serializer serializer) {
 		logger.debug("remove with " + serializer.toString());
-		CacheStore cache = new CacheStore(-1, 1 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(-1, 1 * 1024 * 1024, 1);
 		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", 1024));
 		CacheEntry entry = cache.remove("test1");
@@ -178,6 +178,6 @@ public class BasicTest {
 	
 	@AfterClass
 	public static void checkPerformance() {
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 	}
 }
