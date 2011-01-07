@@ -5,6 +5,5 @@
         <wb-resource deploy-path="/" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/src/test/java"/>
         <wb-resource deploy-path="/" source-path="/src/main/aspect"/>
-        <wb-resource deploy-path="/" source-path="/testConfig"/>
     </wb-module>
 </project-modules>

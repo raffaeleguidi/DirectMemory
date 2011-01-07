@@ -14,9 +14,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BasicMultiThreadedTest {
+public class MultiThreadedTest {
 
-	private static Logger logger=LoggerFactory.getLogger(BasicMultiThreadedTest.class);
+	private static Logger logger=LoggerFactory.getLogger(MultiThreadedTest.class);
 	
 	public static CacheStore cache = null;
 	public static Split wholeTestSplit = null;
