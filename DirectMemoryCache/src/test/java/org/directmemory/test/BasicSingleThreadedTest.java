@@ -119,6 +119,7 @@ public class BasicSingleThreadedTest {
 		for (int i = 1; i <= limit * 2; i++) {
 			String key = "test" + i;
 			DummyPojo newPojo = (DummyPojo)cache.get(key);
+			logger.debug("done " + i + " of " + (limit * 2));
 			assertNotNull(newPojo);
 			assertEquals("test"+i, newPojo.name);
 		}

@@ -88,11 +88,8 @@ public class OffHeapStorage extends Storage {
 				}
 				logger.debug("added sliced slot of " + slot2Slice.size + " bytes");
 			} else {
-				logger.debug("size of slot is zero bytes");
+				logger.debug("size of slot is zero bytes; we used: " + entry.size);
 				logger.debug("and is in slots? " + slots.contains(slot2Slice));
-				if (logger.isDebugEnabled()) {
-					logger.debug(toString());
-				}
 			}
 			return buf;
 		}
@@ -138,6 +135,11 @@ public class OffHeapStorage extends Storage {
 //		supervisor.signalOverflow(this);
 		pendingAllocation.set(0);
 		logger.debug("overflow (after) is " + overflow());
+	}
+	
+	@Override
+	public void overflowToNext() {
+		super.overflowToNext();
 	}
 
 	@Override
@@ -201,19 +203,6 @@ public class OffHeapStorage extends Storage {
 				buf.get(source);
 				Object obj = serializer.deserialize(source, entry.clazz);
 				entry.object = obj;
-//				entry.buffer = null;
-				// change buffer size and position management
-//				CacheEntry freeSlot = new CacheEntry();
-//				
-//				freeSlot.buffer = buf;
-//				freeSlot.position = entry.position;
-//				// TODO: check this
-//				freeSlot.buffer.reset();
-//				//freeSlot.buffer.position(freeSlot.position);
-//				freeSlot.size = entry.size;
-
-				// todo: rpg
-//				slots.add(freeSlot);
 				logger.debug("freed slot of " + entry.size + " bytes");
 			}
 			usedMemory.addAndGet(-source.length);
@@ -258,13 +247,10 @@ public class OffHeapStorage extends Storage {
 		slot.position = entry.position;
 		slot.buffer.position(slot.position);
 		super.moveEntryTo(entry, storage);
-		usedMemory.addAndGet(-entry.size);
-		slots.add(slot);	
-		// let's try cleaning the buffer
-//		logger.debug("buffer of " + entry.key + " freed");
-//		entry.buffer = null;
-//		logger.debug("array of " + entry.key + " freed");
-//		entry.array = null;
+		if (entries.containsKey(entry.key)){
+			usedMemory.addAndGet(-entry.size);
+			slots.add(slot);	
+		}
 		logger.debug("created free slot from " + entry.key + " of " + slot.size + " bytes");
 	}
 	

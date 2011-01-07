@@ -46,8 +46,9 @@ public class FileStorage extends Storage {
 			entry.array = null; // just to be sure
 			entry.object = null;
 			entry.size = data.length;
-			// also entry.buffer should be reset 
-			// but it must be reused - I leave it to the caller
+			entries.put(entry.key, entry);
+			lruQueue.remove(entry);
+			lruQueue.add(entry);
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();
@@ -58,6 +59,7 @@ public class FileStorage extends Storage {
 			return false;
 		}
 		logger.debug("succesfully stored entry " + entry.key + " to disk (" + baseDir + "/" + entry.key + ".object)");
+		logger.debug("entries=" + entries.size() + " lru=" + lruQueue.size());
 		return true;
 	}
 
@@ -70,12 +72,12 @@ public class FileStorage extends Storage {
 			entry.array = new byte[(int)input.length()];
 			fis.read(entry.array);
 			fis.close();
-			input.delete();
+//			input.delete(); this will be done by "remove"
 			// modify entry
 			entry.object = serializer.deserialize(entry.array, entry.clazz());
-			entry.path = null;
 			entry.array = null; // just to be sure
-			entry.buffer = null;
+//			entry.buffer = null;
+			remove(entry);
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();
@@ -95,6 +97,7 @@ public class FileStorage extends Storage {
 			e.printStackTrace();
 		}
 		logger.debug("succesfully restored entry " + entry.key + " from disk (" + baseDir + "/" + entry.key + ".object)");
+		logger.debug("entries=" + entries.size() + " lru=" + lruQueue.size());
 		return true;
 	}
 	@Override
@@ -115,6 +118,7 @@ public class FileStorage extends Storage {
 		if (entry != null) {
 			File file2delete = new File(entry.path);
 			file2delete.delete();
+			entry.path = null;
 			return super.delete(key);
 		}
 		return entry;

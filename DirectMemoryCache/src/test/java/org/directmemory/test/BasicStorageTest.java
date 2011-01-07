@@ -1,5 +1,6 @@
 package org.directmemory.test;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -56,42 +57,41 @@ public class BasicStorageTest {
 		logger.debug("put test2 " + cache.toString());
 
 		cache.put("test3", new DummyPojo("test3", fixedSize()));
+		logger.debug("stored test3: " + cache.toString());
+		assertEquals(3, cache.heapStore().entries().size());
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
-		if (cache.usedMemory() <= 0) {
-			logger.debug(cache.toString());
-//			throw new Exception();
-		}
-		assertEquals(0, cache.onDiskEntriesCount());
-		logger.debug("put test3 " + cache.toString());
+		assertEquals(1, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0);
 
 		logger.debug("ask for test1 " + cache.toString());
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
+		logger.debug("got test1 " + cache.toString());
+		assertEquals("test1", pojo1.name);
+		assertEquals(3, cache.heapStore().entries().size());
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
-		if (cache.usedMemory() <= 0) {
-//			throw new Exception();
-		}
-		assertEquals(0, cache.onDiskEntriesCount());
-		logger.debug("got test1 " + cache.toString());
+		assertEquals(1, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0);
 
 		DummyPojo pojo2 = (DummyPojo)cache.get("test2");
+		logger.debug("got test2 " + cache.toString());
+		assertEquals("test2", pojo2.name);
+		assertEquals(3, cache.heapStore().entries().size());
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
-		if (cache.usedMemory() <= 0) {
-//			throw new Exception();
-		}
-		assertEquals(0, cache.onDiskEntriesCount());
-		logger.debug("got test2 " + cache.toString());
-		assert(cache.usedMemory() > 0);
+		assertEquals(1, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0);
 
 		DummyPojo pojo3 = (DummyPojo)cache.get("test3");
+		logger.debug("got test3 " + cache.toString());
+		assertEquals("test3", pojo3.name);
+		assertEquals(3, cache.heapStore().entries().size());
 		assertEquals(1, cache.heapEntriesCount());
 		assertEquals(1, cache.offHeapEntriesCount());
-		assert(cache.usedMemory() > 0);
-		if (cache.usedMemory() <= 0) {
-//			throw new Exception();
-		}
+		assertEquals(1, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0);
+
 		logger.debug("used memory " + cache.usedMemory());
 		logger.debug("on disk " + cache.onDiskEntriesCount());
 		assertEquals(1, cache.onDiskEntriesCount());
