@@ -2,7 +2,7 @@ package org.directmemory.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.junit.AfterClass;
@@ -16,7 +16,7 @@ public class BasicProtostuffSingleThreadedTest {
 	
 	@Test public void goOverTheLimitWithProtostuff() {
 		int limit = 10;
-		CacheStore store = new CacheStore(limit, 1 * 1024 * 1024, 1);
+		CacheManager store = new CacheManager(limit, 1 * 1024 * 1024, 1);
 		store.setSerializer(new ProtoStuffSerializer());
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + 1, 1024);
@@ -28,13 +28,13 @@ public class BasicProtostuffSingleThreadedTest {
 			}
 			logger.debug("goOverTheLimit " + store);
 		}
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 	}
 	
 	
 	@Test public void goOverTheLimitPutAndGetWithProtostuff() {
 		int limit = 1000;
-		CacheStore cache = new CacheStore(limit, 10 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(limit, 10 * 1024 * 1024, 1);
 		cache.setSerializer(new ProtoStuffSerializer());
 		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
@@ -62,6 +62,6 @@ public class BasicProtostuffSingleThreadedTest {
 	
 	@AfterClass
 	public static void checkPerformance() {
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 	}
 }

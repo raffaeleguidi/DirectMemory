@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.supervisor.TimedSupervisor;
@@ -19,13 +19,13 @@ public class MultiThreadedTest {
 
 	private static Logger logger=LoggerFactory.getLogger(MultiThreadedTest.class);
 	
-	public static CacheStore cache = null;
+	public static CacheManager cache = null;
 	public static Split wholeTestSplit = null;
 	
 	private Random random = new Random();
 
 	private int randomSize() {
-		return CacheStore.KB(2) + random.nextInt(CacheStore.KB(1));
+		return CacheManager.KB(2) + random.nextInt(CacheManager.KB(1));
 	}
 	
 //	@BeforeClass
@@ -106,7 +106,7 @@ public class MultiThreadedTest {
 	@Test
 	public void mixedScenario1and1() {
 
-		CacheStore cache = new CacheStore(100, CacheStore.MB(5), 1);
+		CacheManager cache = new CacheManager(100, CacheManager.MB(5), 1);
 		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
 		cache.setSupervisor(new TimedSupervisor(1500));
@@ -179,14 +179,14 @@ public class MultiThreadedTest {
 			Thread.yield();		
 		
 		logger.debug(cache.toString());
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 		logger.debug("*** end of mixed 1-1");
 	}
 	
 	@Test
 	public void mixedScenario10and1() {
 
-		CacheStore cache = new CacheStore(100, CacheStore.MB(2.5), 1);
+		CacheManager cache = new CacheManager(100, CacheManager.MB(2.5), 1);
 		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
 		cache.setSupervisor(new TimedSupervisor(1500));
@@ -268,7 +268,7 @@ public class MultiThreadedTest {
 			Thread.yield();		
 		
 		logger.debug(cache.toString());
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 		logger.debug("*** end of mixed 1-1");
 	}	
 	

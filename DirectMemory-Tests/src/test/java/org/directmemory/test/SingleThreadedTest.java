@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
-import org.directmemory.CacheStore;
+import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class SingleThreadedTest {
 	
 	@Test public void goOverTheOffheapLimitPutAndGet() {
 		int limit = 1000;
-		CacheStore cache = new CacheStore(limit, CacheStore.MB(2), 1);
+		CacheManager cache = new CacheManager(limit, CacheManager.MB(2), 1);
 //		cache.serializer = new ProtoStuffSerializer();
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + i, randomSize());
@@ -51,7 +51,7 @@ public class SingleThreadedTest {
 		
 	@Test public void reachLimit() {
 		int limit = 10;
-		CacheStore cache = new CacheStore(limit, 1 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(limit, 1 * 1024 * 1024, 1);
 		
 		for (int i = 1; i <= limit; i++) {
 			cache.put("test" + i, new DummyPojo("test" + 1, 1024));
@@ -65,7 +65,7 @@ public class SingleThreadedTest {
 	
 	@Test public void goOverTheLimit() {
 		int limit = 10;
-		CacheStore cache = new CacheStore(limit, 1 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(limit, 1 * 1024 * 1024, 1);
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
 			cache.put("test" + i, pojo);
@@ -82,7 +82,7 @@ public class SingleThreadedTest {
 	
 	@Test public void goOverTheLimitPutAndGet() {
 		int limit = 1000;
-		CacheStore cache = new CacheStore(limit, 10 * 1024 * 1024, 1);
+		CacheManager cache = new CacheManager(limit, 10 * 1024 * 1024, 1);
 		for (int i = 1; i <= limit * 1.5; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + i, 1024);
 			cache.put("test" + i, pojo);
@@ -109,6 +109,6 @@ public class SingleThreadedTest {
 	
 	@AfterClass
 	public static void checkPerformance() {
-		CacheStore.displayTimings();
+		CacheManager.displayTimings();
 	}
 }
