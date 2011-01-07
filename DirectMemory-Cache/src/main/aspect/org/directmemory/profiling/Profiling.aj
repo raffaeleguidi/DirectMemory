@@ -14,19 +14,19 @@ public aspect Profiling {
 	private static Logger logger=LoggerFactory.getLogger(Profiling.class);
 	
 	pointcut putPointcut(String key, Object object) : 
-		execution(CacheEntry org.directmemory.CacheStore.put(String, Object)) && 
+		execution(CacheEntry org.directmemory.CacheManager.put(String, Object)) && 
 		args(key, object);
 	
 	pointcut getPointcut(String key) : 
-		execution(Object org.directmemory.CacheStore.get(String)) && 
+		execution(Object org.directmemory.CacheManager.get(String)) && 
 		args(key);
 	
 	pointcut removePointcut(String key) : 
-		execution(CacheEntry org.directmemory.CacheStore.remove(String)) && 
+		execution(CacheEntry org.directmemory.CacheManager.remove(String)) && 
 		args(key);
 
 	pointcut disposeExpiredPointcut() : 
-		execution(void org.directmemory.CacheStore.disposeExpired());
+		execution(void org.directmemory.CacheManager.disposeExpired());
 	
 	pointcut moveOffHeapPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.OffHeapStorage.moveIn(CacheEntry)) && 
@@ -45,13 +45,13 @@ public aspect Profiling {
 		args(entry);
 
 	pointcut disposeOffHeapOverflowPointcut() : 
-		execution(void org.directmemory.CacheStore.disposeOffHeapOverflow());
+		execution(void org.directmemory.CacheManager.disposeOffHeapOverflow());
 
 	pointcut moveInHeapPointcut(CacheEntry entry) : 
-		execution(boolean org.directmemory.CacheStore.moveInHeap(CacheEntry)) && args(entry);
+		execution(boolean org.directmemory.CacheManager.moveInHeap(CacheEntry)) && args(entry);
 
 	pointcut displayTimingsPointcut() : 
-		execution(void org.directmemory.CacheStore.displayTimings());
+		execution(void org.directmemory.CacheManager.displayTimings());
 	
 	Object around(String key) : getPointcut(key) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
