@@ -4,3 +4,5 @@
 /Demo/DirectMemory-WebDemo/logs
 /DirectMemoryCache/target
 /DirectMemory-Tests/target
+/DirectMemory-Cache/target/test-classes
+/DirectMemory-Cache/target/classes

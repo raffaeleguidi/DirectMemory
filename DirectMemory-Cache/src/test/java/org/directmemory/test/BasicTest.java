@@ -3,6 +3,7 @@ package org.directmemory.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
@@ -69,6 +70,7 @@ public class BasicTest {
 		assertEquals(1L, cache.heapStore().count());
 		assertEquals(0L, cache.offHeapStore().count());
 		assertEquals(0L, cache.diskStore().count());
+		assertTrue(cache.usedMemory() == 0L);
 		logger.debug(cache.toString());
 		
 		@SuppressWarnings("unused")
@@ -76,14 +78,15 @@ public class BasicTest {
 		logger.debug(cache.toString());
 		assertEquals(1L, cache.heapStore().count());
 		assertEquals(1L, cache.offHeapStore().count());
-		assert(cache.usedMemory() > 0L);
 		assertEquals(0L, cache.diskStore().count());
+		assertTrue(cache.usedMemory() > 0L);
 		logger.debug(cache.toString());
 		
 		cache.put("test3", new DummyPojo("test3", randomSize()));
 		assertEquals(1L, cache.heapEntriesCount());
 		assertEquals(2L, cache.offHeapEntriesCount());
 		assertEquals(0L, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0L);
 		logger.debug(cache.toString());
 		
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
@@ -96,16 +99,19 @@ public class BasicTest {
 		assertEquals(1L, cache.heapEntriesCount());
 		assertEquals(2L, cache.offHeapEntriesCount());
 		assertEquals(0L, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0L);
 		
 		DummyPojo pojo2 = (DummyPojo)cache.get("test2");
 		assertEquals(1L, cache.heapEntriesCount());
 		assertEquals(2L, cache.offHeapEntriesCount());
 		assertEquals(0L, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0L);
 
 		DummyPojo pojo3 = (DummyPojo)cache.get("test3");
 		assertEquals(1L, cache.heapEntriesCount());
 		assertEquals(2L, cache.offHeapEntriesCount());
 		assertEquals(0L, cache.onDiskEntriesCount());
+		assertTrue(cache.usedMemory() > 0L);
 
 		assertNotNull(pojo1);
 		assertEquals("test1", pojo1.name);
@@ -113,6 +119,7 @@ public class BasicTest {
 		assertEquals("test2", pojo2.name);
 		assertNotNull(pojo3);
 		assertEquals("test3", pojo3.name);
+		assertTrue(cache.usedMemory() > 0L);
 
 		logger.debug("addAndRetrieve " + cache.toString());
 		CacheManager.displayTimings();

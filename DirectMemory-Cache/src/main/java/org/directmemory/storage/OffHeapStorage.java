@@ -107,14 +107,22 @@ public class OffHeapStorage extends Storage {
 
 		if (slot == null) {
 			// no free slots left free the last recently used
-			CacheEntry first = slots.first();
-			CacheEntry last = slots.last();
-			logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
-			logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
-			signalOverFlow(entry.size); 
+			if (logger.isDebugEnabled()) {
+				CacheEntry first = slots.first();
+				CacheEntry last = slots.last();
+				logger.debug("cannot find a free slot for entry " + entry.key + " of size " + entry.size);
+				logger.debug("slots=" + slots.size() + " first size is: " + first.size + " last size=" + last.size);
+			}
+			// ask to free something
+			signalOverFlow(entry.size);
+			// try again
 			slot = slots.ceiling(entry);
+			if (slot == null) {
+				logger.error("error: no large enough free slots for " + entry.key);
+				return null;
+			}
 			if (slot.buffer == null) {
-				logger.error("error: " + slot.key + " has an empty buffer");
+				logger.error("error: " + slot.key + " has an empty buffer (weird...)");
 				return null;
 			}
 		}
@@ -157,21 +165,17 @@ public class OffHeapStorage extends Storage {
 			ByteBuffer buf = bufferFor(entry); 
 			if (buf != null){
 				entry.buffer = buf;
-//				entry.size = entry.array.length;
-				
-				// TODO: change buffer size and position management
 				entry.clazz = clazz;
-				//TODO: check this
 				entry.buffer.reset();
 				entry.position = entry.buffer.position();
 				entry.buffer.put(entry.array);
 				entry.array = null;
 				entry.object = null;
-	
 				usedMemory.addAndGet(entry.size);
-				entries.put(entry.key, entry);
-				lruQueue.remove(entry);
-				lruQueue.add(entry);
+				// removed: this is done by storage
+//				entries.put(entry.key, entry);
+//				lruQueue.remove(entry);
+//				lruQueue.add(entry);
 				logger.debug("stored off heap " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
 			} else {
 				logger.debug("no room to store " + entry.key + " - skipping");
@@ -206,7 +210,7 @@ public class OffHeapStorage extends Storage {
 				logger.debug("freed slot of " + entry.size + " bytes");
 			}
 			usedMemory.addAndGet(-source.length);
-			remove(entry);
+//			remove(entry);
 		} catch (UTFDataFormatException e) {
 			logger.error(e.getMessage());
 		} catch (StreamCorruptedException e) {

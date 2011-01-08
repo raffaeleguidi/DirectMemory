@@ -45,9 +45,10 @@ public class FileStorage extends Storage {
 			entry.array = null; // just to be sure
 			entry.object = null;
 			entry.size = data.length;
-			entries.put(entry.key, entry);
-			lruQueue.remove(entry);
-			lruQueue.add(entry);
+			// removed: this is done by storage
+//			entries.put(entry.key, entry);
+//			lruQueue.remove(entry);
+//			lruQueue.add(entry);
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();
@@ -71,12 +72,13 @@ public class FileStorage extends Storage {
 			entry.array = new byte[(int)input.length()];
 			fis.read(entry.array);
 			fis.close();
-//			input.delete(); this will be done by "remove"
-			// modify entry
 			entry.object = serializer.deserialize(entry.array, entry.clazz());
 			entry.array = null; // just to be sure
-//			entry.buffer = null;
-			remove(entry);
+			File file2delete = new File(entry.path);
+			file2delete.delete();
+			entry.path = null;
+			// removed: this is done by storage
+//			remove(entry);
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();

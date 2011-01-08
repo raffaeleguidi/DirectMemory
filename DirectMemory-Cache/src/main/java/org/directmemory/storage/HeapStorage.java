@@ -14,13 +14,11 @@ public class HeapStorage extends Storage {
 
 	@Override
 	protected boolean moveIn(CacheEntry entry) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 }

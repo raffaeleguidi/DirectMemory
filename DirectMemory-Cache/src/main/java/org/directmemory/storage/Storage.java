@@ -38,7 +38,7 @@ public abstract class Storage {
 	}
 	
 	protected abstract boolean moveIn(CacheEntry entry);
-	public abstract boolean moveToHeap(CacheEntry entry);
+	protected abstract boolean moveToHeap(CacheEntry entry);
 
 	public boolean put(CacheEntry entry) {
 		if (entry == null || entry.key == null) {
@@ -92,7 +92,8 @@ public abstract class Storage {
 	public void moveEntryTo(CacheEntry entry, Storage storage) {
 		logger.debug("move entry " + entry.key + " to storage " + storage);
 		remove(entry);
-		storage.moveIn(entry);
+		storage.put(entry);
+//		storage.moveIn(entry);
 	}
 	
 	public void moveEntryTo(String key, Storage storage) {
@@ -103,7 +104,8 @@ public abstract class Storage {
 	public void moveButKeepTrackOfEntryTo(CacheEntry entry, Storage storage) {
 		logger.debug("move but keep track of entry " + entry.key + " to storage " + storage);
 		lruQueue.remove(entry);
-		storage.moveIn(entry);
+		storage.put(entry);
+//		storage.moveIn(entry);
 	}
 	
 	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
@@ -128,7 +130,8 @@ public abstract class Storage {
 	}
 	public void overflowToNext() {
 		while (overflow() > 0) {
-			CacheEntry last = removeLast();
+//			CacheEntry last = removeLast();
+			CacheEntry last = lruQueue.poll();
 			if (last == null) {
 				logger.debug("no entries to discard");
 				return;
@@ -155,6 +158,12 @@ public abstract class Storage {
 	
 	public CacheEntry peek() {
 		return lruQueue.peek();
+	}
+	
+	public void moveOut(CacheEntry entry) {
+		moveToHeap(entry);
+		entries.remove(entry.key);
+		lruQueue.remove(entry);
 	}
 
 }

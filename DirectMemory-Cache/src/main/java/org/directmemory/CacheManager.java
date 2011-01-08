@@ -96,11 +96,9 @@ public class CacheManager {
 			// do nothing
 			// or: heapStore.touch(entry);
 		} else if (entry.offHeap()) {
-			if (offHeapStore.moveToHeap(entry)) {
-			}
+			offHeapStore.moveOut(entry);
 		} else if (entry.onDisk()) {
-			if (diskStore.moveToHeap(entry)) {
-			}
+			diskStore.moveOut(entry);
 		}
 		return entry;
 	}

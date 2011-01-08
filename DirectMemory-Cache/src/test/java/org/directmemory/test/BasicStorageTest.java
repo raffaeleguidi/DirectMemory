@@ -39,7 +39,7 @@ public class BasicStorageTest {
 	}
 	
 	@Test
-	public void addAndRetrieve() throws Exception {
+	public void putAndGet() throws Exception {
 		CacheManager cache = new CacheManager(1, CacheManager.KB(4), 1);
 		cache.put("test1", new DummyPojo("test1", fixedSize()));
 		assertEquals(1L, cache.heapEntriesCount());
