@@ -4,7 +4,16 @@
   <artifactId>DirectMemory-Tests</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
-    <plugins>
+  	<resources>
+  		<resource>
+  			<filtering>false</filtering>
+  			<directory>config</directory>
+  			<includes>
+  				<include>*</include>
+  			</includes>
+  		</resource>
+  	</resources>
+  	<plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -14,4 +23,12 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.directmemory</groupId>
+  		<artifactId>DirectMemory-Cache</artifactId>
+  		<version>0.5.3-SNAPSHOT</version>
+  		<optional>false</optional>
+  	</dependency>
+  </dependencies>
 </project>
