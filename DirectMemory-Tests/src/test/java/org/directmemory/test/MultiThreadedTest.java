@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.supervisor.TimedSupervisor;
@@ -27,82 +27,7 @@ public class MultiThreadedTest {
 	private int randomSize() {
 		return CacheManager.KB(2) + random.nextInt(CacheManager.KB(1));
 	}
-	
-//	@BeforeClass
-//	public static void setup() {
-//		cache = new CacheStore(100, CacheStore.MB(10), 1);
-//		cache.serializer = new ProtoStuffSerializer();
-////		cache.supervisor = new AsyncBatchSupervisor(750);
-//		cache.supervisor = new TimedSupervisor(1500);
-//	}
-//
-//	
-//	
-//	@Test
-//	public void put () {
-//		ThreadGroup group = new ThreadGroup("test");
-//		
-//		int numThreads = 20;
-//		
-//		for (int i = 0; i < numThreads; i++) {
-//			
-//			new CacheEnabledThread(group , "test" + i, cache) {
-//				public void run() {
-//					int i = 0;
-//					try {
-//						int numOps = 100;
-//						while (++i < numOps) {
-//							DummyPojo pojo = new DummyPojo(getName() + "-" + i, 1024);
-//							cache.put(pojo.name, pojo);
-//							int pause = 10;
-//							sleep(pause); 
-//					    }
-//					} catch (InterruptedException ex) {
-//						
-//					}
-//				}
-//			}.start();
-//		}
-//
-//		while (group.activeCount() > 0)
-//			Thread.yield();
-//		
-//		logger.debug(cache.toString());
-//	}
-//	
-//	@Test
-//	public void get() {
-//
-//		ThreadGroup group = new ThreadGroup("test");
-//		
-//		int numThreads = 20;
-//		
-//		for (int i = 0; i < numThreads; i++) {
-//			new CacheEnabledThread(group , "test" + i, cache) {
-//				public void run() {
-//					int i = 0;
-//					try {
-//						int numOps = 100;
-//						while (++i < numOps) {
-//							@SuppressWarnings("unused")
-//							DummyPojo pojo = (DummyPojo)cache.get(getName() + "-" + i);
-//							int pause = 10;
-//							sleep(pause); 
-//					    }
-//					} catch (InterruptedException ex) {
-//						
-//					}
-//				}
-//			}.start();
-//		}
-//		
-//		while (group.activeCount() > 0)
-//			Thread.yield();		
-//
-//		logger.debug(cache.toString());
-//		
-//	}
-	
+
 	@Test
 	public void mixedScenario1and1() {
 

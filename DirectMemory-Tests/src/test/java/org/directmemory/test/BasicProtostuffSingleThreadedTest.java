@@ -2,7 +2,7 @@ package org.directmemory.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.junit.AfterClass;

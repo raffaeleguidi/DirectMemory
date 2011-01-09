@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.junit.AfterClass;
 import org.junit.Test;
