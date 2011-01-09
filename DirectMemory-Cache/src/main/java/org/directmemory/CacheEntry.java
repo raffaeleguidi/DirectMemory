@@ -16,6 +16,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	@SuppressWarnings({"rawtypes","unchecked"})
 	public Class clazz = null;
 	public String path = null;
+	public Object identity = null; // this is for nosql data stores
 	
 	public boolean onDisk() {
 		return path != null;
