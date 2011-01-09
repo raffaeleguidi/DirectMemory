@@ -86,11 +86,11 @@ public class CacheManager {
 		this.defaultExpirationTime = defaultExpirationTime;
 	}
 
-	public CacheEntry put(String key, Object object, long defaultExpirationTime) {
+	public CacheEntry put(String key, Object object, long expiresIn) {
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
-		entry.expiresIn(defaultExpirationTime);
+		entry.expiresIn(expiresIn);
 		heapStore.put(entry);
 		askSupervisorForDisposal();
 		return entry;
@@ -140,19 +140,19 @@ public class CacheManager {
 		return entry;
 	}
 	
-	public CacheEntry removeLast() {
-		CacheEntry last = heapStore.peek();
-		 //should we look for the last size?
-		// todo: do we need it? put it somewhere else
-		if (last.size > ((OffHeapStorage)offHeapStore).slots().last().size) {
-			return null;
-		}
-		return heapStore.delete(last.key);
-	}
-	
-	public CacheEntry removeLastOffHeap() {
-		return offHeapStore.removeLast();
-	}
+//	public CacheEntry removeLast() {
+//		CacheEntry last = heapStore.peek();
+//		 //should we look for the last size?
+//		// todo: do we need it? put it somewhere else
+//		if (last.size > ((OffHeapStorage)offHeapStore).slots().last().size) {
+//			return null;
+//		}
+//		return heapStore.delete(last.key);
+//	}
+//	
+//	public CacheEntry removeLastOffHeap() {
+//		return offHeapStore.removeLast();
+//	}
 	
 	public long heapEntriesCount() {
 		return heapStore.count();

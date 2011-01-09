@@ -30,7 +30,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	}
 	
 	public boolean expired() {
-		return ((expiresOn != null) && Calendar.getInstance().after(expiresOn));
+		return ((expiresOn != null) && new Date().after(expiresOn));
 	}
 	
 	public void expiresIn(long milliseconds) {
