@@ -1,6 +1,5 @@
 package org.directmemory;
 import java.nio.ByteBuffer;
-import java.util.Calendar;
 import java.util.Date;
 
 public class CacheEntry implements Comparable<CacheEntry> {
@@ -46,16 +45,13 @@ public class CacheEntry implements Comparable<CacheEntry> {
 		return 1;
 	}
 	
-	public byte[] rawData() {
+	public byte[] bufferData() {
 		if (buffer != null) {
 			final byte[] temp = new byte[size];
 			buffer.position(position);
 			buffer.get(temp);
 			return temp;
 		}		
-		if (array != null) {
-			return array;
-		}
 		return null;
 	}
 

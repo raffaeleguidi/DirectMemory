@@ -52,14 +52,12 @@ public class CacheManager {
 		}
 	}
 	
-	public void disposeHeapOverflow() {
-		heapStore.overflowToNext();
+	public void disposeOverflow() {
+		heapStore().overflowToNext();
+		offHeapStore().overflowToNext();
+		diskStore().overflowToNext();
 	}
 	
-	public void disposeOffHeapOverflow() {
-		offHeapStore.overflowToNext();
-	}
-
 	public void askSupervisorForDisposal() {
 		supervisor.disposeOverflow(this);
 	}
@@ -204,9 +202,6 @@ public class CacheManager {
 	}
 
 	public void setSupervisor(Supervisor supervisor) {
-		heapStore.supervisor = supervisor;
-		offHeapStore.supervisor = supervisor;
-		diskStore.supervisor = supervisor;
 		this.supervisor = supervisor;
 	}
 

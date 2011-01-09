@@ -32,9 +32,9 @@ public class FileStorage extends Storage {
 		try {
 			output.createNewFile();
 			fos = new FileOutputStream(output);
-			// how can I be sure data is serialized using the same serializer?
-			byte[] data =  entry.rawData();
+			byte[] data =  entry.bufferData();
 			if (data == null) {
+				// it seems item was in heap
 				data = serializer.serialize(entry.object, entry.object.getClass());
 			} 
 			fos.write(data);
@@ -45,10 +45,6 @@ public class FileStorage extends Storage {
 			entry.array = null; // just to be sure
 			entry.object = null;
 			entry.size = data.length;
-			// removed: this is done by storage
-//			entries.put(entry.key, entry);
-//			lruQueue.remove(entry);
-//			lruQueue.add(entry);
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();

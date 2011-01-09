@@ -2,7 +2,6 @@ package org.directmemory.supervisor;
 
 
 import org.directmemory.CacheManager;
-import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +18,7 @@ public class SimpleSupervisor implements Supervisor {
 	 */
 	public void disposeOverflow(CacheManager cache) {
 		logger.debug("disposing overflow");
-		cache.heapStore().overflowToNext();
-		cache.offHeapStore().overflowToNext();
-//		cache.disposeHeapOverflow();
-//		cache.disposeOffHeapOverflow();
-		
+		cache.disposeOverflow();
 		if (count >= checkForExpiredEvery) {
 			count = 0;
 			logger.debug("checking expired entries");
@@ -32,10 +27,5 @@ public class SimpleSupervisor implements Supervisor {
 			count++;
 		}
 		logger.debug("disposing overflow - done");
-	}
-
-	@Override
-	public void signalOverflow(Storage storage) {
-		storage.overflowToNext();
 	}
 }

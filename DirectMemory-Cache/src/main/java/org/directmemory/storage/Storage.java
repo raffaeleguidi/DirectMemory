@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.directmemory.CacheEntry;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
-import org.directmemory.supervisor.Supervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,9 @@ public abstract class Storage {
 	
 	public Serializer serializer = new StandardSerializer();
 	
-	public Supervisor supervisor;
+	// not needed and probably not desireable
+	// it would be better to work through the CacheManager
+	//public Supervisor supervisor;
 	public Storage next;
 	public Storage first;
 	

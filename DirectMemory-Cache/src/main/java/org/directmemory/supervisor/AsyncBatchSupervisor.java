@@ -2,11 +2,8 @@ package org.directmemory.supervisor;
 
 
 import org.directmemory.CacheManager;
-import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class AsyncBatchSupervisor implements Supervisor {
 
@@ -37,17 +34,11 @@ public class AsyncBatchSupervisor implements Supervisor {
 			new ThreadUsingCache(cache) {
 				public void run() {
 					logger.debug("checking memory limits");
-					cache.disposeHeapOverflow();
-					cache.disposeOffHeapOverflow();
+					cache.disposeOverflow();
 					logger.debug("checking expired entries");
 					cache.disposeExpired();
 				}
 			}.start();
 		}
-	}
-	
-	@Override
-	public void signalOverflow(Storage storage) {
-		throw new NotImplementedException();
 	}
 }

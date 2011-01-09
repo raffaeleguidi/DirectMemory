@@ -2,11 +2,8 @@ package org.directmemory.supervisor;
 
 
 import org.directmemory.CacheManager;
-import org.directmemory.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BatchSupervisor implements Supervisor {
 
@@ -26,15 +23,9 @@ public class BatchSupervisor implements Supervisor {
 		if (totalCalls++ >= batchSize) {
 			totalCalls = 0;
 			logger.debug("checking memory limits");
-			cache.disposeHeapOverflow();
-			cache.disposeOffHeapOverflow();
+			cache.disposeOverflow();
 			logger.debug("checking expired entries");
 			cache.disposeExpired();
 		}
-	}
-	
-	@Override
-	public void signalOverflow(Storage storage) {
-		throw new NotImplementedException();
 	}
 }
