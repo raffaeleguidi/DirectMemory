@@ -10,6 +10,8 @@ import org.directmemory.CacheEntry;
 import org.directmemory.CacheManager;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.storage.FileStorage;
+import org.directmemory.storage.OrientDBStorage;
+import org.directmemory.storage.Storage;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,16 +28,26 @@ public class BasicStorageTest {
 		return 2048;
 	}
 	
-	@Test
-	public void fileStorage() {
-		FileStorage storage = new FileStorage();
+	public void genericStorageTest(Storage storage) {
 		CacheEntry entry = new CacheEntry();
 		entry.object = new DummyPojo("test", 1024);
 		entry.key = ((DummyPojo)entry.object).name;
 		storage.put(entry);
 		
 		CacheEntry entry2 = storage.get("test");
+		assertNotNull("entry has not been found", entry);
+		assertNotNull("entry object has not been loaded", entry.object);
 		assertEquals(entry.key, entry2.key);
+	}
+	
+	@Test
+	public void fileStorage() {
+		genericStorageTest(new FileStorage());
+	}
+	
+	@Test
+	public void orientDBStorage() {
+		genericStorageTest(new OrientDBStorage());
 	}
 	
 	@Test

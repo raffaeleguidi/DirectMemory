@@ -18,11 +18,15 @@
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
+
+  <logger name="org.directmemory.storage.OrientDBStorage" level="debug">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
   
-  <!--
   <logger name="org.directmemory" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
-	-->
+
 </configuration>
