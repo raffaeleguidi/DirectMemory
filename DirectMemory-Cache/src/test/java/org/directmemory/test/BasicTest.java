@@ -9,6 +9,11 @@ import java.util.Random;
 
 import org.directmemory.CacheEntry;
 import org.directmemory.CacheManager;
+import org.directmemory.measures.Expires;
+import org.directmemory.measures.For;
+import org.directmemory.measures.Heap;
+import org.directmemory.measures.Ram;
+import org.directmemory.measures.Space;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
@@ -40,7 +45,7 @@ public class BasicTest {
 	
 	public void putAndGet(Serializer serializer) {
 		logger.debug("putAndGet with " + serializer.toString());
-		CacheManager cache = new CacheManager(1, CacheManager.MB(1), 1);
+		CacheManager cache = new CacheManager(Space.unlimited(), Ram.Mb(1), 1);
 		cache.setSerializer(serializer);
 		DummyPojo pojo = new DummyPojo("test1", 500);
 		Object retVal = cache.put("test1", pojo);
@@ -181,6 +186,16 @@ public class BasicTest {
 		entry = cache.getEntry("test1");
 		assertNull(entry);
 		cache.reset();
+	}
+	
+	@Test
+	public void expiry() throws InterruptedException {
+		CacheManager cache = new CacheManager(Heap.unlimited(), Ram.Mb(1), 1);
+		cache.setDefaultExpirationTime(Expires.in(1.5).seconds());
+		cache.put("test1", new DummyPojo("test1", 1024));
+		Thread.sleep(For.exactly(2).seconds());
+		Object obj = cache.get("test1");
+		assertNull("entry has not expired", obj);
 	}
 	
 	@AfterClass

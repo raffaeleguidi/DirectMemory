@@ -26,7 +26,7 @@ public class CacheManager {
 	private Serializer serializer;
 	private Supervisor supervisor;
 
-	private int defaultExpirationTime = -1;
+	private long defaultExpirationTime = -1;
 	
 	public CacheManager (int entriesLimit, int pageSize, int maxPages) {
 		logger.info("Cache initialization started");
@@ -75,11 +75,22 @@ public class CacheManager {
 		return put(key, object, defaultExpirationTime);
 	}
 	
-	public CacheEntry put(String key, Object object, int expiresIn) {
+	
+	
+	
+	public long getDefaultExpirationTime() {
+		return defaultExpirationTime;
+	}
+
+	public void setDefaultExpirationTime(long defaultExpirationTime) {
+		this.defaultExpirationTime = defaultExpirationTime;
+	}
+
+	public CacheEntry put(String key, Object object, long defaultExpirationTime) {
 		CacheEntry entry = new CacheEntry();
 		entry.key = key;
 		entry.object = object;
-		entry.expiresIn(expiresIn);
+		entry.expiresIn(defaultExpirationTime);
 		heapStore.put(entry);
 		askSupervisorForDisposal();
 		return entry;
