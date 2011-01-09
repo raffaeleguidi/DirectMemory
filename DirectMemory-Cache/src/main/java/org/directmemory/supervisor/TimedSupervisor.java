@@ -3,7 +3,7 @@ package org.directmemory.supervisor;
 
 import java.util.Date;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

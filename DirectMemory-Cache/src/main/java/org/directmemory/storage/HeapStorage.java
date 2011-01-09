@@ -1,6 +1,6 @@
 package org.directmemory.storage;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 
 public class HeapStorage extends Storage {
 

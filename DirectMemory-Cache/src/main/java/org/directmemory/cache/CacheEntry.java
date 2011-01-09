@@ -1,4 +1,4 @@
-package org.directmemory;
+package org.directmemory.cache;
 import java.nio.ByteBuffer;
 import java.util.Date;
 

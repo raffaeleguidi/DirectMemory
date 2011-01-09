@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 
 public class FileStorage extends Storage {
 	

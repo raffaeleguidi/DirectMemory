@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.directmemory.CacheEntry;
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheManager;
 import org.directmemory.serialization.StandardSerializer;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;

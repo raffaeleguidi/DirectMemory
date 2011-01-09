@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
 import org.slf4j.Logger;

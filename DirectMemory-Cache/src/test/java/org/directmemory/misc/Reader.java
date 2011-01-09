@@ -2,7 +2,7 @@ package org.directmemory.misc;
 import java.io.IOException;
 import java.util.Map;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;

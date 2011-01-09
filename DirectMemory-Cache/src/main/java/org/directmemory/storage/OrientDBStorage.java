@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
@@ -63,7 +64,7 @@ public class OrientDBStorage extends Storage {
 	@Override
 	protected boolean moveIn(CacheEntry entry) {
 		// try to delete it just to be sure 
-		deleteFromDb(entry);			
+//		deleteFromDb(entry);			
 		
 		byte [] buffer = entry.bufferData();
 		if (buffer == null) {
@@ -89,6 +90,7 @@ public class OrientDBStorage extends Storage {
 
 		logger.debug("succesfully stored entry " + entry.key + " to database " + docDb.getURL());
 		
+		entry.identity = doc.getIdentity();
 		entry.array = null; // just to be sure
 		entry.object = null;
 		entry.size = buffer.length;
@@ -99,17 +101,25 @@ public class OrientDBStorage extends Storage {
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {		
 		try {
-			List<ODocument> result = docDb.query(
-					  new OSQLSynchQuery<ODocument>("select * from Entry where key = '" + entry.key + "'"));
-			if (result.size() == 1) {
-				ODocument doc = result.get(0);
-				entry.array = doc.field("buffer", OType.BINARY);
-				entry.object = serializer.deserialize(entry.array, entry.clazz());
-				entry.array = null;
-				logger.debug("succesfully restored entry " + entry.key + " from database " + docDb.getURL());
-				doc.delete();
-				return true;
-			}
+			ODocument doc = docDb.load((ORID) entry.identity);
+			entry.array = doc.field("buffer", OType.BINARY);
+			entry.object = serializer.deserialize(entry.array, entry.clazz());
+			entry.identity = null;
+			entry.array = null;
+			logger.debug("succesfully restored entry " + entry.key + " from database " + docDb.getURL());
+			doc.delete();
+			return true;
+//			List<ODocument> result = docDb.query(
+//					  new OSQLSynchQuery<ODocument>("select * from Entry where key = '" + entry.key + "'"));
+//			if (result.size() == 1) {
+//				ODocument doc = result.get(0);
+//				entry.array = doc.field("buffer", OType.BINARY);
+//				entry.object = serializer.deserialize(entry.array, entry.clazz());
+//				entry.array = null;
+//				logger.debug("succesfully restored entry " + entry.key + " from database " + docDb.getURL());
+//				doc.delete();
+//				return true;
+//			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 //			e.printStackTrace();
@@ -132,8 +142,11 @@ public class OrientDBStorage extends Storage {
 
 	private void deleteFromDb(CacheEntry entry) {
 		try {
-			OCommandSQL sql = new OCommandSQL("delete * from Entry where key = '" + entry.key + "'");
-			docDb.command(sql);
+//			OCommandSQL sql = new OCommandSQL("delete * from Entry where key = '" + entry.key + "'");
+//			docDb.command(sql);
+			ODocument doc = docDb.load((ORID) entry.identity);
+			doc.delete();
+			entry.identity = null;
 		} catch (Exception e) {
 			logger.error("error deleting previous entry with key " + entry.key);
 			e.printStackTrace();

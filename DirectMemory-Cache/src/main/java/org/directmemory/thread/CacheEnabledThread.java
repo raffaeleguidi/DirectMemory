@@ -1,6 +1,6 @@
 package org.directmemory.thread;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 
 public abstract class CacheEnabledThread extends Thread {
 	

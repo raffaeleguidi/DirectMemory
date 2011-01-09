@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 
 public class OffHeapStorage extends Storage {
 

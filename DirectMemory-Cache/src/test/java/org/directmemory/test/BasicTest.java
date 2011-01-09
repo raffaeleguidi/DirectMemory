@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import org.directmemory.CacheEntry;
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheManager;
 import org.directmemory.measures.Expires;
 import org.directmemory.measures.For;
 import org.directmemory.measures.Heap;

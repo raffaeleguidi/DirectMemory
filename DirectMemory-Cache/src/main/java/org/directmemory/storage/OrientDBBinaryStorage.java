@@ -3,7 +3,7 @@ package org.directmemory.storage;
 import java.io.File;
 import java.io.IOException;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseBinary;
 import com.orientechnologies.orient.core.id.ORID;

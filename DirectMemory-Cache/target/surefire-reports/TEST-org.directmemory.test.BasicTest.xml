@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="1.468" errors="0" skipped="0" tests="7" name="org.directmemory.test.BasicTest">
+<testsuite failures="0" time="1.531" errors="0" skipped="0" tests="7" name="org.directmemory.test.BasicTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin"/>
@@ -19,7 +19,7 @@
     <property name="basedir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
     <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\endorsed"/>
     <property name="os.arch" value="x86"/>
-    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter2223808827706586500.jar"/>
+    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter2896824532222527821.jar"/>
     <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\"/>
     <property name="line.separator" value="
 "/>
@@ -59,11 +59,11 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
   </properties>
-  <testcase time="0.015" classname="org.directmemory.test.BasicTest" name="putAndGetWithJavaSerialization"/>
-  <testcase time="0.016" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
-  <testcase time="0.14" classname="org.directmemory.test.BasicTest" name="evictionWithJavaSerialization"/>
-  <testcase time="0.203" classname="org.directmemory.test.BasicTest" name="evictionWithProtostuffSerialization"/>
-  <testcase time="0.032" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
-  <testcase time="0.031" classname="org.directmemory.test.BasicTest" name="removeWithProtostuffSerialization"/>
+  <testcase time="0" classname="org.directmemory.test.BasicTest" name="putAndGetWithJavaSerialization"/>
+  <testcase time="0.031" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
+  <testcase time="0.172" classname="org.directmemory.test.BasicTest" name="evictionWithJavaSerialization"/>
+  <testcase time="0.25" classname="org.directmemory.test.BasicTest" name="evictionWithProtostuffSerialization"/>
+  <testcase time="0.031" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
+  <testcase time="0.016" classname="org.directmemory.test.BasicTest" name="removeWithProtostuffSerialization"/>
   <testcase time="1.015" classname="org.directmemory.test.BasicTest" name="expiry"/>
 </testsuite>

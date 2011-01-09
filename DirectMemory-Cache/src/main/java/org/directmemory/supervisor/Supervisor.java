@@ -1,6 +1,6 @@
 package org.directmemory.supervisor;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
 
 public interface Supervisor {
 

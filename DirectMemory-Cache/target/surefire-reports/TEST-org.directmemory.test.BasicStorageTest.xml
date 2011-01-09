@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="1.14" errors="1" skipped="0" tests="3" name="org.directmemory.test.BasicStorageTest">
+<testsuite failures="0" time="1.796" errors="0" skipped="0" tests="3" name="org.directmemory.test.BasicStorageTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin"/>
@@ -19,7 +19,7 @@
     <property name="basedir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
     <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\endorsed"/>
     <property name="os.arch" value="x86"/>
-    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter2223808827706586500.jar"/>
+    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter2896824532222527821.jar"/>
     <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\"/>
     <property name="line.separator" value="
 "/>
@@ -59,113 +59,7 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
   </properties>
-  <testcase time="0.063" classname="org.directmemory.test.BasicStorageTest" name="fileStorage"/>
-  <testcase time="0.578" classname="org.directmemory.test.BasicStorageTest" name="orientDBStorage">
-    <error type="java.lang.NullPointerException">java.lang.NullPointerException
-	at org.directmemory.storage.OrientDBStorage.moveIn(OrientDBStorage.java:85)
-	at org.directmemory.storage.Storage.put(Storage.java:48)
-	at org.directmemory.test.BasicStorageTest.genericStorageTest(BasicStorageTest.java:35)
-	at org.directmemory.test.BasicStorageTest.orientDBStorage(BasicStorageTest.java:50)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.junit.internal.runners.TestMethodRunner.executeMethodBody(TestMethodRunner.java:99)
-	at org.junit.internal.runners.TestMethodRunner.runUnprotected(TestMethodRunner.java:81)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestMethodRunner.runMethod(TestMethodRunner.java:75)
-	at org.junit.internal.runners.TestMethodRunner.run(TestMethodRunner.java:45)
-	at org.junit.internal.runners.TestClassMethodsRunner.invokeTestMethod(TestClassMethodsRunner.java:71)
-	at org.junit.internal.runners.TestClassMethodsRunner.run(TestClassMethodsRunner.java:35)
-	at org.junit.internal.runners.TestClassRunner$1.runUnprotected(TestClassRunner.java:42)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestClassRunner.run(TestClassRunner.java:52)
-	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:59)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:115)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:102)
-	at org.apache.maven.surefire.Surefire.run(Surefire.java:180)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:350)
-	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1021)
-</error>
-    <system-out>18:10:32.859 [main] INFO  org.directmemory.storage.OrientDBStorage.createDocDb - Base folder: orientdb\doc checked ok
-18:10:33.359 [main] ERROR org.directmemory.storage.OrientDBStorage.&lt;init&gt; - OrientDB database: null
-18:10:33.375 [main] ERROR org.directmemory.storage.OrientDBStorage.moveIn - error deleting previous entry with key test
-</system-out>
-    <system-err>java.lang.NullPointerException
-	at org.directmemory.storage.OrientDBStorage.createDocDb(OrientDBStorage.java:35)
-	at org.directmemory.storage.OrientDBStorage.&lt;init&gt;(OrientDBStorage.java:44)
-	at org.directmemory.test.BasicStorageTest.orientDBStorage(BasicStorageTest.java:50)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.junit.internal.runners.TestMethodRunner.executeMethodBody(TestMethodRunner.java:99)
-	at org.junit.internal.runners.TestMethodRunner.runUnprotected(TestMethodRunner.java:81)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestMethodRunner.runMethod(TestMethodRunner.java:75)
-	at org.junit.internal.runners.TestMethodRunner.run(TestMethodRunner.java:45)
-	at org.junit.internal.runners.TestClassMethodsRunner.invokeTestMethod(TestClassMethodsRunner.java:71)
-	at org.junit.internal.runners.TestClassMethodsRunner.run(TestClassMethodsRunner.java:35)
-	at org.junit.internal.runners.TestClassRunner$1.runUnprotected(TestClassRunner.java:42)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestClassRunner.run(TestClassRunner.java:52)
-	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:59)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:115)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:102)
-	at org.apache.maven.surefire.Surefire.run(Surefire.java:180)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:350)
-	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1021)
-com.orientechnologies.orient.core.exception.OCommandExecutionException: Class ENTRY was not found
-	at com.orientechnologies.orient.core.sql.OCommandExecutorSQLSelect.execute(OCommandExecutorSQLSelect.java:118)
-	at com.orientechnologies.orient.core.sql.OCommandExecutorSQLDelegate.execute(OCommandExecutorSQLDelegate.java:76)
-	at com.orientechnologies.orient.core.storage.impl.local.OStorageLocal.command(OStorageLocal.java:885)
-	at com.orientechnologies.orient.core.sql.query.OSQLQuery.run(OSQLQuery.java:52)
-	at com.orientechnologies.orient.core.query.OQueryAbstract.execute(OQueryAbstract.java:34)
-	at com.orientechnologies.orient.core.sql.OCommandExecutorSQLDelete.execute(OCommandExecutorSQLDelete.java:67)
-	at com.orientechnologies.orient.core.sql.OCommandExecutorSQLDelegate.execute(OCommandExecutorSQLDelegate.java:76)
-	at com.orientechnologies.orient.core.storage.impl.local.OStorageLocal.command(OStorageLocal.java:885)
-	at com.orientechnologies.orient.core.sql.query.OSQLQuery.run(OSQLQuery.java:52)
-	at com.orientechnologies.orient.core.sql.query.OSQLSynchQuery.run(OSQLSynchQuery.java:60)
-	at com.orientechnologies.orient.core.query.OQueryAbstract.execute(OQueryAbstract.java:34)
-	at com.orientechnologies.orient.core.db.record.ODatabaseRecordAbstract.query(ODatabaseRecordAbstract.java:221)
-	at com.orientechnologies.orient.core.db.ODatabaseRecordWrapperAbstract.query(ODatabaseRecordWrapperAbstract.java:89)
-	at org.directmemory.storage.OrientDBStorage.moveIn(OrientDBStorage.java:62)
-	at org.directmemory.storage.Storage.put(Storage.java:48)
-	at org.directmemory.test.BasicStorageTest.genericStorageTest(BasicStorageTest.java:35)
-	at org.directmemory.test.BasicStorageTest.orientDBStorage(BasicStorageTest.java:50)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.junit.internal.runners.TestMethodRunner.executeMethodBody(TestMethodRunner.java:99)
-	at org.junit.internal.runners.TestMethodRunner.runUnprotected(TestMethodRunner.java:81)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestMethodRunner.runMethod(TestMethodRunner.java:75)
-	at org.junit.internal.runners.TestMethodRunner.run(TestMethodRunner.java:45)
-	at org.junit.internal.runners.TestClassMethodsRunner.invokeTestMethod(TestClassMethodsRunner.java:71)
-	at org.junit.internal.runners.TestClassMethodsRunner.run(TestClassMethodsRunner.java:35)
-	at org.junit.internal.runners.TestClassRunner$1.runUnprotected(TestClassRunner.java:42)
-	at org.junit.internal.runners.BeforeAndAfterRunner.runProtected(BeforeAndAfterRunner.java:34)
-	at org.junit.internal.runners.TestClassRunner.run(TestClassRunner.java:52)
-	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:59)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:115)
-	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:102)
-	at org.apache.maven.surefire.Surefire.run(Surefire.java:180)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	at java.lang.reflect.Method.invoke(Method.java:597)
-	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:350)
-	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1021)
-</system-err>
-  </testcase>
-  <testcase time="0.234" classname="org.directmemory.test.BasicStorageTest" name="putAndGet"/>
+  <testcase time="0.11" classname="org.directmemory.test.BasicStorageTest" name="fileStorage"/>
+  <testcase time="1.015" classname="org.directmemory.test.BasicStorageTest" name="orientDBStorage"/>
+  <testcase time="0.313" classname="org.directmemory.test.BasicStorageTest" name="putAndGet"/>
 </testsuite>

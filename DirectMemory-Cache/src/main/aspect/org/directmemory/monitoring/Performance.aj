@@ -2,7 +2,7 @@ package org.directmemory.monitoring;
 
 import java.text.DecimalFormat;
 
-import org.directmemory.CacheEntry;
+import org.directmemory.cache.CacheEntry;
 import org.javasimon.SimonManager;
 import org.javasimon.Split;
 import org.javasimon.Stopwatch;
@@ -14,19 +14,19 @@ public aspect Performance {
 	private static Logger logger=LoggerFactory.getLogger(Performance.class);
 	
 	pointcut putPointcut(String key, Object object) : 
-		execution(CacheEntry org.directmemory.CacheManager.put(String, Object)) && 
+		execution(CacheEntry org.directmemory.cache.CacheManager.put(String, Object)) && 
 		args(key, object);
 	
 	pointcut getPointcut(String key) : 
-		execution(Object org.directmemory.CacheManager.get(String)) && 
+		execution(Object org.directmemory.cache.CacheManager.get(String)) && 
 		args(key);
 	
 	pointcut removePointcut(String key) : 
-		execution(CacheEntry org.directmemory.CacheManager.remove(String)) && 
+		execution(CacheEntry org.directmemory.cache.CacheManager.remove(String)) && 
 		args(key);
 
 	pointcut disposeExpiredPointcut() : 
-		execution(void org.directmemory.CacheManager.disposeExpired());
+		execution(void org.directmemory.cache.CacheManager.disposeExpired());
 	
 	pointcut moveOffHeapPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.OffHeapStorage.moveIn(CacheEntry)) && 
@@ -53,13 +53,13 @@ public aspect Performance {
 		args(entry);
 
 	pointcut disposeOffHeapOverflowPointcut() : 
-		execution(void org.directmemory.CacheManager.disposeOffHeapOverflow());
+		execution(void org.directmemory.cache.CacheManager.disposeOffHeapOverflow());
 
 	pointcut moveInHeapPointcut(CacheEntry entry) : 
-		execution(boolean org.directmemory.CacheManager.moveInHeap(CacheEntry)) && args(entry);
+		execution(boolean org.directmemory.cache.CacheManager.moveInHeap(CacheEntry)) && args(entry);
 
 	pointcut displayTimingsPointcut() : 
-		execution(void org.directmemory.CacheManager.displayTimings());
+		execution(void org.directmemory.cache.CacheManager.displayTimings());
 	
 	Object around(String key) : getPointcut(key) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
