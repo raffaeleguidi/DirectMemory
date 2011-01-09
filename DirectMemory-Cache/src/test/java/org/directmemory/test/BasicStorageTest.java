@@ -2,6 +2,7 @@ package org.directmemory.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
@@ -38,6 +39,23 @@ public class BasicStorageTest {
 		assertNotNull("entry has not been found", entry);
 		assertNotNull("entry object has not been loaded", entry.object);
 		assertEquals(entry.key, entry2.key);
+		
+		entry.object = new DummyPojo("test2", 1024);
+		entry.key = ((DummyPojo)entry.object).name;
+		storage.put(entry);
+		
+		CacheEntry deleted = storage.delete("test2");
+		assertEquals("test2", deleted.key);
+		
+		CacheEntry check = storage.get("test2");
+		assertNull("test2 has not been deleted", check);
+		
+		storage.reset();
+
+		entry.object = new DummyPojo("test2", 1024);
+		entry.key = ((DummyPojo)entry.object).name;
+		storage.put(entry);
+		
 	}
 	
 	@Test
@@ -116,6 +134,7 @@ public class BasicStorageTest {
 		assertNotNull(pojo3);
 		assertEquals("test3", pojo3.name);
 		logger.debug("addAndRetrieve " + cache.toString());
+
 		cache.reset();
 	}
 	

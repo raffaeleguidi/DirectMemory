@@ -47,6 +47,8 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/classes"/>
         <property name="context-root" value="DirectMemory-WebDemo"/>
         <property name="java-output-path" value="/DirectMemory-WebDemo/target/classes"/>
     </wb-module>
