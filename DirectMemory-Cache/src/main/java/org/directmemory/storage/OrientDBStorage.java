@@ -2,7 +2,6 @@ package org.directmemory.storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.directmemory.cache.CacheEntry;
 
@@ -10,8 +9,6 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.OCommandSQL;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class OrientDBStorage extends Storage {
 	
