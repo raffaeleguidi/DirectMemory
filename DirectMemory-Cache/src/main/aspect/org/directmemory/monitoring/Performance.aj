@@ -1,4 +1,4 @@
-package org.directmemory.profiling;
+package org.directmemory.monitoring;
 
 import java.text.DecimalFormat;
 
@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public aspect Profiling {
-	private static Logger logger=LoggerFactory.getLogger(Profiling.class);
+public aspect Performance {
+	private static Logger logger=LoggerFactory.getLogger(Performance.class);
 	
 	pointcut putPointcut(String key, Object object) : 
 		execution(CacheEntry org.directmemory.CacheManager.put(String, Object)) && 
@@ -36,12 +36,20 @@ public aspect Profiling {
 		execution(boolean org.directmemory.storage.FileStorage.moveIn(CacheEntry)) && 
 		args(entry);
 
+	pointcut moveToOrientDBPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBStorage.moveIn(CacheEntry)) && 
+		args(entry);
+
 	pointcut fromOffHeapPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.OffHeapStorage.moveToHeap(CacheEntry)) && 
 		args(entry);
 
 	pointcut fromDiskPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.FileStorage.moveToHeap(CacheEntry)) && 
+		args(entry);
+
+	pointcut fromOrientDBPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBStorage.moveToHeap(CacheEntry)) && 
 		args(entry);
 
 	pointcut disposeOffHeapOverflowPointcut() : 
@@ -107,9 +115,27 @@ public aspect Profiling {
 		return retVal;
 	}
 	
+	boolean around(CacheEntry entry) : moveToOrientDBPointcut(entry) {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveToOrientDB");
+		Split split = stopWatch.start();
+		boolean retVal = proceed(entry);
+		split.stop();
+		return retVal;
+	}
+	
 	boolean around(CacheEntry entry) : fromDiskPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk");
+		Split split = stopWatch.start();
+		boolean retVal = proceed(entry);
+		split.stop();
+		return retVal;
+	}
+	
+	boolean around(CacheEntry entry) : fromOrientDBPointcut(entry) {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB");
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -150,9 +176,13 @@ public aspect Profiling {
 		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
 		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
+		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap")));
 		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
 		sb.append("\r\n}");
 		logger.info(sb.toString());
 	}
