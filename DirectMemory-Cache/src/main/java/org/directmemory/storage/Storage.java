@@ -1,5 +1,6 @@
 package org.directmemory.storage;
 
+import java.util.Formatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -166,5 +167,14 @@ public abstract class Storage {
 		entries.remove(entry.key);
 		lruQueue.remove(entry);
 	}
-
+	
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"Storage: entries %1d", 
+							entries.size()
+							)
+					.toString();
+	}
 }

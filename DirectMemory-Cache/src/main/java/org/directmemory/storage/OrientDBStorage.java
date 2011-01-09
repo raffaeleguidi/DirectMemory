@@ -2,6 +2,7 @@ package org.directmemory.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Formatter;
 
 import org.directmemory.cache.CacheEntry;
 
@@ -148,5 +149,15 @@ public class OrientDBStorage extends Storage {
 			logger.error("error deleting previous entry with key " + entry.key);
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"OrientDB: entries %1d", 
+							entries.size()
+							)
+					.toString();
 	}
 }

@@ -1,5 +1,7 @@
 package org.directmemory.storage;
 
+import java.util.Formatter;
+
 import org.directmemory.cache.CacheEntry;
 
 public class HeapStorage extends Storage {
@@ -20,5 +22,14 @@ public class HeapStorage extends Storage {
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {
 		return true;
+	}
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"Heap: entries %1d/%2d", 
+							entries.size(), 
+							entriesLimit)
+					.toString();
 	}
 }

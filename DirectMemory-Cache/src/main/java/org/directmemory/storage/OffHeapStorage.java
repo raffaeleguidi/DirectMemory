@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
+import java.util.Formatter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -290,5 +291,18 @@ public class OffHeapStorage extends Storage {
 	@Override
 	public int overflow() {
 		return (usedMemory.get() + pendingAllocation.get()) - capacity();
+	}
+	
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"OffHeap: entries %1d, used memory: %2d/%3d and %4d free slots", 
+							entries.size(), 
+							usedMemory.get(),
+							capacity(),
+							slots.size()
+							)
+					.toString();
 	}
 }

@@ -1,6 +1,7 @@
 package org.directmemory.cache;
 
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
@@ -16,8 +17,7 @@ import org.slf4j.LoggerFactory;
 public class CacheManager {	
 	private static Logger logger=LoggerFactory.getLogger(CacheManager.class);
 
-//	Map<String, CacheEntry> entries = new ConcurrentHashMap<String, CacheEntry>();
-//	ConcurrentLinkedQueue<CacheEntry> lruQueue = new ConcurrentLinkedQueue<CacheEntry>();
+	ConcurrentLinkedQueue<Storage> storages = new ConcurrentLinkedQueue<Storage>();
 
 	HeapStorage heapStore;
 	Storage offHeapStore;
@@ -43,19 +43,62 @@ public class CacheManager {
 		logger.info("Cache initialization ok");
 	}
 	
+	public CacheManager() {
+		// do nothing
+	}
+
+	private Storage lastStorage = null;
+	private Storage firstStorage = null;
+	
+	public void addStorage(Storage storage) {
+		if (lastStorage == null) {
+			lastStorage = storage;
+			firstStorage = storage;
+		} else {
+			lastStorage.next = storage;
+			lastStorage.first = firstStorage;
+			lastStorage = storage;
+		}
+		if (serializer != null)
+			storage.serializer = serializer;
+		
+		storages.add(storage);
+	}
+	
+	
 	public void disposeExpired() {
-		for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
-			CacheEntry entry = iterator.next();
-			if (entry.expired()) {
-				remove(entry.key);
+		if (heapStore != null) {
+			for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
+				CacheEntry entry = iterator.next();
+				if (entry.expired()) {
+					remove(entry.key);
+				}
 			}
 		}
+		if (storages.size() > 0) {
+			Storage heapStore = storages.peek();
+			for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
+				CacheEntry entry = iterator.next();
+				if (entry.expired()) {
+					remove(entry.key);
+				}
+			}
+		}
+		
 	}
 	
 	public void disposeOverflow() {
-		heapStore().overflowToNext();
-		offHeapStore().overflowToNext();
-		diskStore().overflowToNext();
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			storage.overflowToNext();
+		}
+		if (heapStore != null)
+			heapStore().overflowToNext();
+		if (offHeapStore != null)
+			offHeapStore().overflowToNext();
+		if (diskStore != null)
+			diskStore().overflowToNext();
 	}
 	
 	public void askSupervisorForDisposal() {
@@ -138,20 +181,6 @@ public class CacheManager {
 		return entry;
 	}
 	
-//	public CacheEntry removeLast() {
-//		CacheEntry last = heapStore.peek();
-//		 //should we look for the last size?
-//		// todo: do we need it? put it somewhere else
-//		if (last.size > ((OffHeapStorage)offHeapStore).slots().last().size) {
-//			return null;
-//		}
-//		return heapStore.delete(last.key);
-//	}
-//	
-//	public CacheEntry removeLastOffHeap() {
-//		return offHeapStore.removeLast();
-//	}
-	
 	public long heapEntriesCount() {
 		return heapStore.count();
 	}
@@ -167,15 +196,29 @@ public class CacheManager {
 	@Override
 	public String toString() {
 		final String crLf = "\r\n";
-		return "CacheStore stats: " + 
-				"{ " + crLf + 
-				"   entries: " + heapStore.entries().size() + crLf + 
-				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
-				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
-				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
-				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
-				"}" 
-			;
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("CacheStore stats: \r\n{\r\n");
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			sb.append("   ");
+			sb.append(storage.toString());
+			sb.append(crLf);			
+		}
+		sb.append("{");
+		sb.append(crLf);
+		return sb.toString();
+//		
+//		return "CacheStore stats: " + 
+//				"{ " + crLf + 
+//				"   entries: " + heapStore.entries().size() + crLf + 
+//				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
+//				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
+//				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
+//				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
+//				"}" 
+//			;
 	}
 	
 	public long onDiskEntriesCount() {
@@ -187,9 +230,12 @@ public class CacheManager {
 	}
 	
 	public void reset() {
-		heapStore.reset();
-		offHeapStore.reset();
-		diskStore.reset();
+		if (heapStore != null)
+			heapStore.reset();
+		if (offHeapStore != null)
+			offHeapStore.reset();
+		if (diskStore != null)
+			diskStore.reset();
 		logger.info("Cache reset - " + toString());
 	}
 	
@@ -210,9 +256,16 @@ public class CacheManager {
 	}
 
 	public void setSerializer(Serializer serializer) {
-		offHeapStore.serializer = serializer;
-		diskStore.serializer = serializer;
 		this.serializer = serializer;
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			storage.serializer = serializer;
+		}
+		if (offHeapStore != null)
+			offHeapStore.serializer = serializer;
+		if (diskStore != null)
+			diskStore.serializer = serializer;
 	}
 
 	public Serializer getSerializer() {

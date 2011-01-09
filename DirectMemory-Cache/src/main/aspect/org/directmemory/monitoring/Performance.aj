@@ -174,13 +174,13 @@ public aspect Performance {
 		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveOffHeap")));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
-		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
-		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap")));
 		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
+		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
 		sb.append("\r\n   ");
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
 		sb.append("\r\n}");

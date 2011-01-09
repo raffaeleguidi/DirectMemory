@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Formatter;
 
 import org.directmemory.cache.CacheEntry;
 
@@ -120,4 +121,13 @@ public class FileStorage extends Storage {
 		}
 		return entry;
 	}
-}
+	
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"Disk: entries %1d", 
+							entries.size()
+							)
+					.toString();
+	}}

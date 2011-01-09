@@ -2,6 +2,7 @@ package org.directmemory.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Formatter;
 
 import org.directmemory.cache.CacheEntry;
 
@@ -141,5 +142,15 @@ public class OrientDBBinaryStorage extends Storage {
 			logger.debug("no entry " + key + " found in the database");
 			return null;			
 		} 
+	}
+	
+	@Override
+	public String toString() {
+		return new Formatter()
+					.format(
+							"OrientDB binary: entries %1d", 
+							entries.size()
+							)
+					.toString();
 	}
 }
