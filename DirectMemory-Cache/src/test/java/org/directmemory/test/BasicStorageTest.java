@@ -31,7 +31,7 @@ public class BasicStorageTest {
 
 	@Test
 	public void offHeapStorage() {
-		genericStorageTest(new OffHeapStorage(Ram.Mb(100), 1));
+		genericStorageTest(new OffHeapStorage(Ram.Mb(10), 1));
 	}
 
 	@Test

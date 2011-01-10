@@ -68,7 +68,7 @@ public class BasicTest {
 
 	public void eviction(Serializer serializer) {
 		logger.debug("eviction with " + serializer.toString());
-		CacheManager cache = new CacheManager(1, CacheManager.MB(1), 1);
+		CacheManager cache = new CacheManager(1, Ram.Mb(1), 1);
 		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
 		assertEquals(1L, cache.heapStore().count());

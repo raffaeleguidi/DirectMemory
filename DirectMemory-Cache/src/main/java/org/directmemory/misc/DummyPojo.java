@@ -14,13 +14,9 @@ public class DummyPojo implements Serializable {
 	public DummyPojo(String name, int size) {
 		this.name = name;
 		this.size = size;
-		
-		for (int i = 0; i < size; i++) {
-			payLoad += "x";
-		}
-		
+		payLoad = new String(new byte [size]);		
 	}
 	public String name;
 	public int size;
-	public String payLoad = "";
+	public String payLoad;
 }

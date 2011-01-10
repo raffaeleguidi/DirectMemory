@@ -239,14 +239,6 @@ public class CacheManager {
 		logger.info("Cache reset - " + toString());
 	}
 	
-	public static int MB(double mega) {
-		return (int)mega * 1024 * 1024;
-	}
-	
-	public static int KB(double kilo) {
-		return (int)kilo * 1024;
-	}
-
 	public void setSupervisor(Supervisor supervisor) {
 		this.supervisor = supervisor;
 	}

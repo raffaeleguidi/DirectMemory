@@ -19,10 +19,9 @@
     <appender-ref ref="FILE" />
   </logger>
   
-  <!--
-  <logger name="org.directmemory" level="info">
+  <logger name="org.directmemory" level="debug">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
-	-->
+
 </configuration>

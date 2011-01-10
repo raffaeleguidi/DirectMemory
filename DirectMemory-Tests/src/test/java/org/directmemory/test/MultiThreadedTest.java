@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.directmemory.cache.CacheManager;
+import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.supervisor.TimedSupervisor;
@@ -25,13 +26,13 @@ public class MultiThreadedTest {
 	private Random random = new Random();
 
 	private int randomSize() {
-		return CacheManager.KB(2) + random.nextInt(CacheManager.KB(1));
+		return Ram.Kb((2) + random.nextInt(Ram.Kb(1)));
 	}
 
 	@Test
 	public void mixedScenario1and1() {
 
-		CacheManager cache = new CacheManager(100, CacheManager.MB(5), 1);
+		CacheManager cache = new CacheManager(100, Ram.Mb(5), 1);
 		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
 		cache.setSupervisor(new TimedSupervisor(1500));
@@ -42,16 +43,17 @@ public class MultiThreadedTest {
 		ThreadGroup group = new ThreadGroup("test");
 		
 		int numThreads = 10;
-		final int numObjects = 500;
+		final int numObjects = 50;
 		final int pauseBetweenOps = 10;
-		final int numOps = 500;
+		final int numOps = 50;
 		
+		// reader threads		
 		for (int i = 0; i < numThreads; i++) {
 			new CacheEnabledThread(group , "test" + i, cache) {
 				public void run() {
 					int i = 0;
 					try {
-						sleep((int)(pauseBetweenOps*5)); // give him some time to warmup
+						sleep((int)(pauseBetweenOps*500)); // give him some time to warmup
 						logger.debug("reader started");
 						int gots = 0;
 						int misseds = 0;
@@ -79,6 +81,7 @@ public class MultiThreadedTest {
 				}
 			}.start();
 			
+			// writer threads		
 			new CacheEnabledThread(group , "test" + i, cache) {
 				public void run() {
 					logger.debug("adder started");
@@ -86,7 +89,7 @@ public class MultiThreadedTest {
 					try {
 						while (++i < (numOps/2)) {
 							String key = "test" + random.nextInt(numObjects);
-							DummyPojo pojo = new DummyPojo(key,randomSize());
+							DummyPojo pojo = new DummyPojo(key, randomSize());
 							cache.put(pojo.name, pojo);
 							items.put(pojo.name, pojo);
 							logger.debug("should have added item " + key);									
@@ -111,7 +114,7 @@ public class MultiThreadedTest {
 	@Test
 	public void mixedScenario10and1() {
 
-		CacheManager cache = new CacheManager(100, CacheManager.MB(2.5), 1);
+		CacheManager cache = new CacheManager(100, Ram.Mb(2.5), 1);
 		cache.setSerializer(new ProtoStuffSerializer());
 //		cache.supervisor = new AsyncBatchSupervisor(750);
 		cache.setSupervisor(new TimedSupervisor(1500));

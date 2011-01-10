@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Random;
 
 import org.directmemory.cache.CacheManager;
+import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class SingleThreadedTest {
 	
 	@Test public void goOverTheOffheapLimitPutAndGet() {
 		int limit = 1000;
-		CacheManager cache = new CacheManager(limit, CacheManager.MB(2), 1);
+		CacheManager cache = new CacheManager(limit, Ram.Mb(2), 1);
 //		cache.serializer = new ProtoStuffSerializer();
 		for (int i = 1; i <= limit * 2; i++) {
 			DummyPojo pojo = new  DummyPojo("test" + i, randomSize());
