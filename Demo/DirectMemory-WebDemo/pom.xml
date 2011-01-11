@@ -16,12 +16,6 @@
   		<scope>test</scope>
   		<optional>false</optional>
   	</dependency>
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>1.6.1</version>
-    	<scope>runtime</scope>
-	</dependency>
   	<dependency>
   		<groupId>javax.servlet</groupId>
   		<artifactId>servlet-api</artifactId>
@@ -33,9 +27,9 @@
   	<dependency>
   		<groupId>org.directmemory</groupId>
   		<artifactId>DirectMemory-Cache</artifactId>
-  		<version>0.5.3-SNAPSHOT</version>
+  		<version>0.5.4-SNAPSHOT</version>
   		<type>jar</type>
-  		<scope>runtime</scope>
+  		<scope>compile</scope>
   		<optional>false</optional>
   	</dependency>
   </dependencies>

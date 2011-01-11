@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directmemory.CacheManager;
+import org.directmemory.cache.CacheManager;
+import org.directmemory.misc.DummyPojo;
+import org.directmemory.measures.Ram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class DemoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private int cacheSize = CacheManager.MB(10);
+	private int cacheSize = Ram.Mb(10);
 	private CacheManager cache = new CacheManager(1000, cacheSize, 1);
        
 	private static Logger logger=LoggerFactory.getLogger(DemoServlet.class);
@@ -31,20 +33,20 @@ public class DemoServlet extends HttpServlet {
 		logger.debug("started");
 		
 	    for (int i = 0; i < cacheSize / 1024 / 1.25; i++) {
-			cache.put("test" + i, new DummyObject("test"+i, 1024));
+			cache.put("test" + i, new DummyPojo("test"+i, 1024));
 	    }
 	    
 	    logger.debug("finished " + cache.toString());
     }
 
-	private DummyObject fakeBusinessMethodWithCache(String key) throws IOException, ClassNotFoundException, InterruptedException {
-		DummyObject obj = (DummyObject)cache.get(key);
+	private DummyPojo fakeBusinessMethodWithCache(String key) throws IOException, ClassNotFoundException, InterruptedException {
+		DummyPojo obj = (DummyPojo)cache.get(key);
 		if (obj == null) {
 			logger.debug("key not found - faking business method execution time");
 			Thread.sleep(100);
-			cache.put(key, new DummyObject(key, 1024));
+			cache.put(key, new DummyPojo(key, 1024));
 			logger.debug("stored object " + key);
-			obj = (DummyObject)cache.get(key);
+			obj = (DummyPojo)cache.get(key);
 			logger.debug("retrieved object " + key);
 		}
 		return obj;
@@ -56,8 +58,8 @@ public class DemoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String key = request.getParameter("key");
 		try {
-			DummyObject obj = fakeBusinessMethodWithCache(key);
-			response.getOutputStream().println("retrieved object " + obj.getName());
+			DummyPojo obj = fakeBusinessMethodWithCache(key);
+			response.getOutputStream().println("retrieved object " + obj.name);
 			response.getOutputStream().println(obj.toString());
 			response.getOutputStream().println("<br /><a href=\"index.htm\">start over</a>");
 			logger.debug("cache: " + cache.toString());
@@ -76,7 +78,7 @@ public class DemoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			@SuppressWarnings("unused")
-			DummyObject obj = fakeBusinessMethodWithCache(request.getParameter("key"));
+			DummyPojo obj = fakeBusinessMethodWithCache(request.getParameter("key"));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

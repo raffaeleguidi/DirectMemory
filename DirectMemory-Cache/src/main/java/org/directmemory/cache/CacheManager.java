@@ -29,6 +29,7 @@ public class CacheManager {
 	private long defaultExpirationTime = -1;
 	
 	public CacheManager (int entriesLimit, int pageSize, int maxPages) {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		logger.info("Cache initialization started");
 		heapStore = new HeapStorage(entriesLimit);
 		offHeapStore = new OffHeapStorage(pageSize, maxPages);
@@ -67,6 +68,7 @@ public class CacheManager {
 	
 	
 	public void disposeExpired() {
+		// TODO: got to be removed in order to accomplish with the storage chain change
 		if (heapStore != null) {
 			for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
 				CacheEntry entry = iterator.next();
@@ -93,6 +95,7 @@ public class CacheManager {
 			Storage storage = iter.next();
 			storage.overflowToNext();
 		}
+		// TODO: got to be removed in order to accomplish with the storage chain change
 		if (heapStore != null)
 			heapStore().overflowToNext();
 		if (offHeapStore != null)
@@ -104,13 +107,6 @@ public class CacheManager {
 	public void askSupervisorForDisposal() {
 		supervisor.disposeOverflow(this);
 	}
-	
-//	protected void moveInHeap(CacheEntry entry) {
-//		if (entriesOffHeap.moveToHeap(entry)) {
-//			lruQueue.remove(entry);
-//			lruQueue.add(entry);
-//		}
-//	}
 
 	public CacheEntry put(String key, Object object) {
 		return put(key, object, defaultExpirationTime);
@@ -132,12 +128,14 @@ public class CacheManager {
 		entry.key = key;
 		entry.object = object;
 		entry.expiresIn(expiresIn);
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		heapStore.put(entry);
 		askSupervisorForDisposal();
 		return entry;
 	} 
 	
 	public CacheEntry getEntry(String key) {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		CacheEntry entry = heapStore.get(key);
 		if (entry == null) {
 			return null;
@@ -166,6 +164,7 @@ public class CacheManager {
 	}
 	
 	public CacheEntry remove(String key) {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		CacheEntry entry = heapStore.delete(key);
 		if (entry == null) {
 			return null;
@@ -182,14 +181,17 @@ public class CacheManager {
 	}
 	
 	public long heapEntriesCount() {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		return heapStore.count();
 	}
 	
 	public long offHeapEntriesCount() {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		return offHeapStore.count();
 	}
 	
 	public long usedMemory() {
+		// TODO: got to be changed in order to accomplish with the storage chain change
 		return ((OffHeapStorage)offHeapStore).usedMemory();
 	}
 	
@@ -197,28 +199,32 @@ public class CacheManager {
 	public String toString() {
 		final String crLf = "\r\n";
 		StringBuffer sb = new StringBuffer();
-		
-		sb.append("CacheStore stats: \r\n{\r\n");
-		Iterator<Storage> iter = storages.iterator();
-		while (iter.hasNext()) {
-			Storage storage = iter.next();
-			sb.append("   ");
-			sb.append(storage.toString());
-			sb.append(crLf);			
+
+		// TODO: got to be removed in order to accomplish with the storage chain change
+		// keep it for backward compatibility
+		if (heapStore != null) {	
+			sb.append("CacheStore stats: \r\n{\r\n");
+			Iterator<Storage> iter = storages.iterator();
+			while (iter.hasNext()) {
+				Storage storage = iter.next();
+				sb.append("   ");
+				sb.append(storage.toString());
+				sb.append(crLf);			
+			}
+			sb.append("{");
+			sb.append(crLf);
+			return sb.toString();
 		}
-		sb.append("{");
-		sb.append(crLf);
-		return sb.toString();
-//		
-//		return "CacheStore stats: " + 
-//				"{ " + crLf + 
-//				"   entries: " + heapStore.entries().size() + crLf + 
-//				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
-//				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
-//				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
-//				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
-//				"}" 
-//			;
+		
+		return "CacheStore stats: " + 
+				"{ " + crLf + 
+				"   entries: " + heapStore.entries().size() + crLf + 
+				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
+				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
+				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
+				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
+				"}" 
+			;
 	}
 	
 	public long onDiskEntriesCount() {
@@ -226,16 +232,27 @@ public class CacheManager {
 	}
 
 	public static void displayTimings() {
-		// replaced by a dedicated aspect	
+		// replaced by a dedicated aspect
+		// do we need this as a hook or can it be deleted?
 	}
 	
 	public void reset() {
+
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			storage.reset();
+		}
+
+		// TODO: got to be removed in order to accomplish with the storage chain change
+		// keep it for backward compatibility
 		if (heapStore != null)
 			heapStore.reset();
 		if (offHeapStore != null)
 			offHeapStore.reset();
 		if (diskStore != null)
 			diskStore.reset();
+		
 		logger.info("Cache reset - " + toString());
 	}
 	
@@ -254,6 +271,7 @@ public class CacheManager {
 			Storage storage = iter.next();
 			storage.serializer = serializer;
 		}
+		// TODO: got to be removed in order to accomplish with the storage chain change
 		if (offHeapStore != null)
 			offHeapStore.serializer = serializer;
 		if (diskStore != null)
@@ -264,13 +282,20 @@ public class CacheManager {
 		return serializer;
 	}
 
+	@Deprecated
+	// TODO: got to be removed in order to accomplish with the storage chain change
 	public Storage heapStore() {
 		return heapStore;
 	}
 
+	@Deprecated
+	// TODO: got to be removed in order to accomplish with the storage chain change
 	public Storage offHeapStore() {
 		return offHeapStore;
 	}
+
+	@Deprecated
+	// TODO: got to be removed in order to accomplish with the storage chain change
 	public Storage diskStore() {
 		return diskStore;
 	}
