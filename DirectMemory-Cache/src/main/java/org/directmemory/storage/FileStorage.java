@@ -28,24 +28,27 @@ public class FileStorage extends Storage {
 
 	@Override
 	protected boolean moveIn(CacheEntry entry) {
-		File output = new File(baseDir + "/" + entry.key + ".object");
-		FileOutputStream fos;
+		final File output = new File(baseDir + "/" + entry.key + ".object");
+		final FileOutputStream fos;
 		try {
 			output.createNewFile();
 			fos = new FileOutputStream(output);
-			byte[] data =  entry.bufferData();
+			final byte[] data =  entry.bufferData();
 			if (data == null) {
 				// it seems item was in heap
-				data = serializer.serialize(entry.object, entry.object.getClass());
-			} 
-			fos.write(data);
+				entry.array = serializer.serialize(entry.object, entry.object.getClass());
+				fos.write(entry.array);
+				entry.size = entry.array.length;
+			} else {
+				fos.write(data);
+				entry.size = data.length;
+			}
 			fos.flush();
 			fos.close();
 			// modify entry
 			entry.path = output.getName();
 			entry.array = null; // just to be sure
 			entry.object = null;
-			entry.size = data.length;
 		} catch (FileNotFoundException e) {
 			logger.error("file not found");
 			e.printStackTrace();
@@ -62,8 +65,8 @@ public class FileStorage extends Storage {
 
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {
-		File input = new File(baseDir + "/" + entry.path);
-		FileInputStream fis;
+		final File input = new File(baseDir + "/" + entry.path);
+		final FileInputStream fis;
 		try {
 			fis = new FileInputStream(input);
 			entry.array = new byte[(int)input.length()];
@@ -71,8 +74,8 @@ public class FileStorage extends Storage {
 			fis.close();
 			entry.object = serializer.deserialize(entry.array, entry.clazz());
 			entry.array = null; // just to be sure
-			File file2delete = new File(entry.path);
-			file2delete.delete();
+//			File file2delete = new File(entry.path);
+//			file2delete.delete();
 			entry.path = null;
 			// removed: this is done by storage
 //			remove(entry);

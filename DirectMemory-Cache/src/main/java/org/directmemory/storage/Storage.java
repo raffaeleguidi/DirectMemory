@@ -177,4 +177,8 @@ public abstract class Storage {
 							)
 					.toString();
 	}
+	
+	public String performance() {
+		return null;
+	}
 }

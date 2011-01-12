@@ -202,7 +202,7 @@ public class CacheManager {
 
 		// TODO: got to be removed in order to accomplish with the storage chain change
 		// keep it for backward compatibility
-		if (heapStore != null) {	
+		if (heapStore == null) {	
 			sb.append("CacheStore stats: \r\n{\r\n");
 			Iterator<Storage> iter = storages.iterator();
 			while (iter.hasNext()) {
