@@ -121,8 +121,8 @@ public class OrientDBBinaryStorage extends Storage {
 	}
 
 	@Override
-	public void reset() {
-		super.reset();
+	public void dispose() {
+		super.dispose();
 		db.close();
 		db.delete();
 		db.open("admin", "admin");

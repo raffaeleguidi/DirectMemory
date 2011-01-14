@@ -236,22 +236,22 @@ public class CacheManager {
 		// do we need this as a hook or can it be deleted?
 	}
 	
-	public void reset() {
+	public void dispose() {
 
 		Iterator<Storage> iter = storages.iterator();
 		while (iter.hasNext()) {
 			Storage storage = iter.next();
-			storage.reset();
+			storage.dispose();
 		}
 
 		// TODO: got to be removed in order to accomplish with the storage chain change
 		// keep it for backward compatibility
 		if (heapStore != null)
-			heapStore.reset();
+			heapStore.dispose();
 		if (offHeapStore != null)
-			offHeapStore.reset();
+			offHeapStore.dispose();
 		if (diskStore != null)
-			diskStore.reset();
+			diskStore.dispose();
 		
 		logger.info("Cache reset - " + toString());
 	}

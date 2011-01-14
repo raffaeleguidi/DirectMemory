@@ -52,6 +52,18 @@
                      <path>/dmwebdemo</path>
         	</configuration>
 		</plugin>
+		<plugin>
+	        <!-- NOTE: We don't need a groupId specification because the group is
+	             org.apache.maven.plugins ...which is assumed by default.
+	         -->
+	        <artifactId>maven-assembly-plugin</artifactId>
+	        <version>2.2</version>
+	        <configuration>
+	          <descriptorRefs>
+	            <descriptorRef>bin</descriptorRef>
+	          </descriptorRefs>
+	        </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>

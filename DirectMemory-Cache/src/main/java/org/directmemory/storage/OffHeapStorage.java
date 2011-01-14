@@ -232,16 +232,16 @@ public class OffHeapStorage extends Storage {
 	}
 	
 	@Override
-	public void reset() {
-		super.reset();
+	public void dispose() {
+		super.dispose();
 		slots.clear();
 		for (ByteBuffer buffer : memoryPages) {
 			buffer.clear();
 		}
 		memoryPages.clear();
 		usedMemory.set(0);
-		addMemoryPageAndGetFirstSlot();
-		logger.debug("off heap storage reset");
+//		addMemoryPageAndGetFirstSlot();
+		logger.debug("off heap storage disposed");
 	}
 	
 	@Override

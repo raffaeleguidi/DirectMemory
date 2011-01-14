@@ -34,10 +34,10 @@ public class OrientDBStorage extends Storage {
 	}
 	
 	@Override
-	public void reset() {
-		super.reset();
+	public void dispose() {
+		super.dispose();
 		docDb.close();
-		logger.debug("OrientDB database reset");
+		logger.debug("OrientDB database closed");
 	}
 	
 	public OrientDBStorage() {

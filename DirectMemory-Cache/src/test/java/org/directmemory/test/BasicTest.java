@@ -128,7 +128,7 @@ public class BasicTest {
 		logger.debug("addAndRetrieve " + cache.toString());
 		CacheManager.displayTimings();
 		
-		cache.reset();
+		cache.dispose();
 		assertEquals(0L, cache.heapEntriesCount());
 		assertEquals(0L, cache.offHeapEntriesCount());
 		assertEquals(0L, cache.onDiskEntriesCount());
@@ -184,7 +184,7 @@ public class BasicTest {
 		assertEquals("test1", entry.key);
 		entry = cache.getEntry("test1");
 		assertNull("entry has not been removed", entry);
-		cache.reset();
+		cache.dispose();
 	}
 	
 	@Test

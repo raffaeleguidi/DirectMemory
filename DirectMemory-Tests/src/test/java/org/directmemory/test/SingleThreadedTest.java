@@ -47,7 +47,7 @@ public class SingleThreadedTest {
 			assertEquals("test"+i, newPojo.name);
 		}
 		logger.debug("finally " + cache.toString());
-		cache.reset();
+		cache.dispose();
 	}	
 		
 	@Test public void reachLimit() {
@@ -61,7 +61,7 @@ public class SingleThreadedTest {
 			}
 			logger.debug("reachLimit " + cache);
 		}
-		cache.reset();
+		cache.dispose();
 	}
 	
 	@Test public void goOverTheLimit() {
@@ -77,7 +77,7 @@ public class SingleThreadedTest {
 			}
 			logger.debug("goOverTheLimit " + cache);
 		}
-		cache.reset();		
+		cache.dispose();		
 	}
 	
 	
@@ -104,7 +104,7 @@ public class SingleThreadedTest {
 			assertEquals("test"+i, newPojo.name);
 	}
 		assertEquals(limit, cache.heapEntriesCount());
-		cache.reset();
+		cache.dispose();
 	}	
 
 	

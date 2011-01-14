@@ -102,15 +102,15 @@ public class FileStorage extends Storage {
 		return true;
 	}
 	@Override
-	public void reset() {
-		super.reset();
+	public void dispose() {
+		super.dispose();
 		// TODO: a unit test would be useful
 		File baseFolder = new File(baseDir);
 		for (String fileName : baseFolder.list()) {
 			new File(fileName).delete();
 		}
 		baseFolder.delete();
-		logger.debug("file storage reset");
+		logger.debug("file storage disposed");
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ public class StoragePerformanceTest {
 	private Random random = new Random();
 
 	private int payloadSize = Ram.Kb(2);
-	private int howMany = 100000;
+	private int howMany = 50000;
 	private int pages = 1;
 	private int ramSize = (int)(payloadSize * howMany * 2.5) / pages ;
 
@@ -73,80 +73,6 @@ public class StoragePerformanceTest {
 		logger.debug("after read: " + storage.toString());
 		logger.debug("overall performance: " + storage.performance());	
 	}
-	
-//	private int fixedSize() {
-//		return 2048;
-//	}
-//	
-//	@Test
-//	public void putAndGet() throws Exception {
-//		CacheManager cache = new CacheManager(1, CacheManager.KB(4), 1);
-//		cache.put("test1", new DummyPojo("test1", fixedSize()));
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(0L, cache.offHeapEntriesCount());
-//		assertEquals(0L, cache.onDiskEntriesCount());
-//		logger.debug("put test1 " + cache.toString());
-//		
-//		cache.put("test2", new DummyPojo("test2", fixedSize()));
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(1L, cache.offHeapEntriesCount());
-//		if (cache.usedMemory() <= 0L) {
-//			throw new Exception();
-//		}
-//		assertEquals(0L, cache.onDiskEntriesCount());
-//		logger.debug("put test2 " + cache.toString());
-//
-//		cache.put("test3", new DummyPojo("test3", fixedSize()));
-//		logger.debug("stored test3: " + cache.toString());
-//		assertEquals(3, cache.heapStore().entries().size());
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(1L, cache.offHeapEntriesCount());
-//		assertEquals(1L, cache.onDiskEntriesCount());
-//		assertTrue(cache.usedMemory() > 0L);
-//
-//		logger.debug("ask for test1 " + cache.toString());
-//		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
-//		logger.debug("got test1 " + cache.toString());
-//		assertEquals("test1", pojo1.name);
-//		assertEquals(3, cache.heapStore().entries().size());
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(1L, cache.offHeapEntriesCount());
-//		assertEquals(1L, cache.onDiskEntriesCount());
-//		assertTrue(cache.usedMemory() > 0L);
-//
-//		DummyPojo pojo2 = (DummyPojo)cache.get("test2");
-//		logger.debug("got test2 " + cache.toString());
-//		assertEquals("test2", pojo2.name);
-//		assertEquals(3, cache.heapStore().entries().size());
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(1L, cache.offHeapEntriesCount());
-//		assertEquals(1L, cache.onDiskEntriesCount());
-//		assertTrue(cache.usedMemory() > 0L);
-//
-//		DummyPojo pojo3 = (DummyPojo)cache.get("test3");
-//		logger.debug("got test3 " + cache.toString());
-//		assertEquals("test3", pojo3.name);
-//		assertEquals(3, cache.heapStore().entries().size());
-//		assertEquals(1L, cache.heapEntriesCount());
-//		assertEquals(1L, cache.offHeapEntriesCount());
-//		assertEquals(1L, cache.onDiskEntriesCount());
-//		assertTrue(cache.usedMemory() > 0L);
-//
-//		logger.debug("used memory " + cache.usedMemory());
-//		logger.debug("on disk " + cache.onDiskEntriesCount());
-//		assertEquals(1L, cache.onDiskEntriesCount());
-//		logger.debug("got test3 " + cache.toString());
-//
-//		assertNotNull(pojo1);
-//		assertEquals("test1", pojo1.name);
-//		assertNotNull(pojo2);
-//		assertEquals("test2", pojo2.name);
-//		assertNotNull(pojo3);
-//		assertEquals("test3", pojo3.name);
-//		logger.debug("addAndRetrieve " + cache.toString());
-//
-//		cache.reset();
-//	}
 	
 		
 	@AfterClass

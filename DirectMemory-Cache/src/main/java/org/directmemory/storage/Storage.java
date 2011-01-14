@@ -117,7 +117,7 @@ public abstract class Storage {
 	public long count() {
 		return lruQueue.size();
 	}
-	public void reset() {
+	public void dispose() {
 		lruQueue.clear();
 		entries.clear();
 	}

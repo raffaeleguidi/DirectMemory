@@ -20,8 +20,8 @@ public class Sizing {
 	public static String inKb(int i) {		
 		return new Formatter().format("%(,.1fKb", (double)i/1024).toString();
 	}
-	public static String inMb(int i) {		
-		return new Formatter().format("%(,.1fMb", (double)i/1024/1024).toString();
+	public static String inMb(long heapSize) {		
+		return new Formatter().format("%(,.1fMb", (double)heapSize/1024/1024).toString();
 	}
 	public static String inGb(int i) {		
 		return new Formatter().format("%(,.1fKb", (double)i/1024/1024/1024).toString();

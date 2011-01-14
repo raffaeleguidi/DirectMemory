@@ -68,7 +68,7 @@ public class BasicStorageTest {
 		logger.debug("before: " + storage.toString());
 		logger.debug("overall performance: " + storage.performance());	
 
-		storage.reset();
+		storage.dispose();
 //
 //		entry.object = new DummyPojo("test2", 1024);
 //		entry.key = ((DummyPojo)entry.object).name;

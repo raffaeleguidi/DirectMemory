@@ -2,22 +2,14 @@ package org.directmemory.serialization;
 
 import java.io.IOException;
 
-import org.directmemory.measures.Ram;
-
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-public class ProtoStuffSerializer implements Serializer {
+public class OldProtoStuffSerializer implements Serializer {
 	
-	static int serBufferSize = Ram.Kb(5);
-
-	private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
-		protected LinkedBuffer initialValue() {
-			return LinkedBuffer.allocate(serBufferSize);
-		}
-	};
+	static int serBufferSize = 300;
 	
 	/* (non-Javadoc)
 	 * @see org.directmemory.utils.Serializer#serialize(java.lang.Object, java.lang.Class)
@@ -26,7 +18,7 @@ public class ProtoStuffSerializer implements Serializer {
 	public byte[] serialize(Object obj, @SuppressWarnings("rawtypes") Class clazz) throws IOException {
 		@SuppressWarnings("rawtypes")
 		Schema schema = RuntimeSchema.getSchema(clazz);
-		final LinkedBuffer buffer = localBuffer.get();
+		final LinkedBuffer buffer = LinkedBuffer.allocate(serBufferSize);
 		byte[] protostuff = null;
 
 		try {
