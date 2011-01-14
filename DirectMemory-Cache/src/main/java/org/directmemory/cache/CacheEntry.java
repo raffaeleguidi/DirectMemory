@@ -2,6 +2,8 @@ package org.directmemory.cache;
 import java.nio.ByteBuffer;
 import java.util.Date;
 
+import org.directmemory.storage.Storage;
+
 public class CacheEntry implements Comparable<CacheEntry> {
 	public String key = null;
 	public int size = -1;
@@ -62,6 +64,15 @@ public class CacheEntry implements Comparable<CacheEntry> {
 			clazz = object.getClass();
 		}
 		return clazz;
+	}
+	
+	private Storage storage = null;
+	
+	public Storage getStorage() {
+		return storage;
+	}
+	public void setStorage(Storage storage) {
+		this.storage = storage;
 	}
 }
 

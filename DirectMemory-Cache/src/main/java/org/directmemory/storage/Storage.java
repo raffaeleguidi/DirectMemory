@@ -95,7 +95,7 @@ public abstract class Storage {
 		logger.debug("move entry " + entry.key + " to storage " + storage);
 		remove(entry);
 		storage.put(entry);
-//		storage.moveIn(entry);
+		entry.setStorage(storage);
 	}
 	
 	public void moveEntryTo(String key, Storage storage) {
@@ -107,7 +107,7 @@ public abstract class Storage {
 		logger.debug("move but keep track of entry " + entry.key + " to storage " + storage);
 		lruQueue.remove(entry);
 		storage.put(entry);
-//		storage.moveIn(entry);
+		entry.setStorage(storage);
 	}
 	
 	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
@@ -127,12 +127,12 @@ public abstract class Storage {
 		if (first != null && first != this) {
 			logger.debug("but keeping track of it");
 			entries.remove(last.key);
+			last.setStorage(null);
 		}
 		return last;
 	}
 	public void overflowToNext() {
 		while (overflow() > 0) {
-//			CacheEntry last = removeLast();
 			CacheEntry last = lruQueue.poll();
 			if (last == null) {
 				logger.debug("no entries to discard");
@@ -164,6 +164,11 @@ public abstract class Storage {
 	
 	public void moveOut(CacheEntry entry) {
 		moveToHeap(entry);
+		if (this.first == null) {
+			entry.setStorage(this);
+		} else {
+			entry.setStorage(this.first);
+		}
 		entries.remove(entry.key);
 		lruQueue.remove(entry);
 	}

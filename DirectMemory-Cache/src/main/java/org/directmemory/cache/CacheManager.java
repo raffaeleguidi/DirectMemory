@@ -3,11 +3,12 @@ package org.directmemory.cache;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
-import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.storage.FileStorage;
 import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
+import org.directmemory.storage.OrientDBStorage;
 import org.directmemory.storage.Storage;
 import org.directmemory.supervisor.SimpleSupervisor;
 import org.directmemory.supervisor.Supervisor;
@@ -19,9 +20,9 @@ public class CacheManager {
 
 	ConcurrentLinkedQueue<Storage> storages = new ConcurrentLinkedQueue<Storage>();
 
-	HeapStorage heapStore;
-	Storage offHeapStore;
-	Storage diskStore;
+//	HeapStorage heapStore;
+//	Storage offHeapStore;
+//	Storage diskStore;
 	
 	private Serializer serializer;
 	private Supervisor supervisor;
@@ -31,16 +32,11 @@ public class CacheManager {
 	public CacheManager (int entriesLimit, int pageSize, int maxPages) {
 		// TODO: got to be changed in order to accomplish with the storage chain change
 		logger.info("Cache initialization started");
-		heapStore = new HeapStorage(entriesLimit);
-		offHeapStore = new OffHeapStorage(pageSize, maxPages);
-		diskStore = new FileStorage();
-		heapStore().next = offHeapStore;
-		offHeapStore.next = diskStore;
-		offHeapStore.first = heapStore;
-		diskStore.first = heapStore;
-		setSerializer(new StandardSerializer());
+		addStorage(new HeapStorage(entriesLimit));
+		addStorage(new OffHeapStorage(pageSize, maxPages));
+		addStorage(new OrientDBStorage());
+		setSerializer(new ProtoStuffSerializer());
 		setSupervisor(new SimpleSupervisor());
-		offHeapStore.next = diskStore;
 		logger.info("Cache initialization ok");
 	}
 	
@@ -68,15 +64,6 @@ public class CacheManager {
 	
 	
 	public void disposeExpired() {
-		// TODO: got to be removed in order to accomplish with the storage chain change
-		if (heapStore != null) {
-			for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
-				CacheEntry entry = iterator.next();
-				if (entry.expired()) {
-					remove(entry.key);
-				}
-			}
-		}
 		if (storages.size() > 0) {
 			Storage heapStore = storages.peek();
 			for (Iterator<CacheEntry> iterator = heapStore.entries().values().iterator(); iterator.hasNext();) {
@@ -85,8 +72,7 @@ public class CacheManager {
 					remove(entry.key);
 				}
 			}
-		}
-		
+		}		
 	}
 	
 	public void disposeOverflow() {
@@ -95,13 +81,6 @@ public class CacheManager {
 			Storage storage = iter.next();
 			storage.overflowToNext();
 		}
-		// TODO: got to be removed in order to accomplish with the storage chain change
-		if (heapStore != null)
-			heapStore().overflowToNext();
-		if (offHeapStore != null)
-			offHeapStore().overflowToNext();
-		if (diskStore != null)
-			diskStore().overflowToNext();
 	}
 	
 	public void askSupervisorForDisposal() {
@@ -129,26 +108,22 @@ public class CacheManager {
 		entry.object = object;
 		entry.expiresIn(expiresIn);
 		// TODO: got to be changed in order to accomplish with the storage chain change
-		heapStore.put(entry);
+		firstStorage.put(entry);
 		askSupervisorForDisposal();
 		return entry;
 	} 
 	
 	public CacheEntry getEntry(String key) {
 		// TODO: got to be changed in order to accomplish with the storage chain change
-		CacheEntry entry = heapStore.get(key);
+		CacheEntry entry = firstStorage.get(key);
 		if (entry == null) {
 			return null;
 		} else if (entry.expired()) {
+			// does remove work this way?
 			remove(key);
 			return null;
-		} else if (entry.inHeap()) {
-			// do nothing
-			// or: heapStore.touch(entry);
-		} else if (entry.offHeap()) {
-			offHeapStore.moveOut(entry);
-		} else if (entry.onDisk()) {
-			diskStore.moveOut(entry);
+		} else if (!entry.inHeap()) {
+			entry.getStorage().moveOut(entry);
 		}
 		return entry;
 	}
@@ -165,34 +140,12 @@ public class CacheManager {
 	
 	public CacheEntry remove(String key) {
 		// TODO: got to be changed in order to accomplish with the storage chain change
-		CacheEntry entry = heapStore.delete(key);
-		if (entry == null) {
-			return null;
-		} else if (entry.inHeap()) {
-			//lruQueue.remove(entry);
-			// do nothing
-		} else if (entry.offHeap()){
-			offHeapStore.delete(key);
-		} else if (entry.onDisk()) {
-			diskStore.delete(key);
+		CacheEntry entry = firstStorage.delete(key);
+		if (!entry.inHeap()) {
+			entry.getStorage().delete(key);
 		}
 		askSupervisorForDisposal();
 		return entry;
-	}
-	
-	public long heapEntriesCount() {
-		// TODO: got to be changed in order to accomplish with the storage chain change
-		return heapStore.count();
-	}
-	
-	public long offHeapEntriesCount() {
-		// TODO: got to be changed in order to accomplish with the storage chain change
-		return offHeapStore.count();
-	}
-	
-	public long usedMemory() {
-		// TODO: got to be changed in order to accomplish with the storage chain change
-		return ((OffHeapStorage)offHeapStore).usedMemory();
 	}
 	
 	@Override
@@ -200,35 +153,57 @@ public class CacheManager {
 		final String crLf = "\r\n";
 		StringBuffer sb = new StringBuffer();
 
-		// TODO: got to be removed in order to accomplish with the storage chain change
-		// keep it for backward compatibility
-		if (heapStore == null) {	
-			sb.append("CacheStore stats: \r\n{\r\n");
-			Iterator<Storage> iter = storages.iterator();
-			while (iter.hasNext()) {
-				Storage storage = iter.next();
-				sb.append("   ");
-				sb.append(storage.toString());
-				sb.append(crLf);			
-			}
-			sb.append("{");
-			sb.append(crLf);
-			return sb.toString();
+		sb.append("CacheStore stats: \r\n{\r\n");
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			sb.append("   ");
+			sb.append(storage.toString());
+			sb.append(crLf);			
 		}
-		
-		return "CacheStore stats: " + 
-				"{ " + crLf + 
-				"   entries: " + heapStore.entries().size() + crLf + 
-				"   heap: " + heapStore().count() + "/" + heapStore.entriesLimit() + crLf +  
-				"   memory: " + usedMemory() + "/" + ((OffHeapStorage)offHeapStore).capacity() + crLf + 
-				"   in " + offHeapEntriesCount() + " off-heap" + " and " + onDiskEntriesCount() + " on disk entries" + crLf + 
-				"   free slots: " + ((OffHeapStorage)offHeapStore).slots().size() + " first size is: " + ((OffHeapStorage)offHeapStore).slots().first().size + " last size=" + ((OffHeapStorage)offHeapStore).slots().last().size + crLf + 
-				"}" 
-			;
+		sb.append("{");
+		sb.append(crLf);
+		return sb.toString();
+	}
+	
+	public long heapEntriesCount() {
+		return firstStorage.count();
+	}
+	
+	private long countEntriesInStorageClass(@SuppressWarnings({"rawtypes", "unchecked"}) Class clazz) {
+		long result = 0;
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			if (storage.getClass().equals(clazz)) { 
+				result += storage.count();
+			}			
+		}
+		return result;
+	}
+	
+	public long offHeapEntriesCount() {
+		return countEntriesInStorageClass(OffHeapStorage.class);
+	}
+	
+	public long usedMemory() {
+		long result = 0;
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			if (storage.getClass().equals(OffHeapStorage.class)) { 
+				result += ((OffHeapStorage)storage).usedMemory();
+			}			
+		}
+		return result;
 	}
 	
 	public long onDiskEntriesCount() {
-		return diskStore.count();
+		return countEntriesInStorageClass(FileStorage.class);
+	}
+
+	public long onDBEntriesCount() {
+		return countEntriesInStorageClass(OrientDBStorage.class);
 	}
 
 	public static void displayTimings() {
@@ -243,16 +218,6 @@ public class CacheManager {
 			Storage storage = iter.next();
 			storage.dispose();
 		}
-
-		// TODO: got to be removed in order to accomplish with the storage chain change
-		// keep it for backward compatibility
-		if (heapStore != null)
-			heapStore.dispose();
-		if (offHeapStore != null)
-			offHeapStore.dispose();
-		if (diskStore != null)
-			diskStore.dispose();
-		
 		logger.info("Cache reset - " + toString());
 	}
 	
@@ -271,32 +236,10 @@ public class CacheManager {
 			Storage storage = iter.next();
 			storage.serializer = serializer;
 		}
-		// TODO: got to be removed in order to accomplish with the storage chain change
-		if (offHeapStore != null)
-			offHeapStore.serializer = serializer;
-		if (diskStore != null)
-			diskStore.serializer = serializer;
 	}
 
 	public Serializer getSerializer() {
 		return serializer;
 	}
 
-	@Deprecated
-	// TODO: got to be removed in order to accomplish with the storage chain change
-	public Storage heapStore() {
-		return heapStore;
-	}
-
-	@Deprecated
-	// TODO: got to be removed in order to accomplish with the storage chain change
-	public Storage offHeapStore() {
-		return offHeapStore;
-	}
-
-	@Deprecated
-	// TODO: got to be removed in order to accomplish with the storage chain change
-	public Storage diskStore() {
-		return diskStore;
-	}
 }

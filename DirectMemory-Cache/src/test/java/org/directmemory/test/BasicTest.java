@@ -49,7 +49,7 @@ public class BasicTest {
 		DummyPojo pojo = new DummyPojo("test1", 500);
 		Object retVal = cache.put("test1", pojo);
 		assertNotNull(retVal);
-		assertEquals(1L, cache.heapStore().count());
+		assertEquals(1L, cache.heapEntriesCount());
 		DummyPojo check = (DummyPojo)cache.get("test1");
 		assertNotNull(check);
 		assertEquals(1L, cache.heapEntriesCount());
@@ -71,18 +71,18 @@ public class BasicTest {
 		CacheManager cache = new CacheManager(1, Ram.Mb(1), 1);
 		cache.setSerializer(serializer);
 		cache.put("test1", new DummyPojo("test1", randomSize()));
-		assertEquals(1L, cache.heapStore().count());
-		assertEquals(0L, cache.offHeapStore().count());
-		assertEquals(0L, cache.diskStore().count());
+		assertEquals(1L, cache.heapEntriesCount());
+		assertEquals(0L, cache.offHeapEntriesCount());
+		assertEquals(0L, cache.onDiskEntriesCount());
 		assertTrue(cache.usedMemory() == 0L);
 		logger.debug(cache.toString());
 		
 		@SuppressWarnings("unused")
 		CacheEntry entry = cache.put("test2", new DummyPojo("test2", randomSize()));
 		logger.debug(cache.toString());
-		assertEquals(1L, cache.heapStore().count());
-		assertEquals(1L, cache.offHeapStore().count());
-		assertEquals(0L, cache.diskStore().count());
+		assertEquals(1L, cache.heapEntriesCount());
+		assertEquals(1L, cache.offHeapEntriesCount());
+		assertEquals(0L, cache.onDiskEntriesCount());
 		assertTrue(cache.usedMemory() > 0L);
 		logger.debug(cache.toString());
 		
@@ -96,9 +96,11 @@ public class BasicTest {
 		DummyPojo pojo1 = (DummyPojo)cache.get("test1");
 		logger.debug(cache.toString());
 		
-		for (CacheEntry ohEntry : cache.offHeapStore().entries().values()) {
-			logger.debug(ohEntry.key + " is offheap? " + ohEntry.offHeap());
-		}
+		
+		// TODO: perform state check
+//		for (CacheEntry ohEntry : cache.offHeapStore().entries().values()) {
+//			logger.debug(ohEntry.key + " is offheap? " + ohEntry.offHeap());
+//		}
 		
 		assertEquals(1L, cache.heapEntriesCount());
 		assertEquals(2L, cache.offHeapEntriesCount());

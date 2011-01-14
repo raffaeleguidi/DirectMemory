@@ -11,13 +11,24 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
 public class ProtoStuffSerializer implements Serializer {
 	
-	static int serBufferSize = Ram.Kb(5);
+	int bufferSize = Ram.Kb(5);
 
-	private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
+	private final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
 		protected LinkedBuffer initialValue() {
-			return LinkedBuffer.allocate(serBufferSize);
+			return LinkedBuffer.allocate(bufferSize);
 		}
 	};
+	
+	public ProtoStuffSerializer() {
+		
+	}
+	
+	
+	public ProtoStuffSerializer(int bufferSize) {
+		this.bufferSize =bufferSize; 
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see org.directmemory.utils.Serializer#serialize(java.lang.Object, java.lang.Class)
