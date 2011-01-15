@@ -23,18 +23,13 @@
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
-    	<resource>
-    		<targetPath></targetPath>
-    		<directory>config</directory>
-    		<includes>
-    			<include>*</include>
-    		</includes>
-    	</resource>
     </resources>
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <testResources>
     	<testResource>
-    		<directory>testConfig</directory>
+    		<targetPath></targetPath>
+    		<filtering>false</filtering>
+    		<directory>config</directory>
     		<includes>
     			<include>*</include>
     		</includes>

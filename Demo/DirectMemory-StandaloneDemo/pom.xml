@@ -29,7 +29,7 @@
           </programs>
           <repositoryName>lib</repositoryName>
           <repositoryLayout>flat</repositoryLayout>
-          <extraJvmArguments>-Xmx384m -Xms384m -XX:MaxDirectMemorySize=512m</extraJvmArguments>
+          <extraJvmArguments>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</extraJvmArguments>
           <assembleDirectory>${project.build.directory}/DirectMemory-Demo</assembleDirectory>
         </configuration>
       </plugin>

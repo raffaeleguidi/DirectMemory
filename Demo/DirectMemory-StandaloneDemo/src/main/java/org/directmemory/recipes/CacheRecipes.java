@@ -6,6 +6,7 @@ import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
 import org.directmemory.storage.OrientDBStorage;
+import org.directmemory.supervisor.BatchSupervisor;
 import org.directmemory.supervisor.SimpleSupervisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +31,14 @@ public class CacheRecipes {
 		logger.info("Cache initialization ok");
 		return cache;
 	}
-	public static CacheManager CreateYourOwn(int entriesLimit, int pageSize, int maxPages, int pstuffBufferSizeInKb) {
+	public static CacheManager CreateYourOwn(int entriesLimit, int pageSize, int maxPages, int pstuffBufferSizeInKb, int batchSize) {
 		logger.info("Cache initialization started");
 		CacheManager cache = new CacheManager();
 		cache.addStorage(new HeapStorage(entriesLimit));
 		cache.addStorage(new OffHeapStorage(pageSize, maxPages));
 		cache.addStorage(new OrientDBStorage());
 		cache.setSerializer(new ProtoStuffSerializer(Ram.Kb(pstuffBufferSizeInKb)));
-		cache.setSupervisor(new SimpleSupervisor());
+		cache.setSupervisor(new BatchSupervisor(batchSize));
 		logger.info("Cache initialization ok");
 		return cache;
 	}
