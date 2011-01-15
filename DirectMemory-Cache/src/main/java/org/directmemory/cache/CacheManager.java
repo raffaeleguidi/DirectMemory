@@ -3,6 +3,7 @@ package org.directmemory.cache;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.directmemory.measures.Ram;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.storage.FileStorage;
@@ -30,12 +31,11 @@ public class CacheManager {
 	private long defaultExpirationTime = -1;
 	
 	public CacheManager (int entriesLimit, int pageSize, int maxPages) {
-		// TODO: got to be changed in order to accomplish with the storage chain change
 		logger.info("Cache initialization started");
 		addStorage(new HeapStorage(entriesLimit));
 		addStorage(new OffHeapStorage(pageSize, maxPages));
 		addStorage(new OrientDBStorage());
-		setSerializer(new ProtoStuffSerializer());
+		setSerializer(new ProtoStuffSerializer(Ram.Kb(10)));
 		setSupervisor(new SimpleSupervisor());
 		logger.info("Cache initialization ok");
 	}
@@ -209,6 +209,12 @@ public class CacheManager {
 	public static void displayTimings() {
 		// replaced by a dedicated aspect
 		// do we need this as a hook or can it be deleted?
+	}
+	
+	public static String getTimings() {
+		// replaced by a dedicated aspect
+		// do we need this as a hook or can it be deleted?
+		return null;
 	}
 	
 	public void dispose() {

@@ -61,6 +61,9 @@ public aspect Performance {
 	pointcut displayTimingsPointcut() : 
 		execution(void org.directmemory.cache.CacheManager.displayTimings());
 	
+	pointcut getTimingsPointcut() : 
+		execution(String org.directmemory.cache.CacheManager.getTimings());
+	
 	Object around(String key) : getPointcut(key) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
         Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
@@ -189,6 +192,38 @@ public aspect Performance {
 		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
 		sb.append("\r\n}");
 		logger.info(sb.toString());
+	}
+	
+	String around() : getTimingsPointcut() {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+		StringBuffer sb = new StringBuffer();
+		sb.append("{");
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.put")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.get")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.remove")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.disposeExpired")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeap")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.fromHeap")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveOffHeap")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
+		sb.append("\r\n}");
+		return sb.toString();
 	}
 	
 	pointcut putInHeapPointcut(CacheEntry entry) : 

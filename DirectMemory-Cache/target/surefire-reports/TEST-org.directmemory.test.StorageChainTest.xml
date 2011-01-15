@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.907" errors="0" skipped="0" tests="1" name="org.directmemory.test.StorageChainTest">
+<testsuite failures="0" time="0.765" errors="0" skipped="0" tests="1" name="org.directmemory.test.StorageChainTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin"/>
@@ -19,7 +19,7 @@
     <property name="basedir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
     <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\endorsed"/>
     <property name="os.arch" value="x86"/>
-    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter4659961089490276093.jar"/>
+    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter1933900173559873881.jar"/>
     <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\"/>
     <property name="line.separator" value="
 "/>
@@ -27,7 +27,7 @@
     <property name="user.variant" value=""/>
     <property name="os.name" value="Windows XP"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\Java\jdk1.6.0_23\bin;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\apache-maven-3.0.1\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\QuickTime\QTSystem\;C:\Programmi\TortoiseGit\bin;C:\Programmi\scala\bin"/>
+    <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\Java\jdk1.6.0_23\bin;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\apache-maven-3.0.1\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\QuickTime\QTSystem\;C:\Programmi\TortoiseGit\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\"/>
     <property name="surefire.test.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.24-SNAPSHOT\orient-commons-0.9.24-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.24-SNAPSHOT\orientdb-core-0.9.24-SNAPSHOT.jar;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="50.0"/>
@@ -38,7 +38,7 @@
     <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
     <property name="java.specification.version" value="1.6"/>
     <property name="file.encoding" value="Cp1252"/>
-    <property name="user.name" value="OI43839"/>
+    <property name="user.name" value="oi43839"/>
     <property name="java.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.24-SNAPSHOT\orient-commons-0.9.24-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.24-SNAPSHOT\orientdb-core-0.9.24-SNAPSHOT.jar;"/>
     <property name="java.vm.specification.version" value="1.0"/>
     <property name="sun.arch.data.model" value="32"/>
@@ -59,5 +59,5 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
   </properties>
-  <testcase time="0.844" classname="org.directmemory.test.StorageChainTest" name="startHere"/>
+  <testcase time="0.75" classname="org.directmemory.test.StorageChainTest" name="startHere"/>
 </testsuite>

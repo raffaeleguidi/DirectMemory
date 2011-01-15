@@ -28,7 +28,7 @@ public class HeapStorage extends Storage {
 		return new Formatter()
 					.format(
 							"Heap: entries %1d/%2d", 
-							entries.size(), 
+							lruQueue.size(), 
 							entriesLimit)
 					.toString();
 	}
