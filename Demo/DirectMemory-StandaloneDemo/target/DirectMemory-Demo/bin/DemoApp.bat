@@ -69,7 +69,7 @@ if "%JAVACMD%"=="" set JAVACMD=java
 
 if "%REPO%"=="" set REPO=%BASEDIR%\lib
 
-set CLASSPATH="%BASEDIR%"\etc;"%REPO%"\DirectMemory-Cache-0.5.4-SNAPSHOT.jar;"%REPO%"\aspectjrt-1.6.7.jar;"%REPO%"\protostuff-runtime-1.0.0.M6.jar;"%REPO%"\protostuff-api-1.0.0.M6.jar;"%REPO%"\logback-core-0.9.26.jar;"%REPO%"\logback-classic-0.9.26.jar;"%REPO%"\slf4j-api-1.6.1.jar;"%REPO%"\javasimon-core-2.3.0.jar;"%REPO%"\stax-api-1.0.1.jar;"%REPO%"\eval-0.5.jar;"%REPO%"\protostuff-core-1.0.0.M6.jar;"%REPO%"\orient-commons-0.9.24-SNAPSHOT.jar;"%REPO%"\orientdb-core-0.9.24-SNAPSHOT.jar;"%REPO%"\DirectMemory-StandaloneDemo-1.0-SNAPSHOT.jar
+set CLASSPATH="%BASEDIR%"\etc;"%REPO%"\DirectMemory-Cache-0.5.4-SNAPSHOT.jar;"%REPO%"\aspectjrt-1.6.7.jar;"%REPO%"\protostuff-runtime-1.0.0.M6.jar;"%REPO%"\logback-core-0.9.26.jar;"%REPO%"\logback-classic-0.9.26.jar;"%REPO%"\javasimon-core-2.3.0.jar;"%REPO%"\stax-api-1.0.1.jar;"%REPO%"\eval-0.5.jar;"%REPO%"\protostuff-core-1.0.0.M6.jar;"%REPO%"\protostuff-api-1.0.0.M6.jar;"%REPO%"\slf4j-api-1.6.1.jar;"%REPO%"\orient-commons-0.9.24-SNAPSHOT.jar;"%REPO%"\orientdb-core-0.9.24-SNAPSHOT.jar;"%REPO%"\DirectMemory-StandaloneDemo-1.0-SNAPSHOT.jar
 set EXTRA_JVM_ARGUMENTS=-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m
 goto endInit
 
