@@ -27,9 +27,10 @@ public class HeapStorage extends Storage {
 	public String toString() {
 		return new Formatter()
 					.format(
-							"Heap: entries %1d/%2d", 
-							lruQueue.size(), 
-							entriesLimit)
+							"Heap: %1d/%2d and lrqueue=%3d", 
+							entries.size(), 
+							entriesLimit,
+							lruQueue.size())
 					.toString();
 	}
 }

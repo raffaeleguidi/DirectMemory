@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/aspect"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="config"/>
 	<classpathentry exported="true" kind="var" path="M2_REPO/net/java/dev/eval/eval/0.5/eval-0.5.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>

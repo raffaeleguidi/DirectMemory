@@ -173,17 +173,12 @@ public class OffHeapStorage extends Storage {
 				entry.array = null;
 				entry.object = null;
 				usedMemory.addAndGet(entry.size);
-				// removed: this is done by storage
-//				entries.put(entry.key, entry);
-//				lruQueue.remove(entry);
-//				lruQueue.add(entry);
 				logger.debug("stored off heap " + entry.key + ": pos=" + entry.position + " size=" + entry.size);
 			} else {
 				logger.debug("no room to store " + entry.key + " - skipping");
 				return false;
 			}
 		}
-		// everything is ok
 		return true;
 	}
 
@@ -206,12 +201,9 @@ public class OffHeapStorage extends Storage {
 				ByteBuffer buf = entry.buffer;
 				buf.position(entry.position);
 				buf.get(source);
-				Object obj = serializer.deserialize(source, entry.clazz);
-				entry.object = obj;
+				entry.object = serializer.deserialize(source, entry.clazz);
 				logger.debug("freed slot of " + entry.size + " bytes");
 			}
-			usedMemory.addAndGet(-source.length);
-//			remove(entry);
 		} catch (UTFDataFormatException e) {
 			logger.error(e.getMessage());
 		} catch (StreamCorruptedException e) {
@@ -252,10 +244,6 @@ public class OffHeapStorage extends Storage {
 		slot.position = entry.position;
 		slot.buffer.position(slot.position);
 		super.moveEntryTo(entry, storage);
-		if (entries.containsKey(entry.key)){
-			usedMemory.addAndGet(-entry.size);
-			slots.add(slot);	
-		}
 		logger.debug("created free slot from " + entry.key + " of " + slot.size + " bytes");
 	}
 	

@@ -154,6 +154,9 @@ public class CacheManager {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("CacheStore stats: \r\n{\r\n");
+		sb.append("   Total entries: ");
+		sb.append(count());
+		sb.append("\r\n");
 		Iterator<Storage> iter = storages.iterator();
 		while (iter.hasNext()) {
 			Storage storage = iter.next();
@@ -161,7 +164,7 @@ public class CacheManager {
 			sb.append(storage.toString());
 			sb.append(crLf);			
 		}
-		sb.append("{");
+		sb.append("}");
 		sb.append(crLf);
 		return sb.toString();
 	}
@@ -182,6 +185,16 @@ public class CacheManager {
 		return result;
 	}
 	
+	public long count() {
+		long result = 0;
+		Iterator<Storage> iter = storages.iterator();
+		while (iter.hasNext()) {
+			Storage storage = iter.next();
+			result += storage.count();
+		}
+		return result;
+	}
+
 	public long offHeapEntriesCount() {
 		return countEntriesInStorageClass(OffHeapStorage.class);
 	}

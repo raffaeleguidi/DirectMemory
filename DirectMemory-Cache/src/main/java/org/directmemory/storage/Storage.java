@@ -34,11 +34,7 @@ public abstract class Storage {
 		return entries;
 	}
 
-	public void touch(CacheEntry entry) {
-		first.lruQueue.remove(entry);
-		first.lruQueue.add(entry);
-	}
-	
+
 	protected abstract boolean moveIn(CacheEntry entry);
 	protected abstract boolean moveToHeap(CacheEntry entry);
 
@@ -49,11 +45,7 @@ public abstract class Storage {
 		if (moveIn(entry)) {		
 			logger.debug("stored entry " + entry.key);
 			entries.put(entry.key, entry);
-			// remove it to make sure it will not get duplicated
-			// and then add it to the top of the tail
-			lruQueue.remove(entry);
-			lruQueue.add(entry);
-			// everything's fine
+			touch(entry);
 			return true;
 		} else {
 			logger.debug("failed to store entry " + entry.key);
@@ -75,20 +67,25 @@ public abstract class Storage {
 	public CacheEntry get(String key) {
 		CacheEntry entry = entries.get(key);
 		
-		if (entry == null) {
-			return null;
-		}
-		
-		
-		if (moveToHeap(entry)) {
-			lruQueue.remove(entry);
-			lruQueue.add(entry);
-			logger.debug("retrieve entry with key " + key);
-			return entry;
+		if (entry != null) {
+			if (moveToHeap(entry)) {
+				if (first == null || first == this) {
+					touch(entry);
+				} else {
+					moveEntryTo(entry, first);
+				}
+				logger.debug("retrieve entry with key " + key);
+				return entry;
+			} else {
+				logger.debug("failed to retrieve entry with key " + key);
+				return null;
+			}
 		} else {
-			logger.debug("failed to retrieve entry with key " + key);
-			return null;
+			if (next != null) {
+				entry = next.get(key);
+			}
 		}
+		return entry;
 	}
 	
 	public void moveEntryTo(CacheEntry entry, Storage storage) {
@@ -103,26 +100,26 @@ public abstract class Storage {
 		moveEntryTo(entry, storage);
 	}
 	
-	public void moveButKeepTrackOfEntryTo(CacheEntry entry, Storage storage) {
-		logger.debug("move but keep track of entry " + entry.key + " to storage " + storage);
-		lruQueue.remove(entry);
-		storage.put(entry);
-		entry.setStorage(storage);
-	}
-	
-	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
-		CacheEntry entry = get(key); 
-		moveButKeepTrackOfEntryTo(entry, storage);
-	}
+//	public void moveButKeepTrackOfEntryTo(CacheEntry entry, Storage storage) {
+//		logger.debug("move but keep track of entry " + entry.key + " to storage " + storage);
+//		lruQueue.remove(entry);
+//		storage.put(entry);
+//		entry.setStorage(storage);
+//	}
+//	
+//	public void moveButKeepTrackOfEntryTo(String key, Storage storage) {
+//		CacheEntry entry = get(key); 
+//		moveButKeepTrackOfEntryTo(entry, storage);
+//	}
 	public long count() {
-		return lruQueue.size();
+		return entries.size();
 	}
 	public void dispose() {
 		lruQueue.clear();
 		entries.clear();
 	}
 	public CacheEntry removeLast() {
-		CacheEntry last = lruQueue.poll();
+		CacheEntry last = lruQueue.peek();
 		logger.debug("remove last entry entry with key " + last.key);
 		if (first != null && first != this) {
 			logger.debug("but keeping track of it");
@@ -133,21 +130,22 @@ public abstract class Storage {
 	}
 	public void overflowToNext() {
 		while (overflow() > 0) {
-			CacheEntry last = lruQueue.poll();
+			CacheEntry last = lruQueue.peek();
 			if (last == null) {
 				logger.debug("no entries to discard");
 				return;
 			}
 			if (next != null) {
-				if (first == null || first == this) {
-					moveButKeepTrackOfEntryTo(last, next);
-					logger.debug("moved but keeping track of " + last.key + " to " + next.toString());
-				} else {
+//				if (first == null || first == this) {
+//					moveButKeepTrackOfEntryTo(last, next);
+//					logger.debug("moved but keeping track of " + last.key + " to " + next.toString());
+//				} else {
 					moveEntryTo(last, next);
 					logger.debug("moved " + last.key + " to " + next.toString());
-				}
+//				}
 			} else {
-				logger.debug("next storage is null: what should I do with " + last.key + "?");
+				remove(last);
+				logger.debug("next storage is null: discarded " + last.key + "");
 			}
 		}
 	}
@@ -155,7 +153,7 @@ public abstract class Storage {
 		if (entriesLimit == -1)
 			return 0;
 		
-		return lruQueue.size() - entriesLimit;
+		return entries.size() - entriesLimit;
 	}
 	
 	public CacheEntry peek() {
@@ -169,8 +167,7 @@ public abstract class Storage {
 		} else {
 			entry.setStorage(this.first);
 		}
-		entries.remove(entry.key);
-		lruQueue.remove(entry);
+		remove(entry);
 	}
 	
 	@Override
@@ -185,5 +182,10 @@ public abstract class Storage {
 	
 	public String performance() {
 		return null;
+	}
+	
+	public void touch(CacheEntry entry) {
+		lruQueue.remove(entry);
+		lruQueue.add(entry);
 	}
 }

@@ -5,10 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.directmemory.cache.CacheEntry;
 import org.directmemory.cache.CacheManager;
 import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.recipes.CacheRecipes;
+import org.directmemory.storage.OffHeapStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,17 @@ public class DemoApp
 
 	static CacheManager cache = null;
 	static Properties properties = new Properties();
-	
+
+	static int howMany = 0;
+	static int entriesInHeap = 0;
+	static int payloadSize = 0;
+	static int pstuffBufferSizeInKb = 0;
+	static int pageSize = 0;
+	static int maxPages = 0;
+	static int batchSize = 0;
+	static int logEvery = 0;
+	static int showStatusEvery = 0;
+
 	static void loadProperties(String fileName) {
 		try {
 			File file = new File(fileName + ".properties");
@@ -32,73 +44,168 @@ public class DemoApp
 		} catch (IOException e) {
 			logger.warn("file '" + fileName + ".properties' not found, using defaults");
 		}
-	}
-	
-    public static void main( String[] args ) throws InterruptedException, IOException
-    {
-    	logger.info("DirectMemory Cache - Standalone Demo Starting");
-    	loadProperties("conf/demo");
-    	int howMany = new Integer(properties.getProperty("demo.numberOfEntries","10000")).intValue();
-    	int entriesInHeap = new Integer(properties.getProperty("demo.entriesInHeap","1000")).intValue();
-		int payloadSize = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKb","2")).intValue());
-		int pstuffBufferSizeInKb = Ram.Kb(new Integer(properties.getProperty("demo.pstuffBufferSizeInKb","8")).intValue());
-		int pageSize = Ram.Mb(new Integer(properties.getProperty("demo.pageSizeInMb","256")).intValue());
-		int maxPages = new Integer(properties.getProperty("demo.maxPages","1")).intValue();
-		int batchSize = new Integer(properties.getProperty("demo.batchSize","100")).intValue();
-		int logEvery = new Integer(properties.getProperty("demo.logEvery","100")).intValue();
-		int showStatusEvery = new Integer(properties.getProperty("demo.showStatusEvery","1000")).intValue();
+
+		howMany = new Integer(properties.getProperty("demo.numberOfEntries","10000")).intValue();
+		entriesInHeap = new Integer(properties.getProperty("demo.entriesInHeap","1000")).intValue();
+		payloadSize = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKb","2")).intValue());
+		pstuffBufferSizeInKb = Ram.Kb(new Integer(properties.getProperty("demo.pstuffBufferSizeInKb","8")).intValue());
+		pageSize = Ram.Mb(new Integer(properties.getProperty("demo.pageSizeInMb","256")).intValue());
+		maxPages = new Integer(properties.getProperty("demo.maxPages","1")).intValue();
+		batchSize = new Integer(properties.getProperty("demo.batchSize","100")).intValue();
+		logEvery = new Integer(properties.getProperty("demo.logEvery","100")).intValue();
+		showStatusEvery = new Integer(properties.getProperty("demo.showStatusEvery","1000")).intValue();
 		
 		logger.info("demo.numberOfEntries=" + howMany);
 		logger.info("demo.entriesInHeap=" + entriesInHeap);
-		logger.info("demo.payloadInKb=" + payloadSize);
-		logger.info("demo.pstuffBufferSizeInKb=" + pstuffBufferSizeInKb);
-		logger.info("demo.pageSizeInMb=" + pageSize);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
 		logger.info("demo.maxPages=" + maxPages);
 		logger.info("demo.batchSize=" + batchSize);
 		logger.info("demo.logEvery=" + logEvery);
 		logger.info("demo.showStatusEvery=" + showStatusEvery);
-		
-    	cache = CacheRecipes.CreateYourOwn(entriesInHeap, pageSize, maxPages, pstuffBufferSizeInKb, batchSize);        
-        logger.info("Cache initialized - " + cache.toString());
-        
+	}
+	
+	
+	
+	
+    public static void main( String[] args ) 
+    {
+		logger.info("DirectMemory Cache - Standalone Demo Starting");
+
+		logger.info("Log check - if you see this it is fine");
+		logger.warn("Log check - if you see this it is fine");
+		logger.debug("Log check - if you see this it is fine");
+		logger.error("Log check - if you see this it is fine");
+
+		loadProperties("conf/demo");
+		offHeapTest();
+//		cacheManagerTest();
+    }
+    
+    private static void offHeapTest() {
+		int errors = 0;
+    	int misses = 0;
+
+    	OffHeapStorage cache = new OffHeapStorage(pageSize, maxPages);
         int partial = 0;
         int partialShow = 0;
         
         logger.info("Starting inserting " + howMany + " entries");
-        for (int i = 0; i < howMany; i++) {
-			cache.put("test" + i, new DummyPojo("test" + i, payloadSize));
-			if (partial++ == logEvery) {
-				logger.debug("entry " + i + " inserted");
-				partial = 0;
+        
+        try {
+	        for (int i = 0; i < howMany; i++) {
+	        	DummyPojo pojo = new DummyPojo("test" + i, payloadSize);
+	        	CacheEntry entry = new CacheEntry();
+	        	entry.key = pojo.name;
+	        	entry.object = pojo;
+				cache.put(entry);
+				if (partial++ == logEvery) {
+					logger.debug("entry " + i + " inserted");
+					partial = 0;
+				}
+				if (partialShow++ == showStatusEvery) {
+			        logger.info(cache.toString());
+			        logger.info(CacheManager.getTimings());
+					partialShow = 0;
+				}
 			}
-			if (partialShow++ == showStatusEvery) {
-		        logger.info(cache.toString());
-		        logger.info(CacheManager.getTimings());
-				partialShow = 0;
+	        logger.info("Cache after " + howMany + " inserts - " + cache.toString());
+	        logger.info(CacheManager.getTimings());
+	
+	        logger.info("Beginning check reads");
+	        for (int i = 0; i < howMany; i++) {
+	        	CacheEntry checkEntry = cache.get("test" + i);
+	        	if (checkEntry != null) {
+					DummyPojo check = (DummyPojo)checkEntry.object;
+					if (check != null) {
+						if (!check.name.equals("test"+i)) {
+					        logger.error("check " + check.name + " doesn't match");
+					        errors++;
+						}
+					}
+				} else {
+					misses++;
+				}
+				if (partial++ == logEvery) {
+					logger.debug("entry " + i + " read");
+					partial = 0;
+				}
+				if (partialShow++ == showStatusEvery) {
+			        logger.info(cache.toString());
+					logger.info("Errors=" + errors + " and misses=" + misses);
+			        logger.info(CacheManager.getTimings());
+					partialShow = 0;
+				}
 			}
+	        logger.info("Cache after " + howMany + " reads - " + cache.toString());
+	        logger.info(CacheManager.getTimings());
+	        cache.dispose();
+	    	logger.info("DirectMemory Cache - Goodbye!");
+		} catch (Exception e) {
+			logger.error("Exception catched:",  e);
+		} catch (OutOfMemoryError e) {
+			logger.error("Out of memory:",  e);
 		}
-        logger.info("Cache after " + howMany + " inserts - " + cache.toString());
-        logger.info(CacheManager.getTimings());
+	}
 
-        logger.info("Beginning check reads");
-        for (int i = 0; i < howMany; i++) {
-			DummyPojo check = (DummyPojo)cache.get("test" + i);
-			if (partial++ == logEvery) {
-				logger.debug("entry " + i + " read");
-				partial = 0;
+	private static void cacheManagerTest() {
+		int errors = 0;
+    	int misses = 0;
+    	try {
+	    	cache = CacheRecipes.CreateYourOwn(entriesInHeap, pageSize, maxPages, pstuffBufferSizeInKb, batchSize);        
+	        logger.info("Cache initialized - " + cache.toString());
+	        
+	        int partial = 0;
+	        int partialShow = 0;
+	        
+	        logger.info("Starting inserting " + howMany + " entries");
+	        for (int i = 0; i < howMany; i++) {
+				cache.put("test" + i, new DummyPojo("test" + i, payloadSize));
+				if (partial++ == logEvery) {
+					logger.debug("entry " + i + " inserted");
+					partial = 0;
+				}
+				if (partialShow++ == showStatusEvery) {
+			        logger.info(cache.toString());
+			        logger.info(CacheManager.getTimings());
+					partialShow = 0;
+				}
 			}
-			if (partialShow++ == showStatusEvery) {
-		        logger.info(cache.toString());
-		        logger.info(CacheManager.getTimings());
-				partialShow = 0;
+	        logger.info("Cache after " + howMany + " inserts - " + cache.toString());
+	        logger.info(CacheManager.getTimings());
+	
+	        logger.info("Beginning check reads");
+	        for (int i = 0; i < howMany; i++) {
+				DummyPojo check = (DummyPojo)cache.get("test" + i);
+				if (partial++ == logEvery) {
+					logger.debug("entry " + i + " read");
+					partial = 0;
+				}
+				if (partialShow++ == showStatusEvery) {
+			        logger.info(cache.toString());
+					logger.info("Errors=" + errors + " and misses=" + misses);
+			        logger.info(CacheManager.getTimings());
+					partialShow = 0;
+				}
+				
+				if (check != null) {
+					if (!check.name.equals("test"+i)) {
+				        logger.error("check " + check.name + " doesn't match");
+				        errors++;
+					}
+				} else {
+					misses++;
+				}
 			}
-			if (!check.name.equals("test"+i)) {
-		        logger.error("check " + check.name + " doesn't match");
-			}
-		}
-        logger.info("Cache after " + howMany + " reads - " + cache.toString());
-        logger.info(CacheManager.getTimings());
-        cache.dispose();
-    	logger.info("DirectMemory Cache - Goodbye!");
-    }
+	        logger.info("Cache after " + howMany + " reads - " + cache.toString());
+	        logger.info(CacheManager.getTimings());
+	        cache.dispose();
+	    	logger.info("DirectMemory Cache - Goodbye!");
+    	} catch (Exception e) {
+    		logger.error("Exception catched:",  e);
+    	} catch (OutOfMemoryError e) {
+    		logger.error("Out of memory:",  e);
+    	}
+	}
 }

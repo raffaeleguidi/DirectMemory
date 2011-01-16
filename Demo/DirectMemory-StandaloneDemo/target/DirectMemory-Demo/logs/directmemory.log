@@ -1,0 +1,542 @@
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.main - DirectMemory Cache - Standalone Demo Starting
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.main - Log check - if you see this it is fine
+17:43:57.203 [main] WARN  org.directmemory.demo.DemoApp.main - Log check - if you see this it is fine
+17:43:57.203 [main] DEBUG org.directmemory.demo.DemoApp.main - Log check - if you see this it is fine
+17:43:57.203 [main] ERROR org.directmemory.demo.DemoApp.main - Log check - if you see this it is fine
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - loading file 'C:\Development\DirectMemory\Demo\DirectMemory-StandaloneDemo\target\DirectMemory-Demo\conf\demo.properties'
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - loaded file 'conf/demo.properties'
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.numberOfEntries=10000
+17:43:57.203 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.entriesInHeap=1000
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.payload=2048
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.pstuffBufferSize=4096
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.pageSize=52428800
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.maxPages=1
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.batchSize=1
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.logEvery=100
+17:43:57.218 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.showStatusEvery=1000
+17:43:57.281 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Starting inserting 10000 entries
+17:43:57.343 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 100 inserted
+17:43:57.359 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 201 inserted
+17:43:57.375 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 302 inserted
+17:43:57.406 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 403 inserted
+17:43:57.421 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 504 inserted
+17:43:57.437 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 605 inserted
+17:43:57.453 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 706 inserted
+17:43:57.468 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 807 inserted
+17:43:57.484 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 908 inserted
+17:43:57.500 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 1001, used memory: 4219106/52428800 and    1 free slots
+17:43:57.515 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 1001 hits - average 0,12 - max active:1 total time 119 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 120 ms, counter 1001, max 6.57 ms, min 80.2 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:57.531 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1009 inserted
+17:43:57.546 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1110 inserted
+17:43:57.562 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1211 inserted
+17:43:57.578 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1312 inserted
+17:43:57.593 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1413 inserted
+17:43:57.609 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1514 inserted
+17:43:57.625 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1615 inserted
+17:43:57.640 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1716 inserted
+17:43:57.656 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1817 inserted
+17:43:57.671 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1918 inserted
+17:43:57.671 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 2002, used memory: 8439322/52428800 and    1 free slots
+17:43:57.671 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 2002 hits - average 0,1 - max active:1 total time 196 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 196 ms, counter 2002, max 6.57 ms, min 54.5 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:57.703 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2019 inserted
+17:43:57.703 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2120 inserted
+17:43:57.718 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2221 inserted
+17:43:57.734 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2322 inserted
+17:43:57.750 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2423 inserted
+17:43:57.765 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2524 inserted
+17:43:57.781 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2625 inserted
+17:43:57.796 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2726 inserted
+17:43:57.812 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2827 inserted
+17:43:57.828 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2928 inserted
+17:43:57.828 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 3003, used memory: 12659538/52428800 and    1 free slots
+17:43:57.843 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 3003 hits - average 0,08 - max active:1 total time 252 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 253 ms, counter 3003, max 6.57 ms, min 50.0 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:57.859 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3029 inserted
+17:43:57.875 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3130 inserted
+17:43:57.890 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3231 inserted
+17:43:57.906 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3332 inserted
+17:43:57.921 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3433 inserted
+17:43:57.937 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3534 inserted
+17:43:57.953 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3635 inserted
+17:43:57.968 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3736 inserted
+17:43:57.984 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3837 inserted
+17:43:58.000 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3938 inserted
+17:43:58.015 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 4004, used memory: 16879754/52428800 and    1 free slots
+17:43:58.015 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 4004 hits - average 0,08 - max active:1 total time 308 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 308 ms, counter 4004, max 6.57 ms, min 50.0 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:58.031 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4039 inserted
+17:43:58.062 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4140 inserted
+17:43:58.078 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4241 inserted
+17:43:58.093 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4342 inserted
+17:43:58.109 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4443 inserted
+17:43:58.140 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4544 inserted
+17:43:58.156 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4645 inserted
+17:43:58.171 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4746 inserted
+17:43:58.203 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4847 inserted
+17:43:58.218 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4948 inserted
+17:43:58.234 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 5005, used memory: 21099970/52428800 and    1 free slots
+17:43:58.234 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 5005 hits - average 0,07 - max active:1 total time 367 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 367 ms, counter 5005, max 6.57 ms, min 50.0 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:58.265 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5049 inserted
+17:43:58.281 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5150 inserted
+17:43:58.312 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5251 inserted
+17:43:58.328 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5352 inserted
+17:43:58.359 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5453 inserted
+17:43:58.375 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5554 inserted
+17:43:58.406 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5655 inserted
+17:43:58.421 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5756 inserted
+17:43:58.437 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5857 inserted
+17:43:58.453 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5958 inserted
+17:43:58.468 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 6006, used memory: 25320186/52428800 and    1 free slots
+17:43:58.468 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 6006 hits - average 0,07 - max active:1 total time 435 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 435 ms, counter 6006, max 13.1 ms, min 45.8 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:58.484 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6059 inserted
+17:43:58.500 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6160 inserted
+17:43:58.515 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6261 inserted
+17:43:58.531 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6362 inserted
+17:43:58.546 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6463 inserted
+17:43:58.578 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6564 inserted
+17:43:58.593 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6665 inserted
+17:43:58.609 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6766 inserted
+17:43:58.625 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6867 inserted
+17:43:58.640 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6968 inserted
+17:43:58.640 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 7007, used memory: 29540402/52428800 and    1 free slots
+17:43:58.656 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 7007 hits - average 0,07 - max active:1 total time 485 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 485 ms, counter 7007, max 13.1 ms, min 45.3 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:58.671 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7069 inserted
+17:43:58.687 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7170 inserted
+17:43:58.718 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7271 inserted
+17:43:58.734 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7372 inserted
+17:43:58.750 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7473 inserted
+17:43:58.765 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7574 inserted
+17:43:58.781 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7675 inserted
+17:43:58.796 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7776 inserted
+17:43:58.828 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7877 inserted
+17:43:58.843 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7978 inserted
+17:43:58.843 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 8008, used memory: 33760618/52428800 and    1 free slots
+17:43:58.859 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 8008 hits - average 0,07 - max active:1 total time 535 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 535 ms, counter 8008, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:58.875 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8079 inserted
+17:43:58.906 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8180 inserted
+17:43:58.921 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8281 inserted
+17:43:58.937 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8382 inserted
+17:43:58.968 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8483 inserted
+17:43:58.984 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8584 inserted
+17:43:59.000 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8685 inserted
+17:43:59.031 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8786 inserted
+17:43:59.046 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8887 inserted
+17:43:59.062 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8988 inserted
+17:43:59.078 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 9009, used memory: 37980834/52428800 and    1 free slots
+17:43:59.078 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 9009 hits - average 0,07 - max active:1 total time 585 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 586 ms, counter 9009, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.109 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9089 inserted
+17:43:59.125 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9190 inserted
+17:43:59.156 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9291 inserted
+17:43:59.171 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9392 inserted
+17:43:59.203 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9493 inserted
+17:43:59.218 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9594 inserted
+17:43:59.250 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9695 inserted
+17:43:59.265 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9796 inserted
+17:43:59.296 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9897 inserted
+17:43:59.312 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9998 inserted
+17:43:59.312 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Cache after 10000 inserts - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.312 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.328 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Beginning check reads
+17:43:59.343 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.343 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.343 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 10 hits - average 0,35 - max active:1 total time 3 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 3.51 ms, counter 10, max 1.27 ms, min 161 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.375 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 99 read
+17:43:59.390 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 200 read
+17:43:59.390 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 301 read
+17:43:59.406 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 402 read
+17:43:59.421 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 503 read
+17:43:59.421 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 604 read
+17:43:59.437 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 705 read
+17:43:59.453 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 806 read
+17:43:59.453 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 907 read
+17:43:59.468 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1008 read
+17:43:59.468 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.468 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.468 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 1011 hits - average 0,1 - max active:1 total time 98 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 99.0 ms, counter 1011, max 1.27 ms, min 71.5 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.500 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1109 read
+17:43:59.500 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1210 read
+17:43:59.515 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1311 read
+17:43:59.531 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1412 read
+17:43:59.531 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1513 read
+17:43:59.562 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1614 read
+17:43:59.578 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1715 read
+17:43:59.578 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1816 read
+17:43:59.593 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 1917 read
+17:43:59.593 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.593 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.593 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 2012 hits - average 0,1 - max active:1 total time 193 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 193 ms, counter 2012, max 22.0 ms, min 49.2 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.625 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2018 read
+17:43:59.625 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2119 read
+17:43:59.625 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2220 read
+17:43:59.640 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2321 read
+17:43:59.640 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2422 read
+17:43:59.656 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2523 read
+17:43:59.656 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2624 read
+17:43:59.671 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2725 read
+17:43:59.671 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2826 read
+17:43:59.687 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 2927 read
+17:43:59.687 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.687 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.687 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 3013 hits - average 0,08 - max active:1 total time 251 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 252 ms, counter 3013, max 22.0 ms, min 48.6 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.718 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3028 read
+17:43:59.718 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3129 read
+17:43:59.734 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3230 read
+17:43:59.734 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3331 read
+17:43:59.750 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3432 read
+17:43:59.750 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3533 read
+17:43:59.750 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3634 read
+17:43:59.765 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3735 read
+17:43:59.765 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3836 read
+17:43:59.781 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 3937 read
+17:43:59.781 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.781 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.781 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 4014 hits - average 0,08 - max active:1 total time 309 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 309 ms, counter 4014, max 22.0 ms, min 48.6 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.812 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4038 read
+17:43:59.812 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4139 read
+17:43:59.812 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4240 read
+17:43:59.828 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4341 read
+17:43:59.828 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4442 read
+17:43:59.843 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4543 read
+17:43:59.843 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4644 read
+17:43:59.859 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4745 read
+17:43:59.859 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4846 read
+17:43:59.875 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 4947 read
+17:43:59.875 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.875 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.875 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 5015 hits - average 0,07 - max active:1 total time 364 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 365 ms, counter 5015, max 22.0 ms, min 48.6 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.890 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5048 read
+17:43:59.906 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5149 read
+17:43:59.906 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5250 read
+17:43:59.921 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5351 read
+17:43:59.921 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5452 read
+17:43:59.921 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5553 read
+17:43:59.937 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5654 read
+17:43:59.937 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5755 read
+17:43:59.953 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5856 read
+17:43:59.953 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 5957 read
+17:43:59.968 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:43:59.968 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:43:59.968 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 6016 hits - average 0,07 - max active:1 total time 418 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 419 ms, counter 6016, max 22.0 ms, min 48.6 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:43:59.984 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6058 read
+17:43:59.984 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6159 read
+17:44:00.000 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6260 read
+17:44:00.000 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6361 read
+17:44:00.015 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6462 read
+17:44:00.015 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6563 read
+17:44:00.031 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6664 read
+17:44:00.031 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6765 read
+17:44:00.046 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6866 read
+17:44:00.046 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 6967 read
+17:44:00.046 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:44:00.046 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:44:00.046 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 7017 hits - average 0,07 - max active:1 total time 473 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 473 ms, counter 7017, max 22.0 ms, min 48.6 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:44:00.078 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7068 read
+17:44:00.078 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7169 read
+17:44:00.093 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7270 read
+17:44:00.093 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7371 read
+17:44:00.109 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7472 read
+17:44:00.109 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7573 read
+17:44:00.109 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7674 read
+17:44:00.125 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7775 read
+17:44:00.187 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7876 read
+17:44:00.187 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 7977 read
+17:44:00.187 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:44:00.203 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:44:00.203 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 8018 hits - average 0,07 - max active:1 total time 582 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 583 ms, counter 8018, max 53.5 ms, min 48.3 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:44:00.218 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8078 read
+17:44:00.218 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8179 read
+17:44:00.234 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8280 read
+17:44:00.234 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8381 read
+17:44:00.250 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8482 read
+17:44:00.250 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8583 read
+17:44:00.265 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8684 read
+17:44:00.265 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8785 read
+17:44:00.281 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8886 read
+17:44:00.281 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 8987 read
+17:44:00.281 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:44:00.281 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Errors=0 and misses=0
+17:44:00.281 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 9019 hits - average 0,07 - max active:1 total time 638 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 639 ms, counter 9019, max 53.5 ms, min 48.3 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:44:00.312 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9088 read
+17:44:00.312 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9189 read
+17:44:00.328 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9290 read
+17:44:00.328 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9391 read
+17:44:00.343 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9492 read
+17:44:00.343 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9593 read
+17:44:00.343 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9694 read
+17:44:00.359 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9795 read
+17:44:00.359 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9896 read
+17:44:00.375 [main] DEBUG org.directmemory.demo.DemoApp.offHeapTest - entry 9997 read
+17:44:00.375 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - Cache after 10000 reads - OffHeap: entries 10000, used memory: 42158890/52428800 and    1 free slots
+17:44:00.375 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - {
+   cache.put 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.put INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.get 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.get INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.remove 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.remove INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.disposeExpired 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.disposeExpired INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.fromHeap 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.fromHeap INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveOffHeap 10000 hits - average 0,06 - max active:1 total time 635 - Simon Stopwatch: [cache.detail.moveOffHeap INHERIT] total 636 ms, counter 10000, max 13.1 ms, min 44.7 us
+   cache.detail.moveInHeapfromOffHeap 10000 hits - average 0,07 - max active:1 total time 691 - Simon Stopwatch: [cache.detail.moveInHeapfromOffHeap INHERIT] total 692 ms, counter 10000, max 53.5 ms, min 48.3 us
+   cache.detail.moveToDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromDisk 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromDisk INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveToOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+   cache.detail.moveInHeapfromOrientDB 0 hits - average ? - max active:0 total time 0 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 0 ns, counter 0, max 0 ns, min undef
+}
+17:44:00.390 [main] INFO  org.directmemory.demo.DemoApp.offHeapTest - DirectMemory Cache - Goodbye!
