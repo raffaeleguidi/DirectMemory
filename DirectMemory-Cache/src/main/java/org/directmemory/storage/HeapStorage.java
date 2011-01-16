@@ -16,11 +16,13 @@ public class HeapStorage extends Storage {
 
 	@Override
 	protected boolean moveIn(CacheEntry entry) {
+		overflowToNext();
 		return true;
 	}
 
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {
+		overflowToNext();
 		return true;
 	}
 	@Override
