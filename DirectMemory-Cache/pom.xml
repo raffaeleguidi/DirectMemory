@@ -168,14 +168,14 @@
 	<dependency>
 		<groupId>com.orientechnologies</groupId>
 		<artifactId>orient-commons</artifactId>
-		<version>0.9.24-SNAPSHOT</version>
+		<version>0.9.25-SNAPSHOT</version>
 		<type>jar</type>
 		<optional>false</optional>
 	</dependency>
 	<dependency>
 		<groupId>com.orientechnologies</groupId>
 		<artifactId>orientdb-core</artifactId>
-		<version>0.9.24-SNAPSHOT</version>
+		<version>0.9.25-SNAPSHOT</version>
 		<type>jar</type>
 		<optional>false</optional>
 	</dependency>

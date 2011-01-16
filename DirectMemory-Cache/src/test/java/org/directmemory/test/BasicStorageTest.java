@@ -12,6 +12,7 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.storage.FileStorage;
 import org.directmemory.storage.OffHeapStorage;
+import org.directmemory.storage.OrientDBBinaryStorage;
 import org.directmemory.storage.OrientDBStorage;
 import org.directmemory.storage.Storage;
 import org.junit.AfterClass;
@@ -31,7 +32,7 @@ public class BasicStorageTest {
 		genericStorageTest(new OffHeapStorage(Ram.Mb(10), 1));
 	}
 
-	@Test
+//	@Test
 	public void fileStorage() {
 		genericStorageTest(new FileStorage());
 	}
@@ -39,6 +40,11 @@ public class BasicStorageTest {
 	@Test
 	public void orientDBStorage() {
 		genericStorageTest(new OrientDBStorage());
+	}
+
+	@Test
+	public void orientDBBinaryStorage() {
+		genericStorageTest(new OrientDBBinaryStorage());
 	}
 
 	public void genericStorageTest(Storage storage) {

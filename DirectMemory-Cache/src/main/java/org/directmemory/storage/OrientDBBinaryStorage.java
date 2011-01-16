@@ -6,33 +6,40 @@ import java.util.Formatter;
 
 import org.directmemory.cache.CacheEntry;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseBinary;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.record.impl.ORecordBytes;
 
 public class OrientDBBinaryStorage extends Storage {
 	
-	public String baseDir = "orientdb";
+	public String baseDir = "data";
+	public String binaryDir = "binary";
 	
-	ODatabaseBinary db;
+	ODatabaseDocument database;
 	
-	private void createBinaryDb() {
-        File base = new File(baseDir + "\\bin");
+	private void createDatabase() {
+        File base = new File(baseDir + "\\" + binaryDir);
 		if (base.exists()) {
 			logger.info("Base folder: " + base.getPath() + " checked ok");
 		} else if (base.mkdir()) {
 			logger.info("Base folder: " + base.getPath() + " created");
-			return;
 		} else {
 			logger.error("Could not create base directory: " + base.getPath());
 		}
-		db = new ODatabaseBinary("local:" + base.getAbsolutePath() + "\\data");
-		db.delete();
-		db.create();
-		logger.info("OrientDB binary database: " + db.getURL() + " created");
+		database = new ODatabaseDocumentTx("local:" + base.getAbsolutePath() + "\\data");
+		database.delete();
+		database.create();
+		logger.info("OrientDB document database: " + database.getURL() + " created");
 	}
 	
-
+	@Override
+	public void dispose() {
+		super.dispose();
+		database.close();
+		logger.debug("OrientDB database closed");
+	}
 	
 	public OrientDBBinaryStorage() {
 		try {
@@ -40,7 +47,7 @@ public class OrientDBBinaryStorage extends Storage {
 	        if (!base.exists()) {
 	        	base.mkdir();
 	        }
-			createBinaryDb();
+			createDatabase();
 		} catch (Exception e) {
 			logger.error("OrientDB database: " + e.getMessage());
 			e.printStackTrace();
@@ -49,21 +56,14 @@ public class OrientDBBinaryStorage extends Storage {
 	
 	protected void finalize() throws Throwable
 	{
-		db.close();
+		database.close();
 		super.finalize(); 
 	} 
 	
 	@Override
 	protected boolean moveIn(CacheEntry entry) {
 		// try to delete it just to be sure 
-		try {
-			ORecordBytes recBytes = db.load((ORID) entry.identity);
-			recBytes.delete();
-			entry.identity = null;
-		} catch (Exception e1) {
-			logger.error("error deleting previous entry with key " + entry.key);
-			e1.printStackTrace();
-		}
+//		deleteFromDb(entry);			
 		
 		byte [] buffer = entry.bufferData();
 		if (buffer == null) {
@@ -76,24 +76,16 @@ public class OrientDBBinaryStorage extends Storage {
 			}
 		} 
 		
-		ORecordBytes recBytes = new ORecordBytes(db, buffer);
-		try {
-			logger.debug("record is new? " + recBytes.getIdentity().isNew());
-			recBytes.setDatabase(db);
-			recBytes.save();
-			logger.debug("record is valid? " + recBytes.getIdentity().isValid());
-			if (!recBytes.getIdentity().isValid()) {
-				logger.debug("cannot store entry " + entry.key + " to database " + db.getURL());
-				return false;
-			}
-			entry.identity = recBytes.getIdentity();
-		} catch (Exception e) {
-			logger.error("error saving buffer for entry " + entry.key);
-			e.printStackTrace();
+		if (database.isClosed()) {
+			createDatabase();
 		}
 		
-		logger.debug("succesfully stored entry " + entry.key + " to database " + db.getURL());
+        ORecordBytes record = new ORecordBytes(database, buffer);
+		record.save();
+
+		logger.debug("succesfully stored entry " + entry.key + " to database " + database.getURL());
 		
+		entry.identity = record.getIdentity();
 		entry.array = null; // just to be sure
 		entry.object = null;
 		entry.size = buffer.length;
@@ -104,38 +96,26 @@ public class OrientDBBinaryStorage extends Storage {
 	@Override
 	public boolean moveToHeap(CacheEntry entry) {		
 		try {
-			ORecordBytes recBytes = db.load((ORID) entry.identity);
-			if (recBytes == null) {
-				logger.error("row with ORID " + entry.identity + " not found");
-				return false;
-			}
-			entry.object = serializer.deserialize(recBytes.toStream(), entry.clazz());
-			recBytes.delete();
+			ORecordBytes record = new ORecordBytes(database, (ORID) entry.identity);
+			record.load();
+			entry.array = record.toStream();
+			entry.object = serializer.deserialize(entry.array, entry.clazz());
 			entry.identity = null;
+			entry.array = null;
+			logger.debug("succesfully restored entry " + entry.key + " from database " + database.getURL());
+			record.delete();
 			return true;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return false;
 	}
 
 	@Override
-	public void dispose() {
-		super.dispose();
-		db.close();
-		db.delete();
-		db.open("admin", "admin");
-		logger.debug("OrientDB database deleted and created");
-	}
-	
-	@Override
 	public CacheEntry delete(String key) {
 		CacheEntry entry = entries.get(key);
 		if (entry != null) {
-			ORecordBytes recBytes = db.load((ORID) entry.identity);
-			recBytes.delete();
-			entry.identity = null;
+			deleteFromDb(entry);			
 			logger.debug("entry " + key + " deleted from the database");
 			return super.delete(key);
 		} else {
@@ -143,12 +123,25 @@ public class OrientDBBinaryStorage extends Storage {
 			return null;			
 		} 
 	}
+
+	private void deleteFromDb(CacheEntry entry) {
+		try {
+//			OCommandSQL sql = new OCommandSQL("delete * from Entry where key = '" + entry.key + "'");
+//			docDb.command(sql);
+			ODocument doc = database.load((ORID) entry.identity);
+			doc.delete();
+			entry.identity = null;
+		} catch (Exception e) {
+			logger.error("error deleting previous entry with key " + entry.key);
+			e.printStackTrace();
+		}
+	}
 	
 	@Override
 	public String toString() {
 		return new Formatter()
 					.format(
-							"OrientDB binary: entries %1d", 
+							"OrientDB: entries %1d", 
 							entries.size()
 							)
 					.toString();

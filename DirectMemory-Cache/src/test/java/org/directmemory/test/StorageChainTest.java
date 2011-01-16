@@ -6,7 +6,7 @@ import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.storage.FileStorage;
 import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
-import org.directmemory.storage.OrientDBBinaryStorage;
+import org.directmemory.storage.OrientDBOldBinaryStorage;
 import org.directmemory.storage.OrientDBStorage;
 import org.directmemory.supervisor.SimpleSupervisor;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class StorageChainTest {
 		cache.addStorage(new OffHeapStorage(Ram.Mb(100), 10));
 		cache.addStorage(new FileStorage());
 		cache.addStorage(new OrientDBStorage());
-		cache.addStorage(new OrientDBBinaryStorage());
+		cache.addStorage(new OrientDBOldBinaryStorage());
 		cache.setSerializer(new StandardSerializer());
 		cache.setSupervisor(new SimpleSupervisor());
 		//TODO: it fails with "can't open database"
