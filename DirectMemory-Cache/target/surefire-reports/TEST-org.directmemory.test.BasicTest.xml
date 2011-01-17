@@ -1,144 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="2.875" errors="0" skipped="0" tests="5" name="org.directmemory.test.BasicTest">
+<testsuite failures="0" time="3.047" errors="0" skipped="0" tests="5" name="org.directmemory.test.BasicTest">
   <properties>
-    <property name="java.vendor" value="Sun Microsystems Inc."/>
-    <property name="localRepository" value="C:\Documents and Settings\oi43839\.m2\repository"/>
-    <property name="osgi.bundles.defaultStartLevel" value="4"/>
-    <property name="org.eclipse.debug.ui.breakpoints.toggleFactoriesUsed" value="true"/>
-    <property name="sun.java.launcher" value="SUN_STANDARD"/>
-    <property name="org.osgi.supports.framework.extension" value="true"/>
-    <property name="sun.management.compiler" value="HotSpot Client Compiler"/>
-    <property name="eclipse.p2.profile" value="epp.package.java"/>
-    <property name="os.name" value="Windows XP"/>
-    <property name="sun.boot.class.path" value="C:\Programmi\Java\jdk1.6.0_23\jre\lib\resources.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\rt.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\sunrsasign.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\jsse.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\jce.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\charsets.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\modules\jdk.boot.jar;C:\Programmi\Java\jdk1.6.0_23\jre\classes"/>
-    <property name="osgi.ws" value="win32"/>
-    <property name="sun.desktop" value="windows"/>
-    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
-    <property name="java.runtime.version" value="1.6.0_23-b05"/>
-    <property name="osgi.instance.area" value="file:/C:/Documents and Settings/oi43839/workspace/"/>
-    <property name="user.name" value="OI43839"/>
-    <property name="osgi.framework.extensions" value="reference:file:org.eclipse.equinox.weaving.hook_1.0.0.v20100108.jar"/>
-    <property name="org.osgi.framework.system.packages" value="javax.accessibility,javax.activation,javax.activity,javax.annotation,javax.annotation.processing,javax.crypto,javax.crypto.interfaces,javax.crypto.spec,javax.imageio,javax.imageio.event,javax.imageio.metadata,javax.imageio.plugins.bmp,javax.imageio.plugins.jpeg,javax.imageio.spi,javax.imageio.stream,javax.jws,javax.jws.soap,javax.lang.model,javax.lang.model.element,javax.lang.model.type,javax.lang.model.util,javax.management,javax.management.loading,javax.management.modelmbean,javax.management.monitor,javax.management.openmbean,javax.management.relation,javax.management.remote,javax.management.remote.rmi,javax.management.timer,javax.naming,javax.naming.directory,javax.naming.event,javax.naming.ldap,javax.naming.spi,javax.net,javax.net.ssl,javax.print,javax.print.attribute,javax.print.attribute.standard,javax.print.event,javax.rmi,javax.rmi.CORBA,javax.rmi.ssl,javax.script,javax.security.auth,javax.security.auth.callback,javax.security.auth.kerberos,javax.security.auth.login,javax.security.auth.spi,javax.security.auth.x500,javax.security.cert,javax.security.sasl,javax.sound.midi,javax.sound.midi.spi,javax.sound.sampled,javax.sound.sampled.spi,javax.sql,javax.sql.rowset,javax.sql.rowset.serial,javax.sql.rowset.spi,javax.swing,javax.swing.border,javax.swing.colorchooser,javax.swing.event,javax.swing.filechooser,javax.swing.plaf,javax.swing.plaf.basic,javax.swing.plaf.metal,javax.swing.plaf.multi,javax.swing.plaf.synth,javax.swing.table,javax.swing.text,javax.swing.text.html,javax.swing.text.html.parser,javax.swing.text.rtf,javax.swing.tree,javax.swing.undo,javax.tools,javax.transaction,javax.transaction.xa,javax.xml,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.bind.attachment,javax.xml.bind.helpers,javax.xml.bind.util,javax.xml.crypto,javax.xml.crypto.dom,javax.xml.crypto.dsig,javax.xml.crypto.dsig.dom,javax.xml.crypto.dsig.keyinfo,javax.xml.crypto.dsig.spec,javax.xml.datatype,javax.xml.namespace,javax.xml.parsers,javax.xml.soap,javax.xml.stream,javax.xml.stream.events,javax.xml.stream.util,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stax,javax.xml.transform.stream,javax.xml.validation,javax.xml.ws,javax.xml.ws.handler,javax.xml.ws.handler.soap,javax.xml.ws.http,javax.xml.ws.soap,javax.xml.ws.spi,javax.xml.ws.wsaddressing,javax.xml.xpath,org.ietf.jgss,org.omg.CORBA,org.omg.CORBA_2_3,org.omg.CORBA_2_3.portable,org.omg.CORBA.DynAnyPackage,org.omg.CORBA.ORBPackage,org.omg.CORBA.portable,org.omg.CORBA.TypeCodePackage,org.omg.CosNaming,org.omg.CosNaming.NamingContextExtPackage,org.omg.CosNaming.NamingContextPackage,org.omg.Dynamic,org.omg.DynamicAny,org.omg.DynamicAny.DynAnyFactoryPackage,org.omg.DynamicAny.DynAnyPackage,org.omg.IOP,org.omg.IOP.CodecFactoryPackage,org.omg.IOP.CodecPackage,org.omg.Messaging,org.omg.PortableInterceptor,org.omg.PortableInterceptor.ORBInitInfoPackage,org.omg.PortableServer,org.omg.PortableServer.CurrentPackage,org.omg.PortableServer.POAManagerPackage,org.omg.PortableServer.POAPackage,org.omg.PortableServer.portable,org.omg.PortableServer.ServantLocatorPackage,org.omg.SendingContext,org.omg.stub.java.rmi,org.w3c.dom,org.w3c.dom.bootstrap,org.w3c.dom.css,org.w3c.dom.events,org.w3c.dom.html,org.w3c.dom.ls,org.w3c.dom.ranges,org.w3c.dom.stylesheets,org.w3c.dom.traversal,org.w3c.dom.views,org.w3c.dom.xpath,org.xml.sax,org.xml.sax.ext,org.xml.sax.helpers"/>
-    <property name="eclipse.launcher" value="C:\MyStuff\eclipse\eclipse.exe"/>
-    <property name="eclipse.launcher.name" value="Eclipse"/>
-    <property name="osgi.frameworkClassPath" value="., file:c:/MyStuff/eclipse/plugins/org.eclipse.equinox.weaving.hook_1.0.0.v20100108.jar"/>
-    <property name="equinox.use.ds" value="true"/>
-    <property name="org.osgi.framework.language" value="it"/>
-    <property name="user.language" value="it"/>
-    <property name="org.osgi.framework.processor" value="x86"/>
-    <property name="osgi.syspath" value="c:\MyStuff\eclipse\plugins"/>
-    <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_23\jre\bin"/>
-    <property name="osgi.manifest.cache" value="C:\MyStuff\eclipse\configuration\org.eclipse.osgi\manifests"/>
-    <property name="org.eclipse.php.debug.ui.activeDebugging" value="true"/>
-    <property name="java.version" value="1.6.0_23"/>
-    <property name="org.osgi.framework.os.name" value="WindowsXP"/>
-    <property name="user.timezone" value="Europe/Berlin"/>
-    <property name="sun.arch.data.model" value="32"/>
-    <property name="osgi.bundles" value="reference:file:org.eclipse.equinox.weaving.hook_1.0.0.v20100108.jar,reference:file:org.eclipse.equinox.simpleconfigurator_1.0.200.v20100503.jar@1:start"/>
-    <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_23\jre\lib\endorsed"/>
-    <property name="osgi.tracefile" value="C:\Documents and Settings\oi43839\workspace\.metadata\trace.log"/>
-    <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
-    <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="eclipse.application" value="org.eclipse.ui.ide.workbench"/>
-    <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="org.osgi.framework.vendor" value="Eclipse"/>
-    <property name="file.separator" value="\"/>
-    <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="java.class.version" value="50.0"/>
-    <property name="user.country" value="IT"/>
-    <property name="org.eclipse.equinox.launcher.splash.location" value="C:\MyStuff\eclipse\\plugins\org.eclipse.platform_3.6.1.v201009090800\splash.bmp"/>
-    <property name="java.home" value="C:\Programmi\Java\jdk1.6.0_23\jre"/>
-    <property name="osgi.os" value="win32"/>
-    <property name="eclipse.commands" value="-os
-win32
--ws
-win32
--arch
-x86
--showsplash
-C:\MyStuff\eclipse\\plugins\org.eclipse.platform_3.6.1.v201009090800\splash.bmp
--launcher
-C:\MyStuff\eclipse\eclipse.exe
--name
-Eclipse
---launcher.library
-C:\MyStuff\eclipse\plugins/org.eclipse.equinox.launcher.win32.win32.x86_1.1.1.R36x_v20100810\eclipse_1309.dll
--startup
-C:\MyStuff\eclipse\plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar
--product
-org.eclipse.epp.package.java.product
--vm
-C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll
-"/>
-    <property name="java.vm.info" value="mixed mode, sharing"/>
-    <property name="osgi.splashLocation" value="C:\MyStuff\eclipse\\plugins\org.eclipse.platform_3.6.1.v201009090800\splash.bmp"/>
-    <property name="os.version" value="5.1"/>
-    <property name="osgi.arch" value="x86"/>
-    <property name="path.separator" value=";"/>
-    <property name="java.vm.version" value="19.0-b09"/>
-    <property name="org.osgi.supports.framework.fragment" value="true"/>
-    <property name="user.variant" value=""/>
-    <property name="osgi.framework.shape" value="jar"/>
-    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
-    <property name="osgi.instance.area.default" value="file:/C:/Documents and Settings/oi43839/workspace/"/>
-    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
-    <property name="org.osgi.framework.version" value="1.5.0"/>
-    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
-    <property name="osgi.install.area" value="file:/C:/MyStuff/eclipse/"/>
-    <property name="osgi.framework" value="file:/c:/MyStuff/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar"/>
-    <property name="user.home" value="C:\Documents and Settings\oi43839"/>
-    <property name="org.eclipse.equinox.simpleconfigurator.configUrl" value="file:org.eclipse.equinox.simpleconfigurator/bundles.info"/>
-    <property name="osgi.bundlestore" value="C:\MyStuff\eclipse\configuration\org.eclipse.osgi\bundles"/>
-    <property name="osgi.splashPath" value="platform:/base/plugins/org.eclipse.platform"/>
-    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
-    <property name="osgi.nl" value="it_IT"/>
-    <property name="java.vendor.url" value="http://java.sun.com/"/>
-    <property name="java.library.path" value="C:\MyStuff\eclipse;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/bin/client;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/bin;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/lib/i386;C:\Programmi\Java\jdk1.6.0_23\bin;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\apache-maven-3.0.1\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\QuickTime\QTSystem\;C:\Programmi\TortoiseGit\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\"/>
-    <property name="org.osgi.framework.os.version" value="5.1.0"/>
-    <property name="eclipse.p2.data.area" value="@config.dir/../p2/"/>
-    <property name="eclipse.startTime" value="1295193013421"/>
-    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="java.class.path" value="C:\MyStuff\eclipse\plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar"/>
-    <property name="osgi.requiredJavaVersion" value="1.5"/>
-    <property name="org.eclipse.update.reconcile" value="false"/>
-    <property name="eclipse.vm" value="C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll"/>
-    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin"/>
+    <property name="java.vm.version" value="17.1-b03"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) Client VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="IT"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="Service Pack 3"/>
-    <property name="sun.cpu.endian" value="little"/>
-    <property name="surefire.test.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.24-SNAPSHOT\orient-commons-0.9.24-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.24-SNAPSHOT\orientdb-core-0.9.24-SNAPSHOT.jar;"/>
-    <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\"/>
-    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
-    <property name="eclipse.product" value="org.eclipse.epp.package.java.product"/>
-    <property name="eclipse.home.location" value="file:/C:/MyStuff/eclipse/"/>
-    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="os.arch" value="x86"/>
-    <property name="java.ext.dirs" value="C:\Programmi\Java\jdk1.6.0_23\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="user.dir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
-    <property name="org.osgi.supports.framework.requirebundle" value="true"/>
+    <property name="java.runtime.version" value="1.6.0_22-b04"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="basedir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
+    <property name="java.endorsed.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\endorsed"/>
+    <property name="os.arch" value="x86"/>
+    <property name="surefire.real.class.path" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\surefirebooter8322565792243518826.jar"/>
+    <property name="java.io.tmpdir" value="C:\DOCUME~1\oi43839\IMPOST~1\Temp\"/>
     <property name="line.separator" value="
 "/>
-    <property name="java.vm.name" value="Java HotSpot(TM) Client VM"/>
-    <property name="org.apache.commons.logging.Log" value="org.apache.commons.logging.impl.NoOpLog"/>
-    <property name="basedir" value="C:\Development\DirectMemory\DirectMemory-Cache"/>
-    <property name="maven.mode.standalone" value="true"/>
-    <property name="file.encoding" value="Cp1252"/>
-    <property name="osgi.framework.version" value="3.6.1.R36x_v20100806"/>
-    <property name="eclipse.buildId" value="M20100909-0800"/>
-    <property name="eclipse.vmargs" value="-Xmx128M
--XX:MaxPermSize=128M
--Dosgi.requiredJavaVersion=1.5
--Djava.class.path=C:\MyStuff\eclipse\plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar
-"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows XP"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Programmi\Java\jdk1.6.0_23\bin;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\apache-maven-3.0.1\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\QuickTime\QTSystem\;C:\Programmi\TortoiseGit\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\"/>
+    <property name="surefire.test.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.25-SNAPSHOT\orient-commons-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.25-SNAPSHOT\orientdb-core-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\javax\persistence\persistence-api\1.0\persistence-api-1.0.jar;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot Client Compiler"/>
+    <property name="os.version" value="5.1"/>
+    <property name="user.home" value="C:\Documents and Settings\oi43839"/>
+    <property name="user.timezone" value="Europe/Berlin"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
     <property name="java.specification.version" value="1.6"/>
-    <property name="org.osgi.framework.executionenvironment" value="OSGi/Minimum-1.0,OSGi/Minimum-1.1,OSGi/Minimum-1.2,JRE-1.1,J2SE-1.2,J2SE-1.3,J2SE-1.4,J2SE-1.5,JavaSE-1.6"/>
-    <property name="osgi.logfile" value="C:\Documents and Settings\oi43839\workspace\.metadata\.log"/>
-    <property name="osgi.configuration.area" value="file:/C:/MyStuff/eclipse/configuration/"/>
+    <property name="file.encoding" value="Cp1252"/>
+    <property name="user.name" value="OI43839"/>
+    <property name="java.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.25-SNAPSHOT\orient-commons-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.25-SNAPSHOT\orientdb-core-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\javax\persistence\persistence-api\1.0\persistence-api-1.0.jar;"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="C:\Programmi\Java\jdk1.6.0_22\jre"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="it"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.version" value="1.6.0_22"/>
+    <property name="java.ext.dirs" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="C:\Programmi\Java\jdk1.6.0_22\jre\lib\resources.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\rt.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\sunrsasign.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\jsse.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\jce.jar;C:\Programmi\Java\jdk1.6.0_22\jre\lib\charsets.jar;C:\Programmi\Java\jdk1.6.0_22\jre\classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="localRepository" value="C:\Documents and Settings\oi43839\.m2\repository"/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"/>
   </properties>
   <testcase time="0.344" classname="org.directmemory.test.BasicTest" name="putAndGetWithJavaSerialization"/>
-  <testcase time="0.484" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
-  <testcase time="0.328" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
+  <testcase time="0.453" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
+  <testcase time="0.563" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
   <testcase time="0.328" classname="org.directmemory.test.BasicTest" name="removeWithProtostuffSerialization"/>
-  <testcase time="1.375" classname="org.directmemory.test.BasicTest" name="expiry"/>
+  <testcase time="1.359" classname="org.directmemory.test.BasicTest" name="expiry"/>
 </testsuite>

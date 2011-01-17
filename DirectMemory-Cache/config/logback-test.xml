@@ -10,7 +10,7 @@
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>logs/directmemory.log</file>
     <encoder>
-      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class.%method - %msg%n</Pattern>
+      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %method - %msg%n</Pattern>
     </encoder>
   </appender>
   

@@ -231,7 +231,6 @@ public class CacheManager {
 	}
 	
 	public void dispose() {
-
 		Iterator<Storage> iter = storages.iterator();
 		while (iter.hasNext()) {
 			Storage storage = iter.next();

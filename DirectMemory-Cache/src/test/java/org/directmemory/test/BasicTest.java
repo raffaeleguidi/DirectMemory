@@ -56,13 +56,13 @@ public class BasicTest {
 		assertEquals(pojo, check);
 	}
 
-//	@Test
+	@Test
 	public void evictionWithJavaSerialization() {
 		// temporarily disabled - looking for a nastier problem
 		eviction(new StandardSerializer());
 	}
 
-//	@Test
+	@Test
 	public void evictionWithProtostuffSerialization() {
 		// temporarily disabled - looking for a nastier problem
 		eviction(new ProtoStuffSerializer());

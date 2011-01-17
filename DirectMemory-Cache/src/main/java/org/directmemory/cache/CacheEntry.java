@@ -1,6 +1,7 @@
 package org.directmemory.cache;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.directmemory.storage.Storage;
 
@@ -67,6 +68,9 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	}
 	
 	private Storage storage = null;
+	public Date inserted;
+	public Date lastAccessed;
+	public AtomicLong reads = new AtomicLong();
 	
 	public Storage getStorage() {
 		return storage;

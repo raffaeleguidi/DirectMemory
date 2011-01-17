@@ -11,6 +11,24 @@ import org.slf4j.LoggerFactory;
 
 
 public aspect Performance {
+
+	public static final String cache_put = "cache.put"; 
+	public static final String cache_get = "cache.get"; 
+	public static final String cache_remove = "cache.remove"; 
+	public static final String cache_detail_disposeExpired = "cache.detail.disposeExpired"; 
+	public static final String cache_detail_disposeOverflow = "cache.detail.disposeOverflow"; 
+	public static final String cache_detail_moveInHeap = "cache.detail.moveInHeap"; 
+	public static final String cache_detail_fromHeap = "cache.detail.fromHeap"; 
+	public static final String cache_detail_moveOffHeap = "cache.detail.moveOffHeap"; 
+	public static final String cache_detail_moveInHeapfromOffHeap = "cache.detail.moveInHeapfromOffHeap"; 
+	public static final String cache_detail_getFromHeap = "cache.detail.getFromHeap"; 
+	public static final String cache_detail_moveToDisk = "cache.detail.moveToDisk"; 
+	public static final String cache_detail_moveInHeapfromDisk = "cache.detail.moveInHeapfromDisk"; 
+	public static final String cache_detail_moveToOrientDB = "cache.detail.moveToOrientDB"; 
+	public static final String cache_detail_moveInHeapfromOrientDB = "cache.detail.moveInHeapfromOrientDB"; 
+	public static final String cache_detail_moveToOrientDBBinary = "cache.detail.moveToOrientDBBinary"; 
+	public static final String cache_detail_moveInHeapfromOrientDBBinary = "cache.detail.moveInHeapfromOrientDBBinary"; 
+	
 	private static Logger logger=LoggerFactory.getLogger(Performance.class);
 	
 	pointcut putPointcut(String key, Object object) : 
@@ -36,20 +54,12 @@ public aspect Performance {
 		execution(boolean org.directmemory.storage.FileStorage.moveIn(CacheEntry)) && 
 		args(entry);
 
-	pointcut moveToOrientDBPointcut(CacheEntry entry) : 
-		execution(boolean org.directmemory.storage.OrientDBStorage.moveIn(CacheEntry)) && 
-		args(entry);
-
 	pointcut fromOffHeapPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.OffHeapStorage.moveToHeap(CacheEntry)) && 
 		args(entry);
 
 	pointcut fromDiskPointcut(CacheEntry entry) : 
 		execution(boolean org.directmemory.storage.FileStorage.moveToHeap(CacheEntry)) && 
-		args(entry);
-
-	pointcut fromOrientDBPointcut(CacheEntry entry) : 
-		execution(boolean org.directmemory.storage.OrientDBStorage.moveToHeap(CacheEntry)) && 
 		args(entry);
 
 	pointcut disposeOffHeapOverflowPointcut() : 
@@ -66,7 +76,7 @@ public aspect Performance {
 	
 	Object around(String key) : getPointcut(key) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.get");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_put);
 		Split split = stopWatch.start();
 		Object object = proceed(key);
 		split.stop();
@@ -75,7 +85,7 @@ public aspect Performance {
 	
 	CacheEntry around(String key, Object object): putPointcut(key, object) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.put");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_get);
 		Split split = stopWatch.start();
 		CacheEntry entry = proceed(key, object);
 		split.stop();
@@ -84,7 +94,7 @@ public aspect Performance {
 	
 	Object around(String key) : removePointcut(key) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.remove");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_remove);
 		Split split = stopWatch.start();
 		Object object = proceed(key);
 		split.stop();
@@ -93,7 +103,7 @@ public aspect Performance {
 
 	Object around() : disposeExpiredPointcut() {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.disposeExpired");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_disposeExpired);
 		Split split = stopWatch.start();
 		Object object = proceed();
 		split.stop();
@@ -102,7 +112,7 @@ public aspect Performance {
 
 	boolean around(CacheEntry entry) : moveOffHeapPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveOffHeap");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveOffHeap);
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -111,16 +121,7 @@ public aspect Performance {
 
 	boolean around(CacheEntry entry) : moveToDiskPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveToDisk");
-		Split split = stopWatch.start();
-		boolean retVal = proceed(entry);
-		split.stop();
-		return retVal;
-	}
-	
-	boolean around(CacheEntry entry) : moveToOrientDBPointcut(entry) {
-		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveToOrientDB");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveToDisk);
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -129,7 +130,24 @@ public aspect Performance {
 	
 	boolean around(CacheEntry entry) : fromDiskPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveInHeapfromDisk);
+		Split split = stopWatch.start();
+		boolean retVal = proceed(entry);
+		split.stop();
+		return retVal;
+	}
+	
+	pointcut moveToOrientDBPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBStorage.moveIn(CacheEntry)) && 
+		args(entry);
+
+	pointcut fromOrientDBPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBStorage.moveToHeap(CacheEntry)) && 
+		args(entry);
+
+	boolean around(CacheEntry entry) : moveToOrientDBPointcut(entry) {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveToOrientDB);
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -138,7 +156,33 @@ public aspect Performance {
 	
 	boolean around(CacheEntry entry) : fromOrientDBPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDB);
+		Split split = stopWatch.start();
+		boolean retVal = proceed(entry);
+		split.stop();
+		return retVal;
+	}
+	
+	pointcut moveToOrientDBBinaryPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBBinaryStorage.moveIn(CacheEntry)) && 
+		args(entry);
+
+	pointcut fromOrientDBBinaryPointcut(CacheEntry entry) : 
+		execution(boolean org.directmemory.storage.OrientDBBinaryStorage.moveToHeap(CacheEntry)) && 
+		args(entry);
+
+	boolean around(CacheEntry entry) : moveToOrientDBBinaryPointcut(entry) {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveToOrientDBBinary);
+		Split split = stopWatch.start();
+		boolean retVal = proceed(entry);
+		split.stop();
+		return retVal;
+	}
+	
+	boolean around(CacheEntry entry) : fromOrientDBBinaryPointcut(entry) {
+		logger.debug("check: " + thisJoinPoint.toShortString());
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDBBinary);
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -147,7 +191,7 @@ public aspect Performance {
 	
 	boolean around(CacheEntry entry) : fromOffHeapPointcut(entry) {
 		logger.debug("check: " + thisJoinPoint.toShortString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap");
+        Stopwatch stopWatch = SimonManager.getStopwatch(cache_detail_moveInHeapfromOffHeap);
 		Split split = stopWatch.start();
 		boolean retVal = proceed(entry);
 		split.stop();
@@ -162,6 +206,7 @@ public aspect Performance {
 			+ " - " + sw.toString();
 	}
 	
+	@Deprecated
 	void around() : displayTimingsPointcut() {
 		logger.debug("check: " + thisJoinPoint.toShortString());
 		StringBuffer sb = new StringBuffer();
@@ -199,29 +244,35 @@ public aspect Performance {
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.put")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_put)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.get")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_get)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.remove")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_remove)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.disposeExpired")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_disposeExpired)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_disposeOverflow)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.fromHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveOffHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_fromHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveOffHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOffHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToDisk)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromDisk)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToOrientDB)));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDB)));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToOrientDBBinary)));
+		sb.append("\r\n   ");
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDBBinary)));
 		sb.append("\r\n}");
 		return sb.toString();
 	}
@@ -260,33 +311,25 @@ public aspect Performance {
 		StringBuffer sb = new StringBuffer();
 		sb.append("{");
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.put")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.get")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_fromHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.remove")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveOffHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.disposeExpired")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOffHeap)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToDisk)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.fromHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromDisk)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveOffHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToOrientDB)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOffHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDB)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeap")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveToOrientDBBinary)));
 		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.g")));
-		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToDisk")));
-		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromDisk")));
-		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveToOrientDB")));
-		sb.append("\r\n   ");
-		sb.append(getTiming(SimonManager.getStopwatch("cache.detail.moveInHeapfromOrientDB")));
+		sb.append(getTiming(SimonManager.getStopwatch(cache_detail_moveInHeapfromOrientDBBinary)));
 		sb.append("\r\n}");
 		return sb.toString();
 	}
