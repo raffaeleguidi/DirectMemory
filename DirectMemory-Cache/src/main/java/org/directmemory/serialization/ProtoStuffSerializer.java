@@ -53,9 +53,9 @@ public class ProtoStuffSerializer implements Serializer {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object deserialize(byte[] source, @SuppressWarnings("rawtypes") Class clazz) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		final Object object = clazz.newInstance();
+		Object object = clazz.newInstance();
 		@SuppressWarnings("rawtypes")
-		final Schema schema = RuntimeSchema.getSchema(clazz);
+		Schema schema = RuntimeSchema.getSchema(clazz);
 		ProtostuffIOUtil.mergeFrom(source, object, schema);
 		return object;
 	}	

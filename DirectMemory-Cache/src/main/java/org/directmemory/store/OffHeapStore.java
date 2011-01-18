@@ -2,7 +2,9 @@ package org.directmemory.store;
 
 import org.directmemory.cache.CacheEntry;
 
-public class OffHeapStore extends AbstractStore {
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+public class OffHeapStore extends AbstractQueuedStore {
 
 	/**
 	 * 
@@ -10,18 +12,32 @@ public class OffHeapStore extends AbstractStore {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	void popIn(CacheEntry entry) {
-//		System.out.println("offheap popIn entry " + entry.key);
+	void asyncPopIn(CacheEntry queuedEntry) {
+		// read the object
+		if (queuedEntry.inHeap()) {
+			// serialize the object
+			// queuedEntry.buffer = getBufferFor(...);
+		} else if (queuedEntry.offHeap()) {
+			// do nothing
+		} else {
+			// nonsense
+		}
+		queuedEntry.setStore(this); // done, take it
 	}
 
 	@Override
 	void popOut(CacheEntry entry) {
-//		System.out.println("offheap popOut entry " + entry.key);
+		throw new NotImplementedException();
 	}
-	
+
 	@Override
-	public CacheEntry remove(Object key) {
-		return super.remove(key);
+	byte[] toStream(CacheEntry entry) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	Object toObject(CacheEntry entry) {
+		throw new NotImplementedException();
 	}
 
 }

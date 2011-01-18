@@ -23,16 +23,20 @@ public class SerializerTest {
 	private void testSerializer(String name, Serializer serializer, int size, int howMany) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		logger.info("begin " + serializer.getClass().toString());
         Stopwatch stopWatch = SimonManager.getStopwatch("serializer." + name + "." + size + "bytes");
-        Split split = stopWatch.start();
+        Stopwatch stopWatch2 = SimonManager.getStopwatch("deserializer." + name + "." + size + "bytes");
 		DummyPojo pojo = new DummyPojo("test", size);
 		for (int i = 0; i < howMany; i++) {
+	        Split split = stopWatch.start();
 			final byte[] array = serializer.serialize(pojo, pojo.getClass());
+			split.stop();
+	        Split split2 = stopWatch2.start();
 			DummyPojo check = (DummyPojo) serializer.deserialize(array, pojo.getClass());
+			split2.stop();
 			assertNotNull("object has not been serialized", check);
 			assertEquals(pojo.name, check.name);
 		}
-		split.stop();
-		logger.info("end " + serializer.getClass().toString() + "\r\n" + stopWatch.toString());
+		logger.info("end serialize " + serializer.getClass().toString() + "\r\n" + stopWatch.toString());
+		logger.info("end deserialize " + serializer.getClass().toString() + "\r\n" + stopWatch2.toString());
 	}
 	
 	@Test
@@ -48,6 +52,7 @@ public class SerializerTest {
 		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(2), 20000);
 		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(3), 20000);
 		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(4), 20000);
+		testSerializer("cinquantamila", new ProtoStuffSerializer(), Ram.Kb(3), 50000);
 	}
 	@Test
 	public void StandardTest() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {

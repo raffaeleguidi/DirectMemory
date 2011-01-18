@@ -5,10 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.directmemory.cache.CacheEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
+
+	protected static Logger logger=LoggerFactory.getLogger(AbstractStore.class);
 	/**
 	 * 
 	 */
@@ -42,6 +46,7 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 		if (entry != null) {
 			touch(entry);
 			// following not needed? is this an access ordered map?
+			// think so
 			//super.remove(key);
 			//super.put(key.toString(), entry);
 			if (topStore != this) {
@@ -86,6 +91,13 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 			return true;
 		}
 		return false;
+	}
+
+	abstract byte[] toStream(CacheEntry entry);
+	abstract Object toObject(CacheEntry entry);
+
+	public void dispose() {
+		clear();
 	}
 
 }

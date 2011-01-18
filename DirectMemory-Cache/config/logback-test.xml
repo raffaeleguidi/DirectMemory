@@ -19,23 +19,9 @@
     <appender-ref ref="FILE" />
   </logger>
 
-  <!-- 
-
-  <logger name="org.directmemory.test" level="debug">
+  <logger name="org.directmemory.store" level="warn">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
-
-  <logger name="org.directmemory.storage" level="info">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
-  </logger>
-  
-  <logger name="org.directmemory.cache" level="info">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
-  </logger>
-  
-   -->
 
 </configuration>
