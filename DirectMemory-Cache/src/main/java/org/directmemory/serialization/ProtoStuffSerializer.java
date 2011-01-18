@@ -9,11 +9,11 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-public class ProtoStuffSerializer implements Serializer {
+public final class ProtoStuffSerializer implements Serializer {
 	
-	int bufferSize = Ram.Kb(5);
+	static int bufferSize = Ram.Kb(5);
 
-	private final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
+	private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
 		protected LinkedBuffer initialValue() {
 			return LinkedBuffer.allocate(bufferSize);
 		}
@@ -25,7 +25,7 @@ public class ProtoStuffSerializer implements Serializer {
 	
 	
 	public ProtoStuffSerializer(int bufferSize) {
-		this.bufferSize =bufferSize; 
+		ProtoStuffSerializer.bufferSize =bufferSize; 
 	}
 	
 	

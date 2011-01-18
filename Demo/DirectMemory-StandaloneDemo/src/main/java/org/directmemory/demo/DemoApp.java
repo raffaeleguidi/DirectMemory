@@ -11,7 +11,9 @@ import org.directmemory.cache.CacheManager;
 import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.recipes.CacheRecipes;
+import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
+import org.directmemory.storage.OrientDBStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class DemoApp
 	static CacheManager cache = null;
 	static Properties properties = new Properties();
 
+	static String demoToRun = "";
 	static int howMany = 0;
 	static int threadCount = 0;
 	static int entriesInHeap = 0;
@@ -51,6 +54,7 @@ public class DemoApp
 		}
 
 		howMany = new Integer(properties.getProperty("demo.numberOfEntries","10000")).intValue();
+		demoToRun = properties.getProperty("demo.demoToRun","default");
 		threadCount = new Integer(properties.getProperty("demo.threadCount","10")).intValue();
 		entriesInHeap = new Integer(properties.getProperty("demo.entriesInHeap","1000")).intValue();
 		payloadSize = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKb","2")).intValue());
@@ -61,6 +65,7 @@ public class DemoApp
 		logEvery = new Integer(properties.getProperty("demo.logEvery","100")).intValue();
 		showStatusEvery = new Integer(properties.getProperty("demo.showStatusEvery","1000")).intValue();
 		
+		logger.info("demo.demoToRun=" + demoToRun);
 		logger.info("demo.numberOfEntries=" + howMany);
 		logger.info("demo.threadCount=" + threadCount);
 		logger.info("demo.entriesInHeap=" + entriesInHeap);
@@ -80,22 +85,34 @@ public class DemoApp
     {
 		logger.info("DirectMemory Cache - Standalone Demo Starting");
 
-		logger.info("Log check - if you see this it is fine");
-		logger.warn("Log check - if you see this it is fine");
-		logger.debug("Log check - if you see this it is fine");
-		logger.error("Log check - if you see this it is fine");
+		logger.info("Log check - if you see this as INFO it is fine");
+		logger.warn("Log check - if you see this as WARNING it is fine");
+		logger.debug("Log check - if you see this as DEBUG it is fine");
+		logger.error("Log check - if you see this as ERROR it is fine");
 
 		loadProperties("conf/demo");
-		offHeapMultiThreadedTest();
-//		cacheManagerTest();
+		
+		if (demoToRun.equals("default")) {
+			offHeapMultiThreadedTest();
+		} else if (demoToRun.equals("multithreaded")) {
+			offHeapMultiThreadedTest();
+		} else if (demoToRun.equals("mixedandmultithreaded")) {
+			mixedAndMultiThreadedTest();
+		} else if (demoToRun.equals("singlethreaded")) {
+			offHeapSingleThreaded();
+		} else if (demoToRun.equals("cachemanager")) {
+			cacheManagerTest();
+		} else if (demoToRun.equals("singlethreadednopojoreuse")) {
+			singleThreadedNoPojoReuse();
+		}
+
     }
-    
-    
+ 
     private static void offHeapMultiThreadedTest() {
     	long startedAt = new Date().getTime();
     	
-        OffHeapStorage storage = new OffHeapStorage(pageSize, maxPages);
-        
+    	OffHeapStorage storage = new OffHeapStorage(pageSize, maxPages);
+
         logger.info("Starting inserting " + howMany + " entries");
         logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
         
@@ -136,7 +153,7 @@ public class DemoApp
 			while (group.activeCount() > 0)
 				Thread.yield();		
 
-        	logger.info("Cache after " + howMany + " inserts - " + storage.toString());
+        	logger.info("Cache after " + howMany + " inserts: " + storage.toString());
 	        logger.info(CacheManager.getTimings());
 
 	    	long finishedInsertAt = new Date().getTime();
@@ -188,7 +205,7 @@ public class DemoApp
 
 	    	long finishedAllAt = new Date().getTime();
 
-	    	logger.info("Cache after " + howMany + " reads - " + storage.toString());
+	    	logger.info("Cache after " + howMany + " reads: " + storage.toString());
 	        logger.info(CacheManager.getTimings());
 	        storage.dispose();
 	    	logger.info("Insert done in " + (finishedInsertAt-startedAt)/1000d + " seconds");
@@ -203,7 +220,124 @@ public class DemoApp
 	}
 
     
-    private static void singleThreading() {
+    private static void mixedAndMultiThreadedTest() {
+    	long startedAt = new Date().getTime();
+    	
+        HeapStorage storage = new HeapStorage(entriesInHeap);
+        storage.next = new OffHeapStorage(pageSize, maxPages);
+        storage.next.first = storage;
+        storage.next.next = new OrientDBStorage();
+        storage.next.next.first = storage;
+
+        logger.info("Starting inserting " + howMany + " entries");
+        logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+        
+        ThreadGroup group = new ThreadGroup("test");
+        
+        try {
+        	for (int i = 0; i < threadCount; i++) {
+            	MyThread thread = new MyThread(group, "thread-"+i) {
+    				public void run() {
+    			        int partial = 0;
+    			        int partialShow = 0;
+    			        
+    			        for (int i = 0; i < (howMany/threadCount); i++) {
+    			        	CacheEntry entry = new CacheEntry();
+    						Thread.yield();		
+    			        	pojo.name = name + "-" + i;
+    			        	entry.key = pojo.name;
+    			        	entry.object = pojo;
+    						storage.put(entry);
+    						if (partial++ == logEvery) {
+    							logger.debug("entry " + pojo.name + " inserted");
+    							partial = 0;
+    						}
+    						if (partialShow++ == showStatusEvery) {
+    					        logger.info(storage.toString());
+    					        logger.info(CacheManager.getTimings());
+    							partialShow = 0;
+    						}
+    					}
+    				}
+            	};
+            	thread.pojo = new DummyPojo("test", payloadSize);
+            	thread.storage = storage;
+            	thread.index = i;
+            	thread.start();
+			}
+
+			while (group.activeCount() > 0)
+				Thread.yield();		
+
+        	logger.info("Cache after " + howMany + " inserts: \r\n   " + storage.toString() + "\r\n   " + storage.next.toString() + "\r\n   " + storage.next.next.toString());
+        	logger.info(storage.next.toString());
+	        logger.info(CacheManager.getTimings());
+
+	    	long finishedInsertAt = new Date().getTime();
+
+	        
+	        logger.info("Beginning check reads");
+
+        	for (int i = 0; i < threadCount; i++) {
+            	MyThread thread = new MyThread(group, "thread-"+i) {
+    				public void run() {
+    			        int partial = 0;
+    			        int partialShow = 0;
+    			        
+    			        for (int i = 0; i < (howMany/threadCount); i++) {
+	    		        	CacheEntry checkEntry = storage.get(name+"-" + i);
+	    		        	if (checkEntry != null) {
+	    						DummyPojo check = (DummyPojo)checkEntry.object;
+	    						Thread.yield();		
+	    						if (check != null) {
+	    							if (!check.name.equals(name+"-" + i)) {
+	    						        logger.error("check " + check.name + " doesn't match");
+	    						        errors++;
+	    							}
+	    						}
+	    					} else {
+	    						misses++;
+	    					}
+	    					if (partial++ == logEvery) {
+	    						logger.debug("entry " + i + " read");
+	    						partial = 0;
+	    					}
+	    					if (partialShow++ == showStatusEvery) {
+	    				        logger.info(storage.toString());
+	    						logger.info("Errors=" + errors + " and misses=" + misses);
+	    				        logger.info(CacheManager.getTimings());
+	    						partialShow = 0;
+	    					}    				
+	    				}
+    				}
+            	};
+            	thread.pojo = new DummyPojo("test", payloadSize);
+            	thread.storage = storage;
+            	thread.index = i;
+            	thread.start();
+			}
+
+			while (group.activeCount() > 0)
+				Thread.yield();		
+
+	    	long finishedAllAt = new Date().getTime();
+
+	    	logger.info("Cache after " + howMany + " reads: \r\n   " + storage.toString() + "\r\n   " + storage.next.toString() + "\r\n   " + storage.next.next.toString());
+	        logger.info(CacheManager.getTimings());
+	        storage.dispose();
+	    	logger.info("Insert done in " + (finishedInsertAt-startedAt)/1000d + " seconds");
+	    	logger.info("Read done in " + (finishedAllAt-finishedInsertAt)/1000d + " seconds");
+	    	logger.info("Total time " + (finishedAllAt-startedAt)/1000d + " seconds");
+	    	logger.info("DirectMemory Cache - Goodbye!");
+		} catch (Exception e) {
+			logger.error("Exception catched:",  e);
+		} catch (OutOfMemoryError e) {
+			logger.error("Out of memory:",  e);
+		}
+	}
+
+    
+    private static void offHeapSingleThreaded() {
 		int errors = 0;
     	int misses = 0;
 
@@ -272,7 +406,7 @@ public class DemoApp
 	}
 
     
-    private static void offHeapTest() {
+    private static void singleThreadedNoPojoReuse() {
 		int errors = 0;
     	int misses = 0;
 
@@ -339,7 +473,6 @@ public class DemoApp
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static void cacheManagerTest() {
 		int errors = 0;
     	int misses = 0;

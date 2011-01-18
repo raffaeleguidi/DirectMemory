@@ -16,8 +16,10 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 	/**
 	 * 
 	 */
-	public int limit = -1;
+	public long limit = -1;
 	private static final long serialVersionUID = 1L;
+	
+	abstract String storeName();
 	
 	public AbstractStore nextStore;
 	public AbstractStore topStore = this;
@@ -36,6 +38,7 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 	@Override
 	public CacheEntry put(String key, CacheEntry entry) {
 		popIn(entry);
+//		System.out.println("put " + key + " in " + getClass().toString());
 		reset(entry);
 		return super.put(key, entry);
 	}
@@ -50,9 +53,10 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 			//super.remove(key);
 			//super.put(key.toString(), entry);
 			if (topStore != this) {
-				remove(entry);
 				popOut(entry);
+//				System.out.println("get " + key + " from " + getClass().toString());
 				topStore.put(entry.key, entry);
+				remove(entry.key);
 			}
 		} else {
 			if (nextStore != null) {
@@ -69,6 +73,8 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 			if (nextStore != null) {
 				entry = nextStore.remove(key);
 			}
+		} else {
+//			System.out.println("remove " + entry.key + " from " + getClass().toString());
 		}
 		return entry;
 	}
@@ -83,9 +89,10 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 	
 	@Override
 	protected boolean removeEldestEntry(java.util.Map.Entry<String, CacheEntry> eldest) {
-		if (size() == limit ) {
+		if (size() == limit+1 ) {
 			super.removeEldestEntry(eldest);
 			if (nextStore != null) {
+//				System.out.println("removeeldest " + eldest.getKey() + " from " + getClass().toString());
 				nextStore.put(eldest.getKey(), eldest.getValue());
 			}
 			return true;
@@ -98,6 +105,11 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 
 	public void dispose() {
 		clear();
+	}
+	
+	@Override
+	public String toString() {
+		return storeName() + ": entries " + size() + "/" + limit;
 	}
 
 }

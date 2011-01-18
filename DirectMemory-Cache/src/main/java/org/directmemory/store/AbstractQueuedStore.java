@@ -11,8 +11,10 @@ public abstract class AbstractQueuedStore extends AbstractStore {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private LinkedBlockingQueue<CacheEntry> queue = new LinkedBlockingQueue<CacheEntry>();
+	protected LinkedBlockingQueue<CacheEntry> queue = new LinkedBlockingQueue<CacheEntry>();
 	public int queueSize = 100;
+	
+	final static String storeName = "abstract queued store";
 	
 	private Thread popper = null; 
 

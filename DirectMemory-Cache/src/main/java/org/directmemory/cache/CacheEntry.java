@@ -31,7 +31,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	}
 	
 	public boolean offHeap() {
-		return object == null && !onDisk();
+		return object == null && !onDisk() && buffer != null;
 	}
 	
 	public boolean expired() {

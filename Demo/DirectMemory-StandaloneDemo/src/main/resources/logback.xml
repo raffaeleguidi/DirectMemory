@@ -18,4 +18,10 @@
     <appender-ref ref="FILE" />
     <appender-ref ref="STDOUT" />
   </logger>
+  
+  <logger name="org.directmemory.storage" level="error">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </logger>
+  
 </configuration>

@@ -2,33 +2,60 @@ package org.directmemory.cache;
 
 
 
+import org.directmemory.store.AbstractStore;
 import org.directmemory.store.HeapStore;
-import org.directmemory.store.AbstractQueuedStore;
-import org.directmemory.store.OffHeapStore;
+import org.directmemory.store.SimpleOffHeapStore;
 
 public class CacheManager2  {
-	private HeapStore entries;
+	public HeapStore heap;
 	
-	public CacheManager2() {
-		entries = new HeapStore();
-		entries.limit = 1000;
-		AbstractQueuedStore other = new OffHeapStore(); 
-		entries.nextStore = other;
+	public CacheManager2(int limit) {
+		heap = new HeapStore();
+		heap.limit = limit;
 	}
 
-	public CacheManager2(AbstractQueuedStore secondLevel) {
-		entries = new HeapStore();
-		entries.limit = 1000;
-		entries.nextStore = secondLevel;
-		secondLevel.topStore = entries;
+	public CacheManager2(int limit, AbstractStore secondLevel) {
+		heap = new HeapStore();
+		heap.limit = limit;
+		heap.nextStore = secondLevel;
+		secondLevel.topStore = heap;
+	}
+
+	public CacheManager2(int limit, SimpleOffHeapStore secondLevel, int limit2) {
+		heap = new HeapStore();
+		heap.limit = 1000;
+		heap.nextStore = secondLevel;
+		secondLevel.limit = limit2;
+		secondLevel.topStore = heap;
+	}
+
+	public CacheManager2(int limit, AbstractStore secondLevel, int limit2, AbstractStore thirdLevel) {
+		heap = new HeapStore();
+		heap.limit = 1000;
+		heap.nextStore = secondLevel;
+		secondLevel.limit = limit2;
+		secondLevel.topStore = heap;
+		secondLevel.nextStore = thirdLevel;
+		thirdLevel.topStore = heap;
+	}
+
+	public CacheManager2(int limit, AbstractStore secondLevel, int limit2, AbstractStore thirdLevel, int limit3) {
+		heap = new HeapStore();
+		heap.limit = 1000;
+		heap.nextStore = secondLevel;
+		secondLevel.limit = limit2;
+		secondLevel.topStore = heap;
+		secondLevel.nextStore = thirdLevel;
+		thirdLevel.topStore = heap;
+		thirdLevel.limit = limit3;
 	}
 
 	public void limit(int limit) {
-		entries.limit = limit;
+		heap.limit = limit;
 	}
 	
 	public synchronized CacheEntry getEntry(String key) {
-		return entries.get(key);
+		return heap.get(key);
 	}
 	public synchronized Object get(String key) {
 		CacheEntry entry = getEntry(key);
@@ -38,10 +65,10 @@ public class CacheManager2  {
 		return null;
 	}
 	public synchronized CacheEntry remove(String key) {
-		return entries.remove(key);
+		return heap.remove(key);
 	}
 	public synchronized CacheEntry remove(CacheEntry entry) {
-		return entries.remove(entry.key);
+		return heap.remove(entry.key);
 	}
 	public synchronized CacheEntry put(String key, Object object) {
 		CacheEntry entry = new CacheEntry();
@@ -50,6 +77,6 @@ public class CacheManager2  {
 		return put(entry);
 	}
 	public synchronized CacheEntry put(CacheEntry entry) {
-		return entries.put(entry.key, entry);
+		return heap.put(entry.key, entry);
 	}
 }

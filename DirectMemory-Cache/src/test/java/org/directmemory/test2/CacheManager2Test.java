@@ -14,7 +14,8 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
-import org.directmemory.store.OrientDBStore;
+import org.directmemory.serialization.StandardSerializer;
+import org.directmemory.store.SimpleOffHeapStore;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
@@ -28,8 +29,7 @@ public class CacheManager2Test {
 //	@Test
 	public void only10puts() {
 		long startedAt = Calendar.getInstance().getTimeInMillis();
-		CacheManager2 cache = new CacheManager2();
-		cache.limit(10);
+		CacheManager2 cache = new CacheManager2(10);
 		for (int i = 0; i < 50; i++) {
 			DummyPojo pojo = new DummyPojo("test" + i, Ram.Kb(2));
 			cache.put(pojo.name, pojo);
@@ -41,8 +41,6 @@ public class CacheManager2Test {
 //	@Test
 	public void onlyCreates() {
 		long startedAt = Calendar.getInstance().getTimeInMillis();
-		CacheManager2 cache = new CacheManager2();
-		cache.limit(100);
 		for (int i = 0; i < 50000; i++) {
 			@SuppressWarnings("unused")
 			DummyPojo pojo = new DummyPojo("test" + i, Ram.Kb(2));
@@ -53,8 +51,7 @@ public class CacheManager2Test {
 //	@Test
 	public void manyPuts() {
 		long startedAt = Calendar.getInstance().getTimeInMillis();
-		CacheManager2 cache = new CacheManager2();
-		cache.limit(100);
+		CacheManager2 cache = new CacheManager2(100);
 		for (int i = 0; i < 50000; i++) {
 			DummyPojo pojo = new DummyPojo("test" + i, Ram.Kb(2));
 			cache.put(pojo.name, pojo);
@@ -64,8 +61,7 @@ public class CacheManager2Test {
 	}
 //	@Test
 	public void manyPutsManyReads() {
-		CacheManager2 cache = new CacheManager2();
-		cache.limit(100);
+		CacheManager2 cache = new CacheManager2(100);
 		for (int i = 0; i < 10000; i++) {
 			DummyPojo pojo = new DummyPojo("test" + i, Ram.Kb(2));
 			cache.put(pojo.name, pojo);
@@ -134,14 +130,17 @@ public class CacheManager2Test {
 
 	}
 	@Test
-	public void manyPutsManyReadsWithOrient() {
-		OrientDBStore secondLevel = new OrientDBStore();
-		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(10));
+	public void manyPutsManyReadsWithOffHeap() throws InterruptedException {		
+		int howMany = 101000;
+		System.out.println("Starting test " + howMany + " entries");
+		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
+		secondLevel.queueSize = howMany / 1000;
+		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(4));
 //		secondLevel.serializer = new StandardSerializer();
-		CacheManager2 cache = new CacheManager2(secondLevel);
-		cache.limit(1000);
-		
-		int howMany = 50000;
+//		secondLevel.serializer = new DummyPojoSerializer();
+		CacheManager2 cache = new CacheManager2(howMany / 100, secondLevel);
+		System.out.println(cache.heap.toString());
+		System.out.println(cache.heap.nextStore.toString());
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = new DummyPojo("test", Ram.Kb(2));
@@ -149,7 +148,9 @@ public class CacheManager2Test {
 			cache.put(pojo.name, pojo);
 		}
 		long finishedAt = Calendar.getInstance().getTimeInMillis();
-		System.out.println("put in " + (finishedAt-startedAt) + " milliseconds");
+		System.out.println("put " + howMany + " entries in " + (finishedAt-startedAt) + " milliseconds");
+		System.out.println(cache.heap.toString());
+		System.out.println(cache.heap.nextStore.toString());
 
 		startedAt = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < howMany; i++) {
@@ -157,9 +158,17 @@ public class CacheManager2Test {
 			assertNotNull("object not found: test" + i, pojo);
 			assertEquals("test" + i, pojo.name);
 		}
+		
+		System.out.println(cache.heap.toString());
+		System.out.println(cache.heap.nextStore.toString());
 		finishedAt = Calendar.getInstance().getTimeInMillis();
-		System.out.println("get in " + (finishedAt-startedAt) + " milliseconds");
+		System.out.println("got " + howMany + " entries in " + (finishedAt-startedAt) + " milliseconds");
+		System.out.println("disposing");
+		cache.heap.dispose();
 		secondLevel.dispose();
+		System.out.println(cache.heap.toString());
+		System.out.println(cache.heap.nextStore.toString());
+		System.out.println("done");
 	}
 
 

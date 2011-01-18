@@ -6,9 +6,10 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class OffHeapStore extends AbstractQueuedStore {
 
-	/**
-	 * 
-	 */
+	@Override
+	String storeName() {
+		return "OffHeapStore";
+	}
 	private static final long serialVersionUID = 1L;
 
 	@Override
