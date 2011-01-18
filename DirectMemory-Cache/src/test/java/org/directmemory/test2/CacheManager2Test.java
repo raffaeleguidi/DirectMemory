@@ -14,7 +14,6 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
-import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.store.OrientDBStore;
 import org.junit.Test;
 
@@ -82,7 +81,7 @@ public class CacheManager2Test {
 	}
 	
 
-    @Test
+//    @Test
 	public void onlyOrient() throws IOException {
         final int        PAYLOAD_SIZE    = 2000;
         ODatabaseDocument       database;
@@ -134,7 +133,7 @@ public class CacheManager2Test {
 
 
 	}
-	//@Test
+	@Test
 	public void manyPutsManyReadsWithOrient() {
 		OrientDBStore secondLevel = new OrientDBStore();
 		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(10));
@@ -142,7 +141,7 @@ public class CacheManager2Test {
 		CacheManager2 cache = new CacheManager2(secondLevel);
 		cache.limit(1000);
 		
-		int howMany = 100000;
+		int howMany = 50000;
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = new DummyPojo("test", Ram.Kb(2));
@@ -155,8 +154,8 @@ public class CacheManager2Test {
 		startedAt = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = (DummyPojo)cache.get("test" + i);
-//			assertNotNull("object not found: test" + i, pojo);
-//			assertEquals("test" + i, pojo.name);
+			assertNotNull("object not found: test" + i, pojo);
+			assertEquals("test" + i, pojo.name);
 		}
 		finishedAt = Calendar.getInstance().getTimeInMillis();
 		System.out.println("get in " + (finishedAt-startedAt) + " milliseconds");
