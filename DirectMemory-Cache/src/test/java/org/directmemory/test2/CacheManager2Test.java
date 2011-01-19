@@ -14,9 +14,10 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
-import org.directmemory.serialization.StandardSerializer;
 import org.directmemory.store.SimpleOffHeapStore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -26,7 +27,9 @@ import com.orientechnologies.orient.core.tx.OTransaction.TXTYPE;
 
 public class CacheManager2Test {
 	
-//	@Test
+	private static Logger logger = LoggerFactory.getLogger(CacheManager2Test.class);
+
+	//	@Test
 	public void only10puts() {
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		CacheManager2 cache = new CacheManager2(10);
@@ -131,44 +134,39 @@ public class CacheManager2Test {
 	}
 	@Test
 	public void manyPutsManyReadsWithOffHeap() throws InterruptedException {		
-		int howMany = 101000;
-		System.out.println("Starting test " + howMany + " entries");
+		int howMany = 10100;
+		logger.info("Starting test with " + howMany + " entries");
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
 		secondLevel.queueSize = howMany / 1000;
 		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(4));
 //		secondLevel.serializer = new StandardSerializer();
 //		secondLevel.serializer = new DummyPojoSerializer();
 		CacheManager2 cache = new CacheManager2(howMany / 100, secondLevel);
-		System.out.println(cache.heap.toString());
-		System.out.println(cache.heap.nextStore.toString());
-		long startedAt = Calendar.getInstance().getTimeInMillis();
+		
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = new DummyPojo("test", Ram.Kb(2));
 			pojo.name = "test" + i;
 			cache.put(pojo.name, pojo);
 		}
-		long finishedAt = Calendar.getInstance().getTimeInMillis();
-		System.out.println("put " + howMany + " entries in " + (finishedAt-startedAt) + " milliseconds");
-		System.out.println(cache.heap.toString());
-		System.out.println(cache.heap.nextStore.toString());
+		long finishedPutting = Calendar.getInstance().getTimeInMillis();
+		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
 
-		startedAt = Calendar.getInstance().getTimeInMillis();
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = (DummyPojo)cache.get("test" + i);
 			assertNotNull("object not found: test" + i, pojo);
 			assertEquals("test" + i, pojo.name);
 		}
 		
-		System.out.println(cache.heap.toString());
-		System.out.println(cache.heap.nextStore.toString());
-		finishedAt = Calendar.getInstance().getTimeInMillis();
-		System.out.println("got " + howMany + " entries in " + (finishedAt-startedAt) + " milliseconds");
-		System.out.println("disposing");
-		cache.heap.dispose();
-		secondLevel.dispose();
-		System.out.println(cache.heap.toString());
-		System.out.println(cache.heap.nextStore.toString());
-		System.out.println("done");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		logger.info("Got and deserialized " + howMany + " entries in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		logger.info("Disposing...");
+		cache.dispose();
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		logger.info("Done");
 	}
 
 

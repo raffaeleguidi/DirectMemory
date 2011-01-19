@@ -111,5 +111,4 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 	public String toString() {
 		return storeName() + ": entries " + size() + "/" + limit;
 	}
-
 }

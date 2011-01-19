@@ -8,6 +8,11 @@ import org.directmemory.store.SimpleOffHeapStore;
 
 public class CacheManager2  {
 	public HeapStore heap;
+	private long createdAt = System.currentTimeMillis();
+	
+	public long uptime() {
+		return System.currentTimeMillis() - createdAt;
+	}
 	
 	public CacheManager2(int limit) {
 		heap = new HeapStore();
@@ -78,5 +83,35 @@ public class CacheManager2  {
 	}
 	public synchronized CacheEntry put(CacheEntry entry) {
 		return heap.put(entry.key, entry);
+	}
+	public String measures() {
+		// to be used with the speed aspect
+		return null;
+	}
+	
+	public void dispose() {
+		AbstractStore current = heap;
+		while (current != null) {
+			current.dispose();
+			current = current.nextStore;
+		}
+	}
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("DirectMemory Cache status: {\r\n");
+		sb.append("   uptime: ");
+		sb.append(uptime());
+		sb.append("ms");
+		sb.append("\r\n   stores: {");
+		AbstractStore current = heap;
+		while (current != null) {
+			sb.append("\r\n      ");
+			sb.append(current.toString());
+			current = current.nextStore;
+		}
+		sb.append("\r\n   }");
+		sb.append("\r\n}");
+		return sb.toString();
 	}
 }
