@@ -28,7 +28,7 @@ public class CacheManager2  {
 
 	public CacheManager2(int limit, SimpleOffHeapStore secondLevel, int limit2) {
 		heap = new HeapStore();
-		heap.limit = 1000;
+		heap.limit = limit;
 		heap.nextStore = secondLevel;
 		secondLevel.limit = limit2;
 		secondLevel.topStore = heap;
@@ -36,7 +36,7 @@ public class CacheManager2  {
 
 	public CacheManager2(int limit, AbstractStore secondLevel, int limit2, AbstractStore thirdLevel) {
 		heap = new HeapStore();
-		heap.limit = 1000;
+		heap.limit = limit;
 		heap.nextStore = secondLevel;
 		secondLevel.limit = limit2;
 		secondLevel.topStore = heap;
@@ -46,7 +46,7 @@ public class CacheManager2  {
 
 	public CacheManager2(int limit, AbstractStore secondLevel, int limit2, AbstractStore thirdLevel, int limit3) {
 		heap = new HeapStore();
-		heap.limit = 1000;
+		heap.limit = limit;
 		heap.nextStore = secondLevel;
 		secondLevel.limit = limit2;
 		secondLevel.topStore = heap;

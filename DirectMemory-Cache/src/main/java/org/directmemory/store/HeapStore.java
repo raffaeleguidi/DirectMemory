@@ -38,7 +38,7 @@ public class HeapStore extends AbstractStore {
 	
 	@Override
 	public String toString() {
-		return super.toString() + " with a " + Ram.inMb(Runtime.getRuntime().totalMemory()) + "/" + Ram.inMb(Runtime.getRuntime().maxMemory()) + " heap usage";
+		return super.toString() + " with a " + Ram.inMb(Runtime.getRuntime().totalMemory()) + "/" + Ram.inMb(Runtime.getRuntime().maxMemory()) + " heap usage and " + Ram.inMb(Runtime.getRuntime().freeMemory()) + " of free heap";
 	}
 
 }

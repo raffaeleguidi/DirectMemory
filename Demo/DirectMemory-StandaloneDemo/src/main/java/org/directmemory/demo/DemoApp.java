@@ -3,17 +3,21 @@ package org.directmemory.demo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
 import org.directmemory.cache.CacheEntry;
 import org.directmemory.cache.CacheManager;
+import org.directmemory.cache.CacheManager2;
 import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.recipes.CacheRecipes;
+import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
 import org.directmemory.storage.OrientDBStorage;
+import org.directmemory.store.SimpleOffHeapStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +35,8 @@ public class DemoApp
 	static String demoToRun = "";
 	static int howMany = 0;
 	static int threadCount = 0;
-	static int entriesInHeap = 0;
+	static int entriesInHeap = -1;
+	static int entriesOffHeap = -1;
 	static int payloadSize = 0;
 	static int pstuffBufferSizeInKb = 0;
 	static int pageSize = 0;
@@ -57,6 +62,7 @@ public class DemoApp
 		demoToRun = properties.getProperty("demo.demoToRun","default");
 		threadCount = new Integer(properties.getProperty("demo.threadCount","10")).intValue();
 		entriesInHeap = new Integer(properties.getProperty("demo.entriesInHeap","1000")).intValue();
+		entriesOffHeap = new Integer(properties.getProperty("demo.entriesOffHeap","-1")).intValue();
 		payloadSize = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKb","2")).intValue());
 		pstuffBufferSizeInKb = Ram.Kb(new Integer(properties.getProperty("demo.pstuffBufferSizeInKb","8")).intValue());
 		pageSize = Ram.Mb(new Integer(properties.getProperty("demo.pageSizeInMb","256")).intValue());
@@ -69,6 +75,7 @@ public class DemoApp
 		logger.info("demo.numberOfEntries=" + howMany);
 		logger.info("demo.threadCount=" + threadCount);
 		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
 		logger.info("demo.payload=" + payloadSize);
 		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
 		logger.info("demo.pageSize=" + pageSize);
@@ -81,19 +88,23 @@ public class DemoApp
 	
 	
 	
-    public static void main( String[] args ) 
+    public static void main( String[] args ) throws InterruptedException 
     {
 		logger.info("DirectMemory Cache - Standalone Demo Starting");
-
-		logger.info("Log check - if you see this as INFO it is fine");
-		logger.warn("Log check - if you see this as WARNING it is fine");
-		logger.debug("Log check - if you see this as DEBUG it is fine");
-		logger.error("Log check - if you see this as ERROR it is fine");
+//
+//		logger.info("Log check - if you see this as INFO it is fine");
+//		logger.warn("Log check - if you see this as WARNING it is fine");
+//		logger.debug("Log check - if you see this as DEBUG it is fine");
+//		logger.error("Log check - if you see this as ERROR it is fine");
 
 		loadProperties("conf/demo");
 		
 		if (demoToRun.equals("default")) {
-			offHeapMultiThreadedTest();
+			cacheManager2MTTest();
+		} else if (demoToRun.equals("cachemanager2mt")) {
+			cacheManager2MTTest();
+		} else if (demoToRun.equals("cachemanager2")) {
+			cacheManager2Test();
 		} else if (demoToRun.equals("multithreaded")) {
 			offHeapMultiThreadedTest();
 		} else if (demoToRun.equals("mixedandmultithreaded")) {
@@ -107,8 +118,154 @@ public class DemoApp
 		}
 
     }
+    
+    
+	public static void cacheManager2MTTest() throws InterruptedException {		
+		logger.info("Starting test with " + howMany + " entries");
+		long startedAt = Calendar.getInstance().getTimeInMillis();
+		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
+		secondLevel.queueSize = 100;
+		secondLevel.serializer = new ProtoStuffSerializer(payloadSize + Ram.Kb(1));
+//		secondLevel.serializer = new StandardSerializer();
+//		secondLevel.serializer = new DummyPojoSerializer();
+		CacheManager2 cache = new CacheManager2(entriesInHeap, secondLevel, entriesOffHeap);
+		logger.info(cache.toString());
+		
+		ThreadGroup putters = new ThreadGroup("putter");
+		
+		for (int i = 0; i < threadCount; i++) {
+			new Thread(putters, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					int paging = 0;
+					for (int i = 1; i <= howMany/threadCount; i++) {
+						DummyPojo pojo = new DummyPojo(name+"-"+i, payloadSize);
+						cache.put(pojo.name, pojo);
+						Thread.yield();
+						paging++;
+						if (paging==(howMany/threadCount/10)) {
+							logger.info("thread " + name + " putting " + ((int)((double)i/howMany*1000)) + "% done");
+							paging = 0;
+						}
+					}
+				}
+			}.withCache(cache, "run-" + i).start();
+		}
+//
+//		while (putters.activeCount() > 0)
+//			Thread.yield();		
+//		
+//		long finishedPutting = Calendar.getInstance().getTimeInMillis();
+//		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+//		logger.info(cache.toString());
+//		logger.info(cache.measures());
+		
+		Thread.sleep(500);
+
+		ThreadGroup getters = new ThreadGroup("putter");
+		
+		for (int i = 0; i < threadCount; i++) {
+			new Thread(getters, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					int paging = 0;
+					for (int i = 1; i <= howMany/threadCount; i++) {
+						DummyPojo pojo = (DummyPojo)cache.get(name+"-" + i);
+						if (pojo == null) {
+							logger.error("empty pojo for key " + name + i);
+						} else {
+							if (!pojo.name.equals(name+"-" + i)) {
+								logger.error("bad pojo for key " + name + i);
+							}
+						}
+						Thread.yield();
+						paging++;
+						if (paging==(howMany/threadCount/10)) {
+							logger.info("thread " + name + " getting " + ((int)((double)i/howMany*1000)) + "% done");
+							paging = 0;
+						}
+					}
+				}
+			}.withCache(cache, "run-" + i).start();
+		}
+					
+		while (getters.activeCount() > 0)
+			Thread.yield();		
+		
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+//		logger.info("Got and deserialized " + howMany + " entries in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		cache.dispose();
+		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
+	}
+
  
-    private static void offHeapMultiThreadedTest() {
+	public static void cacheManager2Test() throws InterruptedException {		
+		logger.info("Starting test with " + howMany + " entries");
+		long startedAt = Calendar.getInstance().getTimeInMillis();
+		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
+		secondLevel.queueSize = 100;
+		secondLevel.serializer = new ProtoStuffSerializer(payloadSize + Ram.Kb(1));
+//		secondLevel.serializer = new StandardSerializer();
+//		secondLevel.serializer = new DummyPojoSerializer();
+		CacheManager2 cache = new CacheManager2(entriesInHeap, secondLevel, entriesOffHeap);
+		logger.info(cache.toString());
+		
+		int paging = 0;
+		
+		for (int i = 1; i <= howMany; i++) {
+			DummyPojo pojo = new DummyPojo("test", payloadSize);
+			pojo.name = "test" + i;
+			cache.put(pojo.name, pojo);
+			paging++;
+			if (paging==(howMany/10)) {
+				logger.info("putting " + ((double)i/howMany*100) + "% done");
+				paging = 0;
+			}
+		}
+
+		long finishedPutting = Calendar.getInstance().getTimeInMillis();
+		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+
+		paging = 0;
+		for (int i = 1; i <= howMany; i++) {
+			DummyPojo pojo = (DummyPojo)cache.get("test" + i);
+			if (pojo == null) {
+				logger.error("bad pojo for key test" + i);
+			}
+			paging++;
+			if (paging==(howMany/10)) {
+				logger.info("getting " + ((double)i/howMany*100) + "% done");
+				paging = 0;
+			}
+		}
+		
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		logger.info("Got and deserialized " + howMany + " entries in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		cache.dispose();
+		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
+	}
+
+
+
+	private static void offHeapMultiThreadedTest() {
     	long startedAt = new Date().getTime();
     	
     	OffHeapStorage storage = new OffHeapStorage(pageSize, maxPages);

@@ -136,6 +136,7 @@ public class CacheManager2Test {
 	public void manyPutsManyReadsWithOffHeap() throws InterruptedException {		
 		int howMany = 10100;
 		logger.info("Starting test with " + howMany + " entries");
+		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
 		secondLevel.queueSize = howMany / 1000;
 		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(4));
@@ -162,11 +163,10 @@ public class CacheManager2Test {
 		logger.info(cache.toString());
 		logger.info(cache.measures());
 		logger.info("Got and deserialized " + howMany + " entries in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
-		logger.info("Disposing...");
 		cache.dispose();
 		logger.info(cache.toString());
 		logger.info(cache.measures());
-		logger.info("Done");
+		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
 	}
 
 
