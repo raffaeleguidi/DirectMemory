@@ -47,6 +47,10 @@ public abstract class AbstractStore extends LinkedHashMap<String, CacheEntry> {
 	public CacheEntry get(Object key) {
 		CacheEntry entry =  super.get(key);
 		if (entry != null) {
+			if (entry.isExpired()) {
+				remove(key);
+				return null;
+			}
 			touch(entry);
 			// following not needed? is this an access ordered map?
 			// think so

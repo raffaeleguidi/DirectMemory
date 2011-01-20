@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Random;
 
 import org.directmemory.cache.CacheEntry;
 import org.directmemory.cache.CacheManager;
@@ -44,6 +45,9 @@ public class DemoApp
 	static int batchSize = 0;
 	static int logEvery = 0;
 	static int showStatusEvery = 0;
+	static int writersPercentage = 0;
+	static int writingThreads = 0;
+	static int readingThreads = 0;
 
 	static int errors = 0;
 	static int misses = 0;
@@ -70,19 +74,7 @@ public class DemoApp
 		batchSize = new Integer(properties.getProperty("demo.batchSize","100")).intValue();
 		logEvery = new Integer(properties.getProperty("demo.logEvery","100")).intValue();
 		showStatusEvery = new Integer(properties.getProperty("demo.showStatusEvery","1000")).intValue();
-		
-		logger.info("demo.demoToRun=" + demoToRun);
-		logger.info("demo.numberOfEntries=" + howMany);
-		logger.info("demo.threadCount=" + threadCount);
-		logger.info("demo.entriesInHeap=" + entriesInHeap);
-		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
-		logger.info("demo.payload=" + payloadSize);
-		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
-		logger.info("demo.pageSize=" + pageSize);
-		logger.info("demo.maxPages=" + maxPages);
-		logger.info("demo.batchSize=" + batchSize);
-		logger.info("demo.logEvery=" + logEvery);
-		logger.info("demo.showStatusEvery=" + showStatusEvery);
+		writersPercentage = new Integer(properties.getProperty("demo.writersPercentage","50")).intValue();
 	}
 	
 	
@@ -121,7 +113,18 @@ public class DemoApp
     
     
 	public static void cacheManager2MTTest() throws InterruptedException {		
+		
 		logger.info("Starting test with " + howMany + " entries");
+
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.writersPercentage=" + writersPercentage);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
 		secondLevel.queueSize = 100;
@@ -148,6 +151,7 @@ public class DemoApp
 					for (int i = 1; i <= howMany/threadCount; i++) {
 						DummyPojo pojo = new DummyPojo(name+"-"+i, payloadSize);
 						cache.put(pojo.name, pojo);
+						logger.info("put pojo with key " + pojo.name);
 						Thread.yield();
 						paging++;
 						if (paging==(howMany/threadCount/10)) {
@@ -156,23 +160,28 @@ public class DemoApp
 						}
 					}
 				}
-			}.withCache(cache, "run-" + i).start();
+			}.withCache(cache, "entry-" + i).start();
 		}
-//
-//		while (putters.activeCount() > 0)
-//			Thread.yield();		
-//		
-//		long finishedPutting = Calendar.getInstance().getTimeInMillis();
-//		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
-//		logger.info(cache.toString());
-//		logger.info(cache.measures());
+
+		while (putters.activeCount() > 0)
+			Thread.yield();		
+		
+		long finishedPutting = Calendar.getInstance().getTimeInMillis();
+		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
 		
 		Thread.sleep(500);
 
-		ThreadGroup getters = new ThreadGroup("putter");
+		ThreadGroup mixed = new ThreadGroup("mixed");
 		
-		for (int i = 0; i < threadCount; i++) {
-			new Thread(getters, "run-" + i) {
+		writingThreads = (int)(threadCount*((double)writersPercentage/100));
+		readingThreads = threadCount-writingThreads;
+		
+		logger.info("Starting " + readingThreads + " reading threads");
+		
+		for (int i = 0; i < readingThreads; i++) {
+			new Thread(mixed, "run-" + i) {
 				public Thread withCache(CacheManager2 cache, String name) {
 					this.cache = cache;
 					this.name = name;
@@ -182,33 +191,62 @@ public class DemoApp
 				private String name;
 				@Override
 				public void run() {
+					Random rnd = new Random();
 					int paging = 0;
-					for (int i = 1; i <= howMany/threadCount; i++) {
-						DummyPojo pojo = (DummyPojo)cache.get(name+"-" + i);
+					for (int i = 1; i <= howMany/readingThreads; i++) {
+						int num = rnd.nextInt(howMany/threadCount)+1;
+						int threadNumber = rnd.nextInt(threadCount);
+						String pojoName = "entry-" + threadNumber + "-" + num;
+						DummyPojo pojo = (DummyPojo)cache.get(pojoName);
 						if (pojo == null) {
-							logger.error("empty pojo for key " + name + i);
+							logger.error("no pojo for key " + pojoName);
+							misses++;
 						} else {
-							if (!pojo.name.equals(name+"-" + i)) {
-								logger.error("bad pojo for key " + name + i);
+							if (!pojo.name.equals(pojoName)) {
+								logger.error("bad pojo for key " + pojoName);
+								errors++;
 							}
 						}
 						Thread.yield();
-						paging++;
-						if (paging==(howMany/threadCount/10)) {
-							logger.info("thread " + name + " getting " + ((int)((double)i/howMany*1000)) + "% done");
-							paging = 0;
-						}
 					}
 				}
-			}.withCache(cache, "run-" + i).start();
+			}.withCache(cache, "read-" + i).start();
 		}
+		
+		logger.info("Starting " + writingThreads + " writing threads");
+
+		for (int i = 0; i < writingThreads; i++) {
+			new Thread(mixed, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					Random rnd = new Random();
+					for (int i = 1; i <= howMany/writingThreads; i++) {
+						int num = rnd.nextInt(howMany)+1;
+						int threadNumber = rnd.nextInt(threadCount);
+						String pojoName = "entry-" + threadNumber + "-" + num;
+						DummyPojo pojo = new DummyPojo(pojoName, payloadSize);
+						cache.put(pojo.name, pojo);
+						Thread.yield();
+					}
+				}
+			}.withCache(cache, "write-" + i).start();
+		}
+
 					
-		while (getters.activeCount() > 0)
+		while (mixed.activeCount() > 0)
 			Thread.yield();		
 		
 		logger.info(cache.toString());
 		logger.info(cache.measures());
-//		logger.info("Got and deserialized " + howMany + " entries in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		logger.info("Got and deserialized " + howMany + " entries (with " + readingThreads + " readers vs " + writingThreads + " writers) in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		logger.info(errors + " errors and " + misses);
 		cache.dispose();
 		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
 	}
@@ -216,6 +254,20 @@ public class DemoApp
  
 	public static void cacheManager2Test() throws InterruptedException {		
 		logger.info("Starting test with " + howMany + " entries");
+	
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);
+		logger.info("demo.batchSize=" + batchSize);
+		logger.info("demo.logEvery=" + logEvery);
+		logger.info("demo.showStatusEvery=" + showStatusEvery);
+
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
 		secondLevel.queueSize = 100;
@@ -271,7 +323,21 @@ public class DemoApp
     	OffHeapStorage storage = new OffHeapStorage(pageSize, maxPages);
 
         logger.info("Starting inserting " + howMany + " entries");
-        logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+		
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);
+		logger.info("demo.batchSize=" + batchSize);
+		logger.info("demo.logEvery=" + logEvery);
+		logger.info("demo.showStatusEvery=" + showStatusEvery);
+
+		logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
         
         ThreadGroup group = new ThreadGroup("test");
         
@@ -387,6 +453,20 @@ public class DemoApp
         storage.next.next.first = storage;
 
         logger.info("Starting inserting " + howMany + " entries");
+		
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);
+		logger.info("demo.batchSize=" + batchSize);
+		logger.info("demo.logEvery=" + logEvery);
+		logger.info("demo.showStatusEvery=" + showStatusEvery);
+        
         logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
         
         ThreadGroup group = new ThreadGroup("test");
@@ -503,6 +583,19 @@ public class DemoApp
         int partialShow = 0;
         
         logger.info("Starting inserting " + howMany + " entries");
+		
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);
+		logger.info("demo.batchSize=" + batchSize);
+		logger.info("demo.logEvery=" + logEvery);
+		logger.info("demo.showStatusEvery=" + showStatusEvery);
         logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
         
     	DummyPojo pojo = new DummyPojo("test", payloadSize);
@@ -572,7 +665,22 @@ public class DemoApp
         int partialShow = 0;
         
         logger.info("Starting inserting " + howMany + " entries");
-        logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+
+		
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);
+		logger.info("demo.batchSize=" + batchSize);
+		logger.info("demo.logEvery=" + logEvery);
+		logger.info("demo.showStatusEvery=" + showStatusEvery);
+
+		logger.info("Heap size: " + Ram.inMb(Runtime.getRuntime().maxMemory())+ " free: " + Ram.inMb(Runtime.getRuntime().freeMemory()));
         
         try {
 	        for (int i = 0; i < howMany; i++) {
@@ -637,7 +745,21 @@ public class DemoApp
 	    	cache = CacheRecipes.CreateYourOwn(entriesInHeap, pageSize, maxPages, pstuffBufferSizeInKb, batchSize);        
 	        logger.info("Cache initialized - " + cache.toString());
 	        
-	        int partial = 0;
+			
+			logger.info("demo.demoToRun=" + demoToRun);
+			logger.info("demo.numberOfEntries=" + howMany);
+			logger.info("demo.threadCount=" + threadCount);
+			logger.info("demo.entriesInHeap=" + entriesInHeap);
+			logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+			logger.info("demo.payload=" + payloadSize);
+			logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+			logger.info("demo.pageSize=" + pageSize);
+			logger.info("demo.maxPages=" + maxPages);
+			logger.info("demo.batchSize=" + batchSize);
+			logger.info("demo.logEvery=" + logEvery);
+			logger.info("demo.showStatusEvery=" + showStatusEvery);
+
+			int partial = 0;
 	        int partialShow = 0;
 	        
 	        logger.info("Starting inserting " + howMany + " entries");
@@ -679,7 +801,7 @@ public class DemoApp
 					misses++;
 				}
 			}
-	        logger.info("Cache after " + howMany + " reads - " + cache.toString());
+	        logger.info("Cache after " + howMany + " read and writes - " + cache.toString());
 	        logger.info(CacheManager.getTimings());
 	        cache.dispose();
 	    	logger.info("DirectMemory Cache - Goodbye!");

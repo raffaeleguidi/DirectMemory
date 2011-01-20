@@ -14,6 +14,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public ByteBuffer buffer = null;
 	public byte[] array = null;
 	public Date expiresOn = null;
+	public long expiresAt = -1;
 	public AbstractStore store;
 	
 	
@@ -37,6 +38,16 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public boolean expired() {
 		return ((expiresOn != null) && new Date().after(expiresOn));
 	}
+	
+	public boolean isExpired() {
+		if (expiresAt == -1) return false;
+		return System.currentTimeMillis() >= expiresAt;
+	}
+	
+	public long expires (long milliseconds) {
+		expiresAt = System.currentTimeMillis() + milliseconds;
+		return expiresAt;
+	} 
 	
 	public void expiresIn(long milliseconds) {
 		if (milliseconds != -1)
