@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.directmemory.storage.Storage;
-import org.directmemory.store.AbstractStore;
+import org.directmemory.store.Store;
 
 public class CacheEntry implements Comparable<CacheEntry> {
 	public String key = null;
@@ -15,7 +15,7 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public byte[] array = null;
 	public Date expiresOn = null;
 	public long expiresAt = -1;
-	public AbstractStore store;
+	public Store store;
 	
 	
 
@@ -91,10 +91,10 @@ public class CacheEntry implements Comparable<CacheEntry> {
 	public void setStorage(Storage storage) {
 		this.storage = storage;
 	}
-	public void setStore(AbstractStore store) {
+	public void setStore(Store store) {
 		this.store = store;
 	}
-	public AbstractStore getStore() {
+	public Store getStore() {
 		return store;
 	}
 }

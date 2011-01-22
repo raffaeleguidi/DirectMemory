@@ -14,6 +14,7 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
+import org.directmemory.store.HeapStore;
 import org.directmemory.store.SimpleOffHeapStore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -132,13 +133,13 @@ public class CacheManager2Test {
 
 
 	}
-	@Test
+//	@Test
 	public void manyPutsManyReadsWithOffHeap() throws InterruptedException {		
 		int howMany = 10100;
 		logger.info("Starting test with " + howMany + " entries");
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
-		secondLevel.queueSize = howMany / 1000;
+//		secondLevel.queueSize = howMany / 1000;
 		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(4));
 //		secondLevel.serializer = new StandardSerializer();
 //		secondLevel.serializer = new DummyPojoSerializer();
@@ -169,6 +170,56 @@ public class CacheManager2Test {
 		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
 	}
 
+	@Test
+	public void testCM2() {
+		int howMany = 10000;
+		logger.info("Starting test with " + howMany + " entries");
+		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
+//		HeapStore secondLevel = new HeapStore();
+//		secondLevel.queueSize = howMany / 1000;
+		secondLevel.serializer = new ProtoStuffSerializer(Ram.Kb(4));
+		CacheManager2 cache = new CacheManager2(1000, secondLevel);
+		
+		ThreadGroup group = new ThreadGroup("test");
+		
+		int threadCount = 5;
+		for (int i = 1; i <= threadCount ; i++) {
+			new Thread(group, "test") {
+				private long howMany;
+				CacheManager2 cache;
+				private long startFrom;
+				
+				public void runWith(CacheManager2 cache, long howMany, long startFrom) {
+					this.cache = cache;
+					this.howMany = howMany;
+					this.startFrom = startFrom;
+					System.out.println("start from " + startFrom + " howmany " + howMany);
+					super.start();
+				}
+				public void run() {
+					for (long i = startFrom; i < howMany+startFrom; i++) {
+						DummyPojo pojo = new DummyPojo("test" + i, Ram.Kb(2));
+						cache.put(pojo.name, pojo);
+					}
+				} 
+			}.runWith(
+					cache, 
+					howMany/threadCount,
+					(howMany/threadCount)*(i-1)
+				);
+		}
+
+		
+		while (group.activeCount() > 0)
+			Thread.yield();
+		
+		for (int i = 0; i < howMany; i++) {
+			DummyPojo pojo = (DummyPojo)cache.get("test" + i);
+		}
+		
+		logger.info("Ended test " + cache.toString());
+		logger.info(cache.measures());
+	}
 
 	
 }

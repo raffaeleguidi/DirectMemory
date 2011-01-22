@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="4.094" errors="0" skipped="0" tests="7" name="org.directmemory.test.BasicTest">
+<testsuite failures="0" time="4.203" errors="0" skipped="0" tests="7" name="org.directmemory.test.BasicTest">
   <properties>
     <property name="java.vendor" value="Sun Microsystems Inc."/>
     <property name="localRepository" value="C:\Documents and Settings\oi43839\.m2\repository"/>
@@ -8,9 +8,11 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="org.osgi.supports.framework.extension" value="true"/>
     <property name="sun.management.compiler" value="HotSpot Client Compiler"/>
+    <property name="org.eclipse.jdt.debug.ui.debuggerActive" value="false"/>
     <property name="eclipse.p2.profile" value="epp.package.java"/>
     <property name="os.name" value="Windows XP"/>
     <property name="sun.boot.class.path" value="C:\Programmi\Java\jdk1.6.0_23\jre\lib\resources.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\rt.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\sunrsasign.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\jsse.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\jce.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\charsets.jar;C:\Programmi\Java\jdk1.6.0_23\jre\lib\modules\jdk.boot.jar;C:\Programmi\Java\jdk1.6.0_23\jre\classes"/>
+    <property name="org.eclipse.jdt.debug.ui.supportsInstanceRetrieval" value="false"/>
     <property name="osgi.ws" value="win32"/>
     <property name="sun.desktop" value="windows"/>
     <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
@@ -29,6 +31,9 @@
     <property name="osgi.syspath" value="c:\MyStuff\eclipse\plugins"/>
     <property name="sun.boot.library.path" value="C:\Programmi\Java\jdk1.6.0_23\jre\bin"/>
     <property name="osgi.manifest.cache" value="C:\MyStuff\eclipse\configuration\org.eclipse.osgi\manifests"/>
+    <property name="org.eclipse.php.debug.ui.debuggerActive" value="true"/>
+    <property name="org.eclipse.jdt.debug.ui.instanceof.IJavaStackFrame" value="false"/>
+    <property name="org.eclipse.php.debug.ui.activeDebugging" value="true"/>
     <property name="java.version" value="1.6.0_23"/>
     <property name="org.osgi.framework.os.name" value="WindowsXP"/>
     <property name="user.timezone" value="Europe/Berlin"/>
@@ -87,15 +92,15 @@ C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll
     <property name="osgi.framework" value="file:/c:/MyStuff/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar"/>
     <property name="user.home" value="C:\Documents and Settings\oi43839"/>
     <property name="org.eclipse.equinox.simpleconfigurator.configUrl" value="file:org.eclipse.equinox.simpleconfigurator/bundles.info"/>
-    <property name="osgi.bundlestore" value="C:\MyStuff\eclipse\configuration\org.eclipse.osgi\bundles"/>
     <property name="osgi.splashPath" value="platform:/base/plugins/org.eclipse.platform"/>
+    <property name="osgi.bundlestore" value="C:\MyStuff\eclipse\configuration\org.eclipse.osgi\bundles"/>
     <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
     <property name="osgi.nl" value="it_IT"/>
     <property name="java.vendor.url" value="http://java.sun.com/"/>
     <property name="java.library.path" value="C:\MyStuff\eclipse;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/bin/client;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/bin;C:/Programmi/Java/jdk1.6.0_23/bin/../jre/lib/i386;C:\Programmi\Java\jdk1.6.0_23\bin;C:\Programmi\PC Connectivity Solution\;c:\mystuff\git\bin;C:\Programmi\Serena\Dimensions 10.1\CM\prog;C:\WINDOWS\system32;C:\WINDOWS;C:\Serena\CHANGE~1\DIMENS~1\9.1\PROG;C:\WINDOWS\System32\Wbem;C:\Programmi\Attachmate\E!E2K\;C:\IRN;C:\MQSeries\bin;C:\MyStuff\springsource\spring-roo-1.1.0.M3\bin;C:\MyStuff\apache-maven-3.0.1\bin;C:\Programmi\apache-ant-1.8.0\bin;C:\Programmi\TortoiseSVN\bin;C:\Programmi\IVT Corporation\BlueSoleil\Mobile;C:\Programmi\GTK2-Runtime\bin;c:\mystuff\go\bin;C:\Programmi\QuickTime\QTSystem\;C:\Programmi\TortoiseGit\bin;C:\Programmi\scala\bin;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\;C:\Programmi\File comuni\Nero\Lib\"/>
     <property name="org.osgi.framework.os.version" value="5.1.0"/>
     <property name="eclipse.p2.data.area" value="@config.dir/../p2/"/>
-    <property name="eclipse.startTime" value="1295475276343"/>
+    <property name="eclipse.startTime" value="1295630469893"/>
     <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.class.path" value="C:\MyStuff\eclipse\plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar"/>
@@ -104,6 +109,7 @@ C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll
     <property name="eclipse.vm" value="C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="java.vm.specification.version" value="1.0"/>
+    <property name="org.eclipse.jdt.debug.ui.supportsForceReturn" value="false"/>
     <property name="sun.os.patch.level" value="Service Pack 3"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="surefire.test.class.path" value="C:\Development\DirectMemory\DirectMemory-Cache\target\test-classes;C:\Development\DirectMemory\DirectMemory-Cache\target\classes;C:\Documents and Settings\oi43839\.m2\repository\org\aspectj\aspectjrt\1.6.7\aspectjrt-1.6.7.jar;C:\Documents and Settings\oi43839\.m2\repository\junit\junit\4.0\junit-4.0.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-runtime\1.0.0.M6\protostuff-runtime-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-api\1.0.0.M6\protostuff-api-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-core\0.9.26\logback-core-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\ch\qos\logback\logback-classic\0.9.26\logback-classic-0.9.26.jar;C:\Documents and Settings\oi43839\.m2\repository\org\slf4j\slf4j-api\1.6.1\slf4j-api-1.6.1.jar;C:\Documents and Settings\oi43839\.m2\repository\org\javasimon\javasimon-core\2.3.0\javasimon-core-2.3.0.jar;C:\Documents and Settings\oi43839\.m2\repository\stax\stax-api\1.0.1\stax-api-1.0.1.jar;C:\Documents and Settings\oi43839\.m2\repository\net\java\dev\eval\eval\0.5\eval-0.5.jar;C:\Documents and Settings\oi43839\.m2\repository\com\dyuproject\protostuff\protostuff-core\1.0.0.M6\protostuff-core-1.0.0.M6.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orient-commons\0.9.25-SNAPSHOT\orient-commons-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\com\orientechnologies\orientdb-core\0.9.25-SNAPSHOT\orientdb-core-0.9.25-SNAPSHOT.jar;C:\Documents and Settings\oi43839\.m2\repository\javax\persistence\persistence-api\1.0\persistence-api-1.0.jar;"/>
@@ -135,11 +141,11 @@ C:/Programmi/Java/jdk1.6.0_23/bin\..\jre\bin\client\jvm.dll
     <property name="osgi.logfile" value="C:\Documents and Settings\oi43839\workspace\.metadata\.log"/>
     <property name="osgi.configuration.area" value="file:/C:/MyStuff/eclipse/configuration/"/>
   </properties>
-  <testcase time="0.329" classname="org.directmemory.test.BasicTest" name="putAndGetWithJavaSerialization"/>
-  <testcase time="0.343" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
-  <testcase time="0.61" classname="org.directmemory.test.BasicTest" name="evictionWithJavaSerialization"/>
-  <testcase time="0.343" classname="org.directmemory.test.BasicTest" name="evictionWithProtostuffSerialization"/>
-  <testcase time="0.782" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
-  <testcase time="0.328" classname="org.directmemory.test.BasicTest" name="removeWithProtostuffSerialization"/>
-  <testcase time="1.344" classname="org.directmemory.test.BasicTest" name="expiry"/>
+  <testcase time="0.359" classname="org.directmemory.test.BasicTest" name="putAndGetWithJavaSerialization"/>
+  <testcase time="0.453" classname="org.directmemory.test.BasicTest" name="putAndGetWithProtostuffSerialization"/>
+  <testcase time="0.579" classname="org.directmemory.test.BasicTest" name="evictionWithJavaSerialization"/>
+  <testcase time="0.656" classname="org.directmemory.test.BasicTest" name="evictionWithProtostuffSerialization"/>
+  <testcase time="0.359" classname="org.directmemory.test.BasicTest" name="removeWithJavaSerialization"/>
+  <testcase time="0.391" classname="org.directmemory.test.BasicTest" name="removeWithProtostuffSerialization"/>
+  <testcase time="1.406" classname="org.directmemory.test.BasicTest" name="expiry"/>
 </testsuite>

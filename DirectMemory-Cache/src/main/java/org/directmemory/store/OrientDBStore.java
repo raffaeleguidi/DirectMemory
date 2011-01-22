@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheEntry2;
 import org.directmemory.serialization.Serializer;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
@@ -56,8 +57,8 @@ public class OrientDBStore extends AbstractQueuedStore {
 	}
 	
 	@Override
-	public CacheEntry remove(Object key) {
-		CacheEntry entry = super.remove(key);
+	public CacheEntry2 remove(Object key) {
+		CacheEntry2 entry = super.remove(key);
 		if (entry != null) {
 			// delete from db? no, don't waste time
 			entry.identity = null;
@@ -87,7 +88,7 @@ public class OrientDBStore extends AbstractQueuedStore {
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	void asyncPopIn(CacheEntry entry) {
+	void asyncPopIn(CacheEntry2 entry) {
 		// read the object
 		if (entry.inHeap()) {
 			try {
@@ -120,7 +121,7 @@ public class OrientDBStore extends AbstractQueuedStore {
 	
 
 	@Override
-	void popOut(CacheEntry entry) {
+	void popOut(CacheEntry2 entry) {
 		ORecordBytes record = new ORecordBytes(database, (ORID) entry.identity);
 		record.load();
 		try {

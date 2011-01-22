@@ -1,11 +1,12 @@
 package org.directmemory.store;
 
 import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheEntry2;
 import org.directmemory.measures.Ram;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public class HeapStore extends AbstractStore {
+public class HeapStore extends ConcurrentAbstractStore implements Store {
 
 	@Override
 	String storeName() {
@@ -17,12 +18,12 @@ public class HeapStore extends AbstractStore {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	void popIn(CacheEntry entry) {
+	void popIn(CacheEntry2 entry) {
 		entry.setStore(this);
 	}
 
 	@Override
-	void popOut(CacheEntry entry) {
+	void popOut(CacheEntry2 entry) {
 //		System.out.println("heap popOut entry " + entry.key);
 	}
 
