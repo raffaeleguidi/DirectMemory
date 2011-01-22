@@ -14,7 +14,6 @@ import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
-import org.directmemory.store.HeapStore;
 import org.directmemory.store.SimpleOffHeapStore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -215,6 +214,8 @@ public class CacheManager2Test {
 		
 		for (int i = 0; i < howMany; i++) {
 			DummyPojo pojo = (DummyPojo)cache.get("test" + i);
+			assertNotNull("entry not found", pojo);
+			assertEquals("test" + i, pojo.name);
 		}
 		
 		logger.info("Ended test " + cache.toString());
