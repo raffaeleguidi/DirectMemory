@@ -6,3 +6,4 @@
 /DirectMemory-Tests/target
 /DirectMemory-Cache/target/test-classes
 /DirectMemory-Cache/target/classes
+/Demo/DirectMemory-StandaloneDemo/logs/directmemory.log

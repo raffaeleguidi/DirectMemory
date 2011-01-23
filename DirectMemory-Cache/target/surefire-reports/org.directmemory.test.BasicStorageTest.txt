@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: org.directmemory.test.BasicStorageTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.047 sec
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.75 sec

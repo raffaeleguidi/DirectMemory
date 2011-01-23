@@ -1,6 +1,7 @@
 package org.directmemory.store;
 
 import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheEntry2;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -13,7 +14,7 @@ public class OffHeapStore extends AbstractQueuedStore {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	void asyncPopIn(CacheEntry queuedEntry) {
+	void asyncPopIn(CacheEntry2 queuedEntry) {
 		// read the object
 		if (queuedEntry.inHeap()) {
 			// serialize the object
@@ -27,7 +28,7 @@ public class OffHeapStore extends AbstractQueuedStore {
 	}
 
 	@Override
-	void popOut(CacheEntry entry) {
+	void popOut(CacheEntry2 entry) {
 		throw new NotImplementedException();
 	}
 

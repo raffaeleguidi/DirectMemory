@@ -2,16 +2,16 @@ package org.directmemory.store;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheEntry2;
 
-public abstract class AbstractQueuedStore extends AbstractStore {
+public abstract class AbstractQueuedStore extends ConcurrentAbstractStore implements Store {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected LinkedBlockingQueue<CacheEntry> queue = new LinkedBlockingQueue<CacheEntry>();
+	protected LinkedBlockingQueue<CacheEntry2> queue = new LinkedBlockingQueue<CacheEntry2>();
 	public int queueSize = 100;
 	
 	final static String storeName = "abstract queued store";
@@ -19,7 +19,7 @@ public abstract class AbstractQueuedStore extends AbstractStore {
 	private Thread popper = null; 
 
 	@Override
-	void popIn(CacheEntry entry) {
+	void popIn(CacheEntry2 entry) {
 		queue.add(entry);
 		if (queue.size() >= queueSize && (popper == null || !popper.isAlive())) {
 //			System.out.println("offheap popIn entry " + entry.key);
@@ -33,7 +33,7 @@ public abstract class AbstractQueuedStore extends AbstractStore {
 					public void run() {
 //						System.out.println("we are in thread " + this);
 						while (!queue.isEmpty()) {
-							CacheEntry queuedEntry = queue.poll();
+							CacheEntry2 queuedEntry = queue.poll();
 //							queuedEntry.getStore().toStream(queuedEntry);
 //							queuedEntry.setStore(store);
 							store.asyncPopIn(queuedEntry);
@@ -48,5 +48,5 @@ public abstract class AbstractQueuedStore extends AbstractStore {
 		}
 	}
 
-	abstract void asyncPopIn(CacheEntry queuedEntry);
+	abstract void asyncPopIn(CacheEntry2 queuedEntry);
 }

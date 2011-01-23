@@ -2,7 +2,8 @@ package org.directmemory.monitoring;
 
 import java.text.DecimalFormat;
 
-import org.directmemory.cache.CacheEntry;
+import org.directmemory.cache.CacheEntry2;
+import org.directmemory.measures.Monitor;
 import org.javasimon.SimonManager;
 import org.javasimon.Stopwatch;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public aspect Speed {
 	private static Logger logger = LoggerFactory.getLogger(Speed.class);
 	
 	pointcut putPointcut(String key, Object object) : 
-		execution(CacheEntry org.directmemory.cache.CacheManager2.put(String, Object)) && 
+		execution(CacheEntry2 org.directmemory.cache.CacheManager2.put(String, Object)) && 
 		args(key, object);
 	
 	pointcut getPointcut(String key) : 
@@ -44,40 +45,34 @@ public aspect Speed {
 		args(key);
 	
 	pointcut removePointcut(String key) : 
-		execution(CacheEntry org.directmemory.cache.CacheManager2.remove(String)) && 
+		execution(CacheEntry2 org.directmemory.cache.CacheManager2.remove(String)) && 
 		args(key);
 	
-	private long getHits;
-	private long getTotalTime;
-	private long putHits;
-	private long putTotalTime;
 	private long removeHits;
 	private long removeTotalTime;
+	
+	private Monitor getMon = new Monitor("get"); 
+	private Monitor putMon = new Monitor("put"); 
+	private Monitor removeMon = new Monitor("remove"); 
 
 	Object around(String key) : getPointcut(key) {
-		final long start = System.currentTimeMillis();
+		final long startedAt = getMon.start();
 		Object object = proceed(key);
-		final long end = System.currentTimeMillis();
-		getTotalTime+=(end-start);
-		getHits++;
+		getMon.stop(startedAt);
 		return object;
 	}
 	
-	CacheEntry around(String key, Object object): putPointcut(key, object) {
-		final long start = System.currentTimeMillis();
-		CacheEntry entry = proceed(key, object);
-		final long end = System.currentTimeMillis();
-		putTotalTime+=(end-start);
-		putHits++;
+	CacheEntry2 around(String key, Object object): putPointcut(key, object) {
+		final long startedAt = putMon.start();
+		CacheEntry2 entry = proceed(key, object);
+		putMon.stop(startedAt);
 		return entry;
     }
 	
 	Object around(String key) : removePointcut(key) {
-		final long start = System.currentTimeMillis();
+		final long startedAt = removeMon.start();
 		Object object = proceed(key);
-		final long end = System.currentTimeMillis();
-		removeTotalTime+=(end-start);
-		removeHits++;
+		removeMon.stop(startedAt);
 		return object;
 	}
 
@@ -90,9 +85,9 @@ public aspect Speed {
 		sb.append("DirectMemory Cache performance: {");
 
 		sb.append("\r\n   ");
-		sb.append(getMeasure("put", putHits, putTotalTime));
+		sb.append(getMeasure("put", putMon.hits(), putMon.totalTime()));
 		sb.append("\r\n   ");
-		sb.append(getMeasure("get", getHits, getTotalTime));
+		sb.append(getMeasure("get", getMon.hits(), getMon.totalTime()));
 		sb.append("\r\n   ");
 		sb.append(getMeasure("remove", removeHits, removeTotalTime));
 
@@ -109,11 +104,11 @@ public aspect Speed {
 		if (hits == 0) { 
 			sb.append("n/a");
 		} else {
-			DecimalFormat df = new DecimalFormat("#.##ms");
-			sb.append(df.format((double)totalTime/(hits)));
+			DecimalFormat df = new DecimalFormat("#.###ms");
+			sb.append(df.format((double)totalTime/(hits)/1000000));
 		}
 		sb.append(" total time: ");
-		sb.append(totalTime);
+		sb.append(totalTime/1000000);
 		sb.append("ms");
 		return sb;
 	}
