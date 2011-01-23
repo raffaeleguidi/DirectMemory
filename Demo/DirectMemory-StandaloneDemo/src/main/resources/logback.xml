@@ -14,14 +14,9 @@
     </encoder>
   </appender>
 
-  <logger name="org.directmemory.demo" level="all">
-    <appender-ref ref="FILE" />
+  <logger name="org.directmemory.demo" level="info">
     <appender-ref ref="STDOUT" />
-  </logger>
-  
-  <logger name="org.directmemory.storage" level="error">
     <appender-ref ref="FILE" />
-    <appender-ref ref="STDOUT" />
   </logger>
   
 </configuration>

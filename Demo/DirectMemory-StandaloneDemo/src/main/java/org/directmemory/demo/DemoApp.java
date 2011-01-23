@@ -124,10 +124,11 @@ public class DemoApp
 		logger.info("demo.writersPercentage=" + writersPercentage);
 		logger.info("demo.payload=" + payloadSize);
 		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.batchSize=" + batchSize);		
 
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
-		secondLevel.queueSize = 100;
+//		secondLevel.queueSize = batchSize;
 		secondLevel.serializer = new ProtoStuffSerializer(payloadSize + Ram.Kb(1));
 //		secondLevel.serializer = new StandardSerializer();
 //		secondLevel.serializer = new DummyPojoSerializer();
@@ -151,14 +152,15 @@ public class DemoApp
 					for (int i = 1; i <= howMany/threadCount; i++) {
 						DummyPojo pojo = new DummyPojo(name+"-"+i, payloadSize);
 						cache.put(pojo.name, pojo);
-						logger.info("put pojo with key " + pojo.name);
+						logger.trace("put pojo with key " + pojo.name);
 						Thread.yield();
 						paging++;
 						if (paging==(howMany/threadCount/10)) {
-							logger.info("thread " + name + " putting " + ((int)((double)i/howMany*1000)) + "% done");
 							paging = 0;
+							logger.trace("thread " + name + " putting " + ((int)((double)i/howMany*1000)) + "% done");
 						}
 					}
+					logger.info("thread " + name + " put " + (howMany/threadCount) + " entries into the cache");
 				}
 			}.withCache(cache, "entry-" + i).start();
 		}
@@ -168,11 +170,13 @@ public class DemoApp
 		
 		long finishedPutting = Calendar.getInstance().getTimeInMillis();
 		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+		logger.info("Sleeping...");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		Thread.sleep(1000);
 		logger.info(cache.toString());
 		logger.info(cache.measures());
 		
-		Thread.sleep(500);
-
 		ThreadGroup mixed = new ThreadGroup("mixed");
 		
 		writingThreads = (int)(threadCount*((double)writersPercentage/100));
@@ -192,8 +196,7 @@ public class DemoApp
 				@Override
 				public void run() {
 					Random rnd = new Random();
-					int paging = 0;
-					for (int i = 1; i <= howMany/readingThreads; i++) {
+					for (int i = 1; i <= howMany/threadCount; i++) {
 						int num = rnd.nextInt(howMany/threadCount)+1;
 						int threadNumber = rnd.nextInt(threadCount);
 						String pojoName = "entry-" + threadNumber + "-" + num;
@@ -205,10 +208,13 @@ public class DemoApp
 							if (!pojo.name.equals(pojoName)) {
 								logger.error("bad pojo for key " + pojoName);
 								errors++;
+							} else {
+								logger.trace("read pojo with key " + pojoName);
 							}
 						}
 						Thread.yield();
 					}
+					logger.info("thread " + name + " checked " + (howMany/threadCount) + " entries into the cache");
 				}
 			}.withCache(cache, "read-" + i).start();
 		}
@@ -227,14 +233,16 @@ public class DemoApp
 				@Override
 				public void run() {
 					Random rnd = new Random();
-					for (int i = 1; i <= howMany/writingThreads; i++) {
+					for (int i = 1; i <= howMany/threadCount; i++) {
 						int num = rnd.nextInt(howMany)+1;
 						int threadNumber = rnd.nextInt(threadCount);
 						String pojoName = "entry-" + threadNumber + "-" + num;
 						DummyPojo pojo = new DummyPojo(pojoName, payloadSize);
 						cache.put(pojo.name, pojo);
+						logger.trace("rewritten pojo with key " + pojoName);
 						Thread.yield();
 					}
+					logger.info("thread " + name + " rewritten " + (howMany/threadCount) + " entries into the cache");
 				}
 			}.withCache(cache, "write-" + i).start();
 		}
@@ -246,7 +254,7 @@ public class DemoApp
 		logger.info(cache.toString());
 		logger.info(cache.measures());
 		logger.info("Got and deserialized " + howMany + " entries (with " + readingThreads + " readers vs " + writingThreads + " writers) in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
-		logger.info(errors + " errors and " + misses);
+		logger.info(errors + " errors and " + misses + " misses");
 		cache.dispose();
 		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
 	}
@@ -270,7 +278,7 @@ public class DemoApp
 
 		long startedAt = Calendar.getInstance().getTimeInMillis();
 		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
-		secondLevel.queueSize = 100;
+//		secondLevel.queueSize = 100;
 		secondLevel.serializer = new ProtoStuffSerializer(payloadSize + Ram.Kb(1));
 //		secondLevel.serializer = new StandardSerializer();
 //		secondLevel.serializer = new DummyPojoSerializer();
