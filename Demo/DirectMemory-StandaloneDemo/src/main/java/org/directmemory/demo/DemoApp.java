@@ -18,6 +18,7 @@ import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.storage.HeapStorage;
 import org.directmemory.storage.OffHeapStorage;
 import org.directmemory.storage.OrientDBStorage;
+import org.directmemory.store.OffHeapStore;
 import org.directmemory.store.SimpleOffHeapStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,12 @@ public class DemoApp
 
 	static String demoToRun = "";
 	static int howMany = 0;
+	static int elapsedInSeconds = 0;
 	static int threadCount = 0;
 	static int entriesInHeap = -1;
 	static int entriesOffHeap = -1;
 	static int payloadSize = 0;
+	static int payloadSizeMax = 0;
 	static int pstuffBufferSizeInKb = 0;
 	static int pageSize = 0;
 	static int maxPages = 0;
@@ -48,7 +51,7 @@ public class DemoApp
 	static int writersPercentage = 0;
 	static int writingThreads = 0;
 	static int readingThreads = 0;
-
+	
 	static int errors = 0;
 	static int misses = 0;
 
@@ -64,10 +67,12 @@ public class DemoApp
 
 		howMany = new Integer(properties.getProperty("demo.numberOfEntries","10000")).intValue();
 		demoToRun = properties.getProperty("demo.demoToRun","default");
+		elapsedInSeconds = new Integer(properties.getProperty("demo.elapsedInSeconds","60")).intValue();
 		threadCount = new Integer(properties.getProperty("demo.threadCount","10")).intValue();
 		entriesInHeap = new Integer(properties.getProperty("demo.entriesInHeap","1000")).intValue();
 		entriesOffHeap = new Integer(properties.getProperty("demo.entriesOffHeap","-1")).intValue();
 		payloadSize = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKb","2")).intValue());
+		payloadSizeMax = Ram.Kb(new Integer(properties.getProperty("demo.payloadInKbMax","20")).intValue());
 		pstuffBufferSizeInKb = Ram.Kb(new Integer(properties.getProperty("demo.pstuffBufferSizeInKb","8")).intValue());
 		pageSize = Ram.Mb(new Integer(properties.getProperty("demo.pageSizeInMb","256")).intValue());
 		maxPages = new Integer(properties.getProperty("demo.maxPages","1")).intValue();
@@ -92,7 +97,9 @@ public class DemoApp
 		loadProperties("conf/demo");
 		
 		if (demoToRun.equals("default")) {
-			cacheManager2MTTest();
+			cacheManager2MTTestBulk();
+		} else if (demoToRun.equals("cachemanager2mtbulk")) {
+			cacheManager2MTTestBulk();
 		} else if (demoToRun.equals("cachemanager2mt")) {
 			cacheManager2MTTest();
 		} else if (demoToRun.equals("cachemanager2")) {
@@ -112,6 +119,157 @@ public class DemoApp
     }
     
     
+	public static void cacheManager2MTTestBulk() throws InterruptedException {		
+		
+		logger.info("Starting test with " + howMany + " entries");
+
+		logger.info("demo.demoToRun=" + demoToRun);
+		logger.info("demo.numberOfEntries=" + howMany);
+		logger.info("demo.entriesInHeap=" + entriesInHeap);
+		logger.info("demo.entriesOffHeap=" + entriesOffHeap);
+		logger.info("demo.threadCount=" + threadCount);
+		logger.info("demo.writersPercentage=" + writersPercentage);
+		logger.info("demo.payload=" + payloadSize);
+		logger.info("demo.pstuffBufferSize=" + pstuffBufferSizeInKb);
+		logger.info("demo.batchSize=" + batchSize);		
+		logger.info("demo.pageSize=" + pageSize);
+		logger.info("demo.maxPages=" + maxPages);		
+
+		long startedAt = Calendar.getInstance().getTimeInMillis();
+		SimpleOffHeapStore secondLevel = new SimpleOffHeapStore();
+//		secondLevel.queueSize = batchSize;
+		secondLevel.serializer = new ProtoStuffSerializer(payloadSize + Ram.Kb(1));
+//		secondLevel.serializer = new StandardSerializer();
+//		secondLevel.serializer = new DummyPojoSerializer();
+		CacheManager2 cache = new CacheManager2(entriesInHeap, secondLevel, entriesOffHeap);
+		logger.info(cache.toString());
+		
+		ThreadGroup putters = new ThreadGroup("putter");
+		
+		
+		for (int i = 0; i < threadCount; i++) {
+			new Thread(putters, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					Random rnd = new Random();
+					int paging = 0;
+					for (int i = 1; i <= howMany/threadCount; i++) {
+						DummyPojo pojo = new DummyPojo(name+"-"+i, payloadSize + rnd.nextInt(payloadSizeMax-payloadSize));
+						cache.put(pojo.name, pojo);
+						logger.trace("put pojo with key " + pojo.name);
+						Thread.yield();
+						paging++;
+						if (paging==(howMany/threadCount/10)) {
+							paging = 0;
+							logger.trace("thread " + name + " putting " + ((int)((double)i/howMany*1000)) + "% done");
+						}
+					}
+					logger.info("thread " + name + " put " + (howMany/threadCount) + " entries into the cache");
+				}
+			}.withCache(cache, "entry-" + i).start();
+		}
+
+		while (putters.activeCount() > 0)
+			Thread.yield();		
+		
+		long finishedPutting = Calendar.getInstance().getTimeInMillis();
+		logger.info("Created, serialized and put " + howMany + " DummyPojos in " + cache.uptime() + " milliseconds");
+		logger.info("Sleeping...");
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		Thread.sleep(1000);
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		
+		ThreadGroup mixed = new ThreadGroup("mixed");
+		
+		writingThreads = (int)(threadCount*((double)writersPercentage/100));
+		readingThreads = threadCount-writingThreads;
+		
+		logger.info("Starting " + readingThreads + " reading threads");
+		
+		for (int i = 0; i < readingThreads; i++) {
+			new Thread(mixed, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					Random rnd = new Random();
+					for (int i = 1; i <= howMany/threadCount; i++) {
+						int num = rnd.nextInt(howMany/threadCount)+1;
+						int threadNumber = rnd.nextInt(threadCount);
+						String pojoName = "entry-" + threadNumber + "-" + num;
+						DummyPojo pojo = (DummyPojo)cache.get(pojoName);
+						if (pojo == null) {
+							logger.error("no pojo for key " + pojoName);
+							misses++;
+						} else {
+							if (!pojo.name.equals(pojoName)) {
+								logger.error("bad pojo for key " + pojoName);
+								errors++;
+							} else {
+								logger.trace("read pojo with key " + pojoName);
+							}
+						}
+						Thread.yield();
+					}
+					logger.info("thread " + name + " checked " + (howMany/threadCount) + " entries into the cache");
+				}
+			}.withCache(cache, "read-" + i).start();
+		}
+		
+		logger.info("Starting " + writingThreads + " writing threads");
+
+		for (int i = 0; i < writingThreads; i++) {
+			new Thread(mixed, "run-" + i) {
+				public Thread withCache(CacheManager2 cache, String name) {
+					this.cache = cache;
+					this.name = name;
+					return this;
+				}
+				private CacheManager2 cache;
+				private String name;
+				@Override
+				public void run() {
+					Random rnd = new Random();
+					for (int i = 1; i <= howMany/threadCount; i++) {
+						int num = rnd.nextInt(howMany)+1;
+						int threadNumber = rnd.nextInt(threadCount);
+						String pojoName = "entry-" + threadNumber + "-" + num;
+						DummyPojo pojo = new DummyPojo(pojoName, payloadSize);
+						cache.put(pojo.name, pojo);
+						logger.trace("rewritten pojo with key " + pojoName);
+						Thread.yield();
+					}
+					logger.info("thread " + name + " rewritten " + (howMany/threadCount) + " entries into the cache");
+				}
+			}.withCache(cache, "write-" + i).start();
+		}
+
+					
+		while (mixed.activeCount() > 0)
+			Thread.yield();		
+		
+		logger.info(cache.toString());
+		logger.info(cache.measures());
+		logger.info("Got and deserialized " + howMany + " entries (with " + readingThreads + " readers vs " + writingThreads + " writers) in " + (System.currentTimeMillis() - finishedPutting) + " milliseconds");
+		logger.info(errors + " errors and " + misses + " misses");
+		cache.dispose();
+		logger.info("Done in " + (System.currentTimeMillis() - startedAt) + " milliseconds");
+	}
+
 	public static void cacheManager2MTTest() throws InterruptedException {		
 		
 		logger.info("Starting test with " + howMany + " entries");
