@@ -40,18 +40,20 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 	@Override
 	public CacheEntry2 put(String key, CacheEntry2 entry) {
 		size.incrementAndGet();
-		popIn(entry);
 		checkMapSize();
-//		System.out.println("put " + key + " in " + getClass().toString());
+		popIn(entry);
 		reset(entry);
 		return super.put(entry.key, entry);
 	}
 	
-	private synchronized void checkMapSize() {
-		Entry<String, CacheEntry2> first = this.firstEntry();
-		if (first == null) return;
-		if (removeEldestEntry(first)) {
-			remove(first.getKey());
+	private void checkMapSize() {
+		if (limit.get() == -1) return;
+		while (size.get() > limit.get() ) {
+			Entry<String, CacheEntry2> eldest = this.pollFirstEntry();
+			size.decrementAndGet();
+			if (nextStore != null) {
+				nextStore.put(eldest.getKey(), eldest.getValue());
+			}
 		}
 	}
 
@@ -60,15 +62,20 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 		CacheEntry2 entry =  super.get(key);
 		if (entry != null) {
 			if (entry.expired()) {
-				remove(key);
+				super.remove(entry.key);
+				size.decrementAndGet();
 				return null;
 			}
 			touch(entry);
 			if (topStore != this) {
+				super.remove(entry.key);
+				size.decrementAndGet();
 				popOut(entry);
-//				System.out.println("get " + key + " from " + getClass().toString());
 				topStore.put(entry.key, entry);
-				remove(entry.key);
+//				;
+//				size.decrementAndGet();
+//				popOut(entry);
+//				topStore.put(entry.key, super.remove(entry.key));
 			}
 		} else {
 			if (nextStore != null) {
@@ -80,14 +87,12 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 	
 	@Override
 	public CacheEntry2 remove(Object key) {
-		size.decrementAndGet();
 		CacheEntry2 entry =  super.remove(key);
-		if (entry == null) {
+		if (entry != null) {
 			if (nextStore != null) {
 				entry = nextStore.remove(key);
 			}
-		} else {
-//			System.out.println("remove " + entry.key + " from " + getClass().toString());
+			size.decrementAndGet();
 		}
 		return entry;
 	}
@@ -102,18 +107,6 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 	
 	AtomicLong removed = new AtomicLong(0);
 	
-	protected boolean removeEldestEntry(java.util.Map.Entry<String, CacheEntry2> eldest) {
-		if (limit.get() == -1) return false;
-		if (size.get() > limit.get() ) {
-			if (nextStore != null) {
-				nextStore.put(eldest.getKey(), eldest.getValue());
-			}
-//			System.out.println("removing " + removed.incrementAndGet());
-			return true;
-		}
-		return false;
-	}
-
 	abstract byte[] toStream(CacheEntry entry);
 	abstract Object toObject(CacheEntry entry);
 
@@ -123,6 +116,6 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 	
 	@Override
 	public String toString() {
-		return storeName() + ": entries " + size.get() + "/" + limit;
+		return getClass().getSimpleName() + ": entries " + size.get() + "/" + limit;
 	}
 }

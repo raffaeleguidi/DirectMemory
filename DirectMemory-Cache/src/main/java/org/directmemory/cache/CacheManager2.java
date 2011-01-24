@@ -66,7 +66,13 @@ public class CacheManager2  {
 	public Object get(String key) {
 		CacheEntry2 entry = getEntry(key);
 		if (entry != null) {
-			return entry.object;
+			Object obj = null;
+			while (obj == null) {
+				obj = getEntry(key);
+				if (entry != null)
+					obj = entry.object;
+			} 
+			return obj;
 		}
 		return null;
 	}

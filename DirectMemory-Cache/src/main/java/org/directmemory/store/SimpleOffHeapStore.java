@@ -64,7 +64,7 @@ public class SimpleOffHeapStore extends ConcurrentAbstractStore implements Store
 			}
 		} else {
 			missed++;
-//				logger.error("entry " + entry.key + " is not in heap " + missed++);
+			logger.error("entry " + entry.key + " is not in heap anymore " + missed++);
 		}
 	}
 	
@@ -102,7 +102,7 @@ public class SimpleOffHeapStore extends ConcurrentAbstractStore implements Store
 					e.printStackTrace();
 				}
 			} else {
-				logger.error("entry " + entry.key + " is not off heap");
+				logger.error("entry " + entry.key + " is not off heap anymore" + missed++);
 			}
 		}		
 	}
