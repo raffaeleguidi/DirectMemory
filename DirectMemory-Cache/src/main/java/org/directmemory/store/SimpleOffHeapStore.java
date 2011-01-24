@@ -40,45 +40,46 @@ public class SimpleOffHeapStore extends ConcurrentAbstractStore implements Store
 	
 	@Override
 	void popIn(CacheEntry2 entry) {
-		synchronized (entry) {
-			if (entry.inHeap()) {
-				try {
-					// setup beginning and limit of buffer
-						Object object = entry.object;
-						if (object == null) {
-							logger.error("null object");
-						}
-						entry.array = serializer.serialize(object, object.getClass());
-						entry.size = entry.array.length;
-						usedMemory+=entry.size;
-						ByteBuffer buffer = ByteBuffer.allocateDirect(entry.size);
-						buffer.put(entry.array);
-						buffer.rewind();
-						entry.array=null;
-						entry.clazz = entry.object.getClass();
-						entry.object = null;
-						entry.buffer = buffer;
-						entry.setStore(this); // done, take it		
-				} catch (IOException e) {
-					logger.error("error serializing entry " + entry.key, e);
-				}
-			} else {
-				missed++;
-//				logger.error("entry " + entry.key + " is not in heap " + missed++);
+		
+		if (entry.inHeap()) {
+			try {
+				// setup beginning and limit of buffer
+					Object object = entry.object;
+					if (object == null) {
+						logger.error("null object");
+					}
+					final byte[] array = serializer.serialize(object, object.getClass());
+					entry.size = array.length;
+					usedMemory+=entry.size;
+					ByteBuffer buffer = ByteBuffer.allocateDirect(entry.size);
+					buffer.put(array);
+					buffer.rewind();
+					entry.array=null;
+					entry.clazz = entry.object.getClass();
+					entry.object = null;
+					entry.buffer = buffer;
+					entry.setStore(this); // done, take it		
+			} catch (IOException e) {
+				logger.error("error serializing entry " + entry.key, e);
 			}
+		} else {
+			missed++;
+//				logger.error("entry " + entry.key + " is not in heap " + missed++);
 		}
 	}
 	
 
 	@Override
 	void popOut(CacheEntry2 entry) {
-		synchronized (entry) {
+		if (entry.buffer == null) return;
+		
+		synchronized (entry.buffer) {
 			if (entry.offHeap()) {
 				try {
-					entry.array = new byte[entry.size];
+					final byte[] array = new byte[entry.size];
 					entry.buffer.rewind();
-					entry.buffer.get(entry.array);
-					entry.object = serializer.deserialize(entry.array, entry.clazz());
+					entry.buffer.get(array);
+					entry.object = serializer.deserialize(array, entry.clazz());
 					entry.array = null;
 					entry.buffer.clear();
 					entry.buffer= null;

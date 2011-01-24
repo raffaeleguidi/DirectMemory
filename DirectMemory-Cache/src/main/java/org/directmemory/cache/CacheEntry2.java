@@ -2,6 +2,7 @@ package org.directmemory.cache;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.directmemory.memory.MemorySlot;
 import org.directmemory.store.Store;
 
 public class CacheEntry2 {
@@ -16,7 +17,7 @@ public class CacheEntry2 {
 	public long expiresAt = -1;
 	public Store store;
 	
-	
+	public MemorySlot slot = null;
 
 	@SuppressWarnings({"rawtypes","unchecked"})
 	public Class clazz = null;

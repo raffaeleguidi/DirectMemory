@@ -55,7 +55,6 @@ public abstract class ConcurrentAbstractStore extends ConcurrentSkipListMap<Stri
 		}
 	}
 
-	
 	@Override
 	public CacheEntry2 get(Object key) {
 		CacheEntry2 entry =  super.get(key);

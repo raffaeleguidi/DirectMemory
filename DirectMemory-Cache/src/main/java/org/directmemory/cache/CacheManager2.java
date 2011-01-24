@@ -5,6 +5,7 @@ package org.directmemory.cache;
 import org.directmemory.store.ConcurrentAbstractStore;
 import org.directmemory.store.HeapStore;
 import org.directmemory.store.SimpleOffHeapStore;
+import org.directmemory.store.Store;
 
 public class CacheManager2  {
 	public HeapStore heap;
@@ -26,7 +27,7 @@ public class CacheManager2  {
 		secondLevel.topStore = heap;
 	}
 
-	public CacheManager2(int limit, SimpleOffHeapStore secondLevel, int limit2) {
+	public CacheManager2(int limit, ConcurrentAbstractStore secondLevel, int limit2) {
 		heap = new HeapStore();
 		heap.limit.set(limit);
 		heap.nextStore = secondLevel;
