@@ -3,6 +3,6 @@
     <wb-module deploy-name="DirectMemoryCache">
         <wb-resource deploy-path="/" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/src/test/java"/>
-        <wb-resource deploy-path="/" source-path="/src/main/aspect"/>
+        <wb-resource deploy-path="/" source-path="/config"/>
     </wb-module>
 </project-modules>

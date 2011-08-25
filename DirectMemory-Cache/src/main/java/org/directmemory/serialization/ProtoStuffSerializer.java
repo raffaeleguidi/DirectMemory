@@ -12,6 +12,25 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 public final class ProtoStuffSerializer implements Serializer {
 	
 	static int bufferSize = Ram.Kb(5);
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	LinkedBuffer buffer8k = ...;
+	try
+	{
+	    ProtostuffIOUtil.writeTo(new ByteBufferOutputStream() { // paging logic }, message, schema, buffer8k)
+	}
+	finally
+	{
+	    buffer8k.clear();
+	}
+	
+	ProtostuffIOUtil.mergeFrom(new ByteArrayInputStream() { // paging logic}, message, schema, buffer8k);
+
+*/
 
 	private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
 		protected LinkedBuffer initialValue() {
