@@ -1,0 +1,64 @@
+
+*******************************************************
+21:21:35.656 [main] DEBUG fillAndGet - inserting 1000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 745,3Mb
+21:21:37.390 [main] DEBUG fillAndGet - test single get
+21:21:37.390 [main] DEBUG fillAndGet - finished test single get
+21:21:37.390 [main] DEBUG fillAndGet - inserted 1000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 619,9Mb
+21:21:37.390 [main] DEBUG fillAndGet - test get
+21:21:37.656 [main] DEBUG fillAndGet - 1000000 entries retrieved
+21:21:37.656 [main] DEBUG fillAndGet - clearing and forcing garbage collection
+21:21:37.765 [main] DEBUG fillAndGet - garbage collection ended
+
+*******************************************************
+21:21:37.765 [main] DEBUG fillAndGet - inserting 2000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 753,1Mb
+21:21:41.281 [main] DEBUG fillAndGet - test single get
+21:21:41.281 [main] DEBUG fillAndGet - finished test single get
+21:21:41.281 [main] DEBUG fillAndGet - inserted 2000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 482,0Mb
+21:21:41.281 [main] DEBUG fillAndGet - test get
+21:21:41.984 [main] DEBUG fillAndGet - 2000000 entries retrieved
+21:21:41.984 [main] DEBUG fillAndGet - clearing and forcing garbage collection
+21:21:42.109 [main] DEBUG fillAndGet - garbage collection ended
+
+*******************************************************
+21:21:42.109 [main] DEBUG fillAndGet - inserting 3000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 753,1Mb
+21:21:47.359 [main] DEBUG fillAndGet - test single get
+21:21:47.359 [main] DEBUG fillAndGet - finished test single get
+21:21:47.359 [main] DEBUG fillAndGet - inserted 3000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 358,0Mb
+21:21:47.359 [main] DEBUG fillAndGet - test get
+21:21:49.609 [main] DEBUG fillAndGet - 3000000 entries retrieved
+21:21:49.609 [main] DEBUG fillAndGet - clearing and forcing garbage collection
+21:21:49.828 [main] DEBUG fillAndGet - garbage collection ended
+
+*******************************************************
+21:21:49.828 [main] DEBUG fillAndGet - inserting 4000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 753,1Mb
+21:21:58.468 [main] DEBUG fillAndGet - test single get
+21:21:58.468 [main] DEBUG fillAndGet - finished test single get
+21:21:58.468 [main] DEBUG fillAndGet - inserted 4000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 178,8Mb
+21:21:58.468 [main] DEBUG fillAndGet - test get
+21:22:05.187 [main] DEBUG fillAndGet - 4000000 entries retrieved
+21:22:05.187 [main] DEBUG fillAndGet - clearing and forcing garbage collection
+21:22:05.468 [main] DEBUG fillAndGet - garbage collection ended
+
+*******************************************************
+21:22:05.468 [main] DEBUG fillAndGet - inserting 5000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 712,1Mb
+21:22:18.250 [main] DEBUG fillAndGet - test single get
+21:22:18.250 [main] DEBUG fillAndGet - finished test single get
+21:22:18.250 [main] DEBUG fillAndGet - inserted 5000000 entries
+heapSize 757,9Mb heapMaxSize 757,9Mb heapFreeSize 50,0Mb
+21:22:18.250 [main] DEBUG fillAndGet - test get
+21:22:47.828 [main] DEBUG fillAndGet - 5000000 entries retrieved
+21:22:47.828 [main] DEBUG fillAndGet - clearing and forcing garbage collection
+21:22:48.140 [main] DEBUG fillAndGet - garbage collection ended
+
+
+5.5 seconds to insert 3 million entries and 393mb to store them
+only 1 second to retrieve 3 million entries

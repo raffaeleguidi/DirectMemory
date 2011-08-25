@@ -1,0 +1,64 @@
+
+protostuff
+--------------------------------------------------
+Starting test 10000 entries
+HeapStore: entries 0/100 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 10000 entries in 891 milliseconds
+HeapStore: entries 100/100 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 9900/-1 with a 29,1Mb off-heap usage
+HeapStore: entries 100/100 with a 15,6Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 9900/-1 with a 58,6Mb off-heap usage
+got 10000 entries in 765 milliseconds
+
+Starting test 50000 entries
+HeapStore: entries 0/500 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 50000 entries in 4875 milliseconds
+HeapStore: entries 500/500 with a 45,1Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 49500/-1 with a 145,7Mb off-heap usage
+HeapStore: entries 500/500 with a 56,6Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 49500/-1 with a 293,0Mb off-heap usage
+got 50000 entries in 3969 milliseconds
+
+Starting test 100000 entries
+HeapStore: entries 0/1000 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 100000 entries in 9547 milliseconds
+HeapStore: entries 1000/1000 with a 87,9Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 99000/-1 with a 291,4Mb off-heap usage
+HeapStore: entries 1000/1000 with a 112,8Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 99000/-1 with a 586,1Mb off-heap usage
+got 100000 entries in 7500 milliseconds
+
+java serialization
+--------------------------------------------------
+Starting test 10000 entries
+HeapStore: entries 0/100 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 10000 entries in 1407 milliseconds
+HeapStore: entries 100/100 with a 15,6Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 9900/-1 with a 59,1Mb off-heap usage
+HeapStore: entries 100/100 with a 15,6Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 9900/-1 with a 118,8Mb off-heap usage
+got 10000 entries in 2156 milliseconds
+
+Starting test 50000 entries
+HeapStore: entries 0/500 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 50000 entries in 7797 milliseconds
+HeapStore: entries 500/500 with a 48,0Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 49500/-1 with a 295,4Mb off-heap usage
+HeapStore: entries 500/500 with a 54,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 49500/-1 with a 594,2Mb off-heap usage
+got 50000 entries in 10531 milliseconds
+
+Starting test 100000 entries
+HeapStore: entries 0/1000 with a 15,5Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+put 100000 entries in 17406 milliseconds
+HeapStore: entries 1000/1000 with a 102,3Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 99000/-1 with a 590,9Mb off-heap usage
+HeapStore: entries 1000/1000 with a 107,2Mb/247,5Mb heap usage
+SimpleOffHeapStore: entries 99000/-1 with a 1.188,4Mb off-heap usage
+got 100000 entries in 58594 milliseconds

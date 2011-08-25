@@ -1,0 +1,19 @@
+Massive insert with 50000 entries
+---------------------------------
+
+OrientDBDoc 
+  Total test time: 135.8 
+  put max 11.4 s, min 201 us - average 0,81
+  get max 13.7 s, min 331 us - average 1,17
+
+OrientDBBinary
+  Total test time: 106.6 seconds 
+  put max 12.3 s, min 53.9 us - average 0,55
+  get max 7.77 s, min 64.3 us - average 0,64
+
+14:34:19.321 [main] DEBUG repeatedInsert - overall performance: {
+   cache.detail.moveToOrientDB 50000 hits - average 0,81 - max active:1 total time 40631 - Simon Stopwatch: [cache.detail.moveToOrientDB INHERIT] total 40.6 s, counter 50000, max 11.4 s, min 201 us
+   cache.detail.moveInHeapfromOrientDB 50000 hits - average 1,17 - max active:1 total time 58531 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDB INHERIT] total 58.5 s, counter 50000, max 13.7 s, min 331 us
+   cache.detail.moveToOrientDBBinary 50000 hits - average 0,55 - max active:1 total time 27519 - Simon Stopwatch: [cache.detail.moveToOrientDBBinary INHERIT] total 27.5 s, counter 50000, max 12.3 s, min 53.9 us
+   cache.detail.moveInHeapfromOrientDBBinary 50000 hits - average 0,64 - max active:1 total time 32116 - Simon Stopwatch: [cache.detail.moveInHeapfromOrientDBBinary INHERIT] total 32.1 s, counter 50000, max 7.77 s, min 64.3 us
+}

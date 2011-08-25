@@ -1,0 +1,67 @@
+16:23:46.432 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - Done
+16:27:12.468 [main] INFO  org.directmemory.demo.DemoApp.main - DirectMemory Cache - Standalone Demo Starting
+16:27:12.468 [main] INFO  org.directmemory.demo.DemoApp.main - Log check - if you see this as INFO it is fine
+16:27:12.468 [main] WARN  org.directmemory.demo.DemoApp.main - Log check - if you see this as WARNING it is fine
+16:27:12.468 [main] DEBUG org.directmemory.demo.DemoApp.main - Log check - if you see this as DEBUG it is fine
+16:27:12.468 [main] ERROR org.directmemory.demo.DemoApp.main - Log check - if you see this as ERROR it is fine
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - loading file 'C:\Development\DirectMemory\Demo\DirectMemory-StandaloneDemo\target\DirectMemory-Demo\conf\demo.properties'
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - loaded file 'conf/demo.properties'
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.demoToRun=cachemanager2
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.numberOfEntries=100000
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.threadCount=10
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.entriesInHeap=1000
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.entriesOffHeap=-1
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.payload=2048
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.pstuffBufferSize=3072
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.pageSize=5242880
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.maxPages=2
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.batchSize=1
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.logEvery=100
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.loadProperties - demo.showStatusEvery=1000
+16:27:12.484 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - Starting test with 100000 entries
+16:27:12.515 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache status: {
+   uptime: 0ms
+   stores: {
+      HeapStore: entries 0/1000 with a 123,8Mb/123,8Mb heap usage and 117,6Mb of free heap
+      SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+   }
+}
+16:27:17.499 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - Created, serialized and put 100000 DummyPojos in 4984 milliseconds
+16:27:17.515 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache status: {
+   uptime: 5000ms
+   stores: {
+      HeapStore: entries 1000/1000 with a 123,8Mb/123,8Mb heap usage and 59,8Mb of free heap
+      SimpleOffHeapStore: entries 99000/-1 with a 194,9Mb off-heap usage
+   }
+}
+16:27:17.515 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache performance: {
+   put hits: 100000 average time: 0,03ms total time: 3020ms
+   get hits: 0 average time: n/a total time: 0ms
+   remove hits: 0 average time: n/a total time: 0ms
+}
+16:27:22.484 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache status: {
+   uptime: 9969ms
+   stores: {
+      HeapStore: entries 1000/1000 with a 123,8Mb/123,8Mb heap usage and 42,2Mb of free heap
+      SimpleOffHeapStore: entries 99000/-1 with a 194,9Mb off-heap usage
+   }
+}
+16:27:22.484 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache performance: {
+   put hits: 100000 average time: 0,03ms total time: 3020ms
+   get hits: 100000 average time: 0,05ms total time: 4922ms
+   remove hits: 0 average time: n/a total time: 0ms
+}
+16:27:22.484 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - Got and deserialized 100000 entries in 4985 milliseconds
+16:27:22.484 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - Disposing...
+16:27:22.515 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache status: {
+   uptime: 10000ms
+   stores: {
+      HeapStore: entries 0/1000 with a 123,8Mb/123,8Mb heap usage and 42,2Mb of free heap
+      SimpleOffHeapStore: entries 0/-1 with a 0,0Mb off-heap usage
+   }
+}
+16:27:22.515 [main] INFO  org.directmemory.demo.DemoApp.cacheManager2Test - DirectMemory Cache performance: {
+   put hits: 100000 average time: 0,03ms total time: 3020ms
+   get hits: 100000 average time: 0,05ms total time: 4922ms
+   remove hits: 0 average time: n/a total time: 0ms
+}

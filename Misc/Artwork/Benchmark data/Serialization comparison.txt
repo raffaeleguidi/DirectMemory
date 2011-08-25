@@ -1,0 +1,56 @@
+2kb buffer old vs new
+
+Simon Stopwatch: [serializer.protostuff-old.1024bytes INHERIT] total 518 ms, counter 1, max 518 ms, min 518 ms
+Simon Stopwatch: [serializer.protostuff-old.2048bytes INHERIT] total 720 ms, counter 1, max 720 ms, min 720 ms
+Simon Stopwatch: [serializer.protostuff-old.3072bytes INHERIT] total 1.05 s, counter 1, max 1.05 s, min 1.05 s
+Simon Stopwatch: [serializer.protostuff-old.4096bytes INHERIT] total 1.35 s, counter 1, max 1.35 s, min 1.35 s
+
+Simon Stopwatch: [serializer.protostuff-new.1024bytes INHERIT] total 292 ms, counter 1, max 292 ms, min 292 ms
+Simon Stopwatch: [serializer.protostuff-new.2048bytes INHERIT] total 690 ms, counter 1, max 690 ms, min 690 ms
+Simon Stopwatch: [serializer.protostuff-new.3072bytes INHERIT] total 1.00 s, counter 1, max 1.00 s, min 1.00 s
+Simon Stopwatch: [serializer.protostuff-new.4096bytes INHERIT] total 1.36 s, counter 1, max 1.36 s, min 1.36 s
+
+3kb buffer old vs new
+
+Simon Stopwatch: [serializer.protostuff-old.1024bytes INHERIT] total 523 ms, counter 1, max 523 ms, min 523 ms
+Simon Stopwatch: [serializer.protostuff-old.2048bytes INHERIT] total 720 ms, counter 1, max 720 ms, min 720 ms
+Simon Stopwatch: [serializer.protostuff-old.3072bytes INHERIT] total 1.01 s, counter 1, max 1.01 s, min 1.01 s
+Simon Stopwatch: [serializer.protostuff-old.4096bytes INHERIT] total 1.34 s, counter 1, max 1.34 s, min 1.34 s
+
+Simon Stopwatch: [serializer.protostuff-new.1024bytes INHERIT] total 295 ms, counter 1, max 295 ms, min 295 ms
+Simon Stopwatch: [serializer.protostuff-new.2048bytes INHERIT] total 489 ms, counter 1, max 489 ms, min 489 ms
+Simon Stopwatch: [serializer.protostuff-new.3072bytes INHERIT] total 989 ms, counter 1, max 989 ms, min 989 ms
+Simon Stopwatch: [serializer.protostuff-new.4096bytes INHERIT] total 1.36 s, counter 1, max 1.36 s, min 1.36 s
+
+5kb buffer old vs new
+
+Simon Stopwatch: [serializer.protostuff-old.1024bytes INHERIT] total 514 ms, counter 1, max 514 ms, min 514 ms
+Simon Stopwatch: [serializer.protostuff-old.2048bytes INHERIT] total 712 ms, counter 1, max 712 ms, min 712 ms
+Simon Stopwatch: [serializer.protostuff-old.3072bytes INHERIT] total 1.02 s, counter 1, max 1.02 s, min 1.02 s
+Simon Stopwatch: [serializer.protostuff-old.4096bytes INHERIT] total 1.37 s, counter 1, max 1.37 s, min 1.37 s
+
+Simon Stopwatch: [serializer.protostuff-new.1024bytes INHERIT] total 303 ms, counter 1, max 303 ms, min 303 ms
+Simon Stopwatch: [serializer.protostuff-new.2048bytes INHERIT] total 505 ms, counter 1, max 505 ms, min 505 ms
+Simon Stopwatch: [serializer.protostuff-new.3072bytes INHERIT] total 760 ms, counter 1, max 760 ms, min 760 ms
+Simon Stopwatch: [serializer.protostuff-new.4096bytes INHERIT] total 925 ms, counter 1, max 925 ms, min 925 ms
+
+
+Before (300bytes buffer) and after (with 10kb buffer)
+
+Simon Stopwatch: [serializer.protostuff-old.1024bytes INHERIT] total 532 ms, counter 1, max 532 ms, min 532 ms
+Simon Stopwatch: [serializer.protostuff-old.2048bytes INHERIT] total 714 ms, counter 1, max 714 ms, min 714 ms
+Simon Stopwatch: [serializer.protostuff-old.3072bytes INHERIT] total 1.08 s, counter 1, max 1.08 s, min 1.08 s
+Simon Stopwatch: [serializer.protostuff-old.4096bytes INHERIT] total 1.37 s, counter 1, max 1.37 s, min 1.37 s
+
+Simon Stopwatch: [serializer.protostuff-new.1024bytes INHERIT] total 296 ms, counter 1, max 296 ms, min 296 ms
+Simon Stopwatch: [serializer.protostuff-new.2048bytes INHERIT] total 501 ms, counter 1, max 501 ms, min 501 ms
+Simon Stopwatch: [serializer.protostuff-new.3072bytes INHERIT] total 745 ms, counter 1, max 745 ms, min 745 ms
+Simon Stopwatch: [serializer.protostuff-new.4096bytes INHERIT] total 953 ms, counter 1, max 953 ms, min 953 ms
+
+
+Standard serialization
+
+Simon Stopwatch: [serializer.java-serialization.1024bytes INHERIT] total 1.40 s, counter 1, max 1.40 s, min 1.40 s
+Simon Stopwatch: [serializer.java-serialization.2048bytes INHERIT] total 1.87 s, counter 1, max 1.87 s, min 1.87 s
+Simon Stopwatch: [serializer.java-serialization.3072bytes INHERIT] total 2.67 s, counter 1, max 2.67 s, min 2.67 s
+Simon Stopwatch: [serializer.java-serialization.4096bytes INHERIT] total 3.22 s, counter 1, max 3.22 s, min 3.22 s

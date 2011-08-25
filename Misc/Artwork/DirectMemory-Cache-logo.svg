@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="DirectMemory-Cache-logo.svg">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient5411"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#0c083b;stop-opacity:1;"
+         offset="0"
+         id="stop5413" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3844"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#48c8e2;stop-opacity:1;"
+         offset="0"
+         id="stop3846" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="461.15319"
+     inkscape:cy="370.54966"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="774"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.2677)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#008aa3;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path2985"
+       sodipodi:cx="116.16754"
+       sodipodi:cy="142.04356"
+       sodipodi:rx="90.913727"
+       sodipodi:ry="90.913727"
+       d="m 207.08127,142.04356 c 0,50.21027 -40.70346,90.91373 -90.91373,90.91373 -50.210263,0 -90.913725,-40.70346 -90.913725,-90.91373 0,-50.210261 40.703462,-90.913723 90.913725,-90.913723 50.21027,0 90.91373,40.703462 90.91373,90.913723 z"
+       transform="matrix(1.2871957,0,0,1.2871957,34.083173,387.4531)"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path2987"
+       sodipodi:cx="151.52289"
+       sodipodi:cy="161.23647"
+       sodipodi:rx="26.263966"
+       sodipodi:ry="26.263966"
+       d="m 177.78685,161.23647 c 0,14.50518 -11.75877,26.26396 -26.26396,26.26396 -14.50519,0 -26.26397,-11.75878 -26.26397,-26.26396 0,-14.50519 11.75878,-26.26397 26.26397,-26.26397 14.50519,0 26.26396,11.75878 26.26396,26.26397 z"
+       transform="matrix(0.59273996,0,0,0.59273996,107.29186,552.32013)"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="path2987-1"
+       sodipodi:cx="151.52289"
+       sodipodi:cy="161.23647"
+       sodipodi:rx="26.263966"
+       sodipodi:ry="26.263966"
+       d="m 177.78685,161.23647 c 0,14.50518 -11.75877,26.26396 -26.26396,26.26396 -14.50519,0 -26.26397,-11.75878 -26.26397,-26.26396 0,-14.50519 11.75878,-26.26397 26.26397,-26.26397 14.50519,0 26.26396,11.75878 26.26396,26.26397 z"
+       transform="matrix(0.95819094,0,0,0.95819094,12.833502,469.98263)"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841" />
+    <path
+       transform="matrix(1.5449128,0,0,1.5449128,-110.37838,313.64615)"
+       d="m 177.78685,161.23647 c 0,14.50518 -11.75877,26.26396 -26.26396,26.26396 -14.50519,0 -26.26397,-11.75878 -26.26397,-26.26396 0,-14.50519 11.75878,-26.26397 26.26397,-26.26397 14.50519,0 26.26396,11.75878 26.26396,26.26397 z"
+       sodipodi:ry="26.263966"
+       sodipodi:rx="26.263966"
+       sodipodi:cy="161.23647"
+       sodipodi:cx="151.52289"
+       id="path3020-7"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841" />
+    <text
+       xml:space="preserve"
+       style="font-size:159.69165039px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:none;stroke:none;stroke-width:1px;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       x="428.30469"
+       y="171.338"
+       id="text5379"
+       sodipodi:linespacing="125%"
+       transform="translate(0,308.2677)"><tspan
+         sodipodi:role="line"
+         id="tspan5381" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:150.16755676px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ff8811;fill-opacity:0.85026736;stroke:#0c083b;stroke-width:2.07279587px;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       x="454.53073"
+       y="831.64008"
+       id="text5383"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0322686,0.96874011)"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841"><tspan
+         sodipodi:role="line"
+         id="tspan5385"
+         x="454.53073"
+         y="831.64008"
+         style="font-size:150.16755676px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff8811;fill-opacity:0.85026736;stroke:none;font-family:Gill Sans MT;-inkscape-font-specification:Gill Sans MT">Memory</tspan></text>
+    <text
+       transform="scale(1.0322686,0.96874011)"
+       sodipodi:linespacing="125%"
+       id="text5476"
+       y="831.64008"
+       x="63.666019"
+       style="font-size:150.16755676px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#b1e1dd;fill-opacity:1;stroke:#0c083b;stroke-width:2.07279587px;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841"><tspan
+         style="font-size:150.16755676px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#b1e1dd;fill-opacity:1;stroke:#0c083b;stroke-width:2.07279587;stroke-opacity:1;font-family:Gill Sans MT;-inkscape-font-specification:Gill Sans MT"
+         y="831.64008"
+         x="63.666019"
+         id="tspan5478"
+         sodipodi:role="line"><tspan
+           id="tspan5480"
+           style="fill:#b1e1dd;fill-opacity:1;stroke:none">Direct</tspan><tspan
+           id="tspan5482"
+           style="fill:#b1e1dd;fill-opacity:1;stroke:none" /></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:37.23675537px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#004855;fill-opacity:1;stroke:none;stroke-width:1px;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       x="76.060493"
+       y="850.00714"
+       id="text5484"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841"><tspan
+         sodipodi:role="line"
+         id="tspan5486"
+         x="76.060493"
+         y="850.00714"
+         style="font-size:37.23675537px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#004855;fill-opacity:1;font-family:Segoe UI;-inkscape-font-specification:Segoe UI">Off-heap cache harness for the JVM</tspan></text>
+    <path
+       transform="matrix(0.66966304,0,0,0.66966304,11.08513,442.79477)"
+       d="m 177.78685,161.23647 c 0,14.50518 -11.75877,26.26396 -26.26396,26.26396 -14.50519,0 -26.26397,-11.75878 -26.26397,-26.26396 0,-14.50519 11.75878,-26.26397 26.26397,-26.26397 14.50519,0 26.26396,11.75878 26.26396,26.26397 z"
+       sodipodi:ry="26.263966"
+       sodipodi:rx="26.263966"
+       sodipodi:cy="161.23647"
+       sodipodi:cx="151.52289"
+       id="path5488"
+       style="fill:#ff8810;fill-opacity:0.85098039;fill-rule:evenodd;stroke:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="C:\Development\DirectMemory\Demo\Artwork\DirectMemory-Cache-logo-small.png"
+       inkscape:export-xdpi="28.921841"
+       inkscape:export-ydpi="28.921841" />
+  </g>
+</svg>
