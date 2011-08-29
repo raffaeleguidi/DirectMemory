@@ -3,10 +3,8 @@ package org.directmemory.memory;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
@@ -15,10 +13,6 @@ import org.josql.Query;
 import org.josql.QueryExecutionException;
 import org.josql.QueryParseException;
 import org.josql.QueryResults;
-
-import ch.qos.logback.classic.Logger;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class OffHeapMemoryBuffer {
 	protected ByteBuffer buffer;

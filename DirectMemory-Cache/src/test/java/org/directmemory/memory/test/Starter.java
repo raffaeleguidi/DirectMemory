@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.OffHeapMemoryBuffer;
-import org.directmemory.memory.Pointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

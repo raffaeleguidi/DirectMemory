@@ -8,7 +8,6 @@ import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -130,7 +129,7 @@ public class ConcurrentTests3 {
   			default:
   				final int rndVal = rndGen.nextInt(1000);
   				if ( rndVal > 995) {
-  					long thisDisposal = disposals.incrementAndGet();
+  					disposals.incrementAndGet();
   					final long start = System.currentTimeMillis();
   					long howMany = MemoryManager.disposeExpired();
   					final long end = System.currentTimeMillis();

@@ -1,23 +1,13 @@
 package org.directmemory.memory.test;
 
-import static org.junit.Assert.*;
-
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +22,6 @@ import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
 import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 import com.google.common.collect.MapMaker;
-import com.google.common.collect.Maps;
 
 @AxisRange(min = 0, max = 1)
 @BenchmarkMethodChart()
@@ -40,7 +29,6 @@ import com.google.common.collect.Maps;
 
 public class ConcurrentTests {
 	
-	private final int randomValues = 1000000;
 	private final static int entries = 100000;
 	public static AtomicInteger count = new AtomicInteger();
 	private static AtomicInteger got = new AtomicInteger(); 

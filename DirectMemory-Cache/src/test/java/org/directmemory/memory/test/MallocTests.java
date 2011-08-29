@@ -1,15 +1,10 @@
 package org.directmemory.memory.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentMap;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
 
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.OffHeapMemoryBuffer;
@@ -29,7 +24,6 @@ import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
 import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 import com.google.common.collect.MapMaker;
-import com.google.common.collect.Maps;
 
 @AxisRange(min = 0, max = 1)
 @BenchmarkMethodChart()
@@ -72,7 +66,7 @@ public class MallocTests {
 
 		byte[] payload = new byte[size];
 		for (int i = 0; i < howMany; i++) {
-			Pointer p = mem.store(payload);
+			mem.store(payload);
 		}
 		
 		logger.info("...done in " + (System.currentTimeMillis() - start) + " msecs.");

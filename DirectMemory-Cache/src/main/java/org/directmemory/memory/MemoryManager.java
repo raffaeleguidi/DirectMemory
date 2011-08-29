@@ -36,7 +36,7 @@ public class MemoryManager {
 		return store(payload, 0);
 	}
 	
-	public Pointer update(Pointer pointer, byte[] payload) {
+	public static Pointer update(Pointer pointer, byte[] payload) {
 		Pointer p = activeBuffer.update(pointer, payload);
 		if (p == null) {
 			if (activeBuffer.bufferNumber == buffers.size()) {
