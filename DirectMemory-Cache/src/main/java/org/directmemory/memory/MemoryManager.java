@@ -18,18 +18,22 @@ public class MemoryManager {
 		activeBuffer = buffers.get(0);
 	}
 	
-	public static Pointer store(byte[] payload) {
-		Pointer p = activeBuffer.store(payload);
+	public static Pointer store(byte[] payload, int expiresIn) {
+		Pointer p = activeBuffer.store(payload, expiresIn);
 		if (p == null) {
 			if (activeBuffer.bufferNumber+1 == buffers.size()) {
 				return null;
 			} else {
 				// try next buffer
 				activeBuffer = buffers.get(activeBuffer.bufferNumber+1);
-				p = activeBuffer.store(payload);
+				p = activeBuffer.store(payload, expiresIn);
 			}
 		}
 		return p;
+	}
+	
+	public static Pointer store(byte[] payload) {
+		return store(payload, 0);
 	}
 	
 	public Pointer update(Pointer pointer, byte[] payload) {
@@ -68,5 +72,13 @@ public class MemoryManager {
 		}
 		return totalCapacity;
 	}
-	
+
+	public static long disposeExpired() {
+		long disposed = 0;
+		for (OffHeapMemoryBuffer buffer : buffers) {
+			disposed += buffer.disposeExpired();
+		}
+		return disposed;
+	}
+
 }

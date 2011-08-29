@@ -85,19 +85,24 @@ public class OffHeapMemoryBuffer {
 	}
 	
 	public byte[] retrieve(Pointer pointer) {
-		if (!pointer.expired()) {
+//		if (!pointer.expired()) {
 			pointer.lastHit = System.currentTimeMillis();
 			pointer.hits++;
-			final ByteBuffer buf = buffer.slice();
+			
+			ByteBuffer buf = null;
+			synchronized (buffer) {
+				buf = buffer.duplicate();
+			}
 			buf.position(pointer.start);
-			buf.limit(pointer.end+pointer.start);
+			// not needed for reads
+			// buf.limit(pointer.end+pointer.start);
 			final byte[] swp = new byte[pointer.end-pointer.start];
 			buf.get(swp);
 			return swp;
-		} else {
-			free(pointer);
-			return null;
-		}
+//		} else {
+//			free(pointer);
+//			return null;
+//		}
 	}
 	
 	
@@ -180,10 +185,11 @@ public class OffHeapMemoryBuffer {
 		return (List<Pointer>) new ArrayList<Pointer>();
 	}
 	
-	private void free(List<Pointer> pointers) {
+	private long free(List<Pointer> pointers) {
 		for (Pointer expired : pointers) {
 			free(expired);
 		}
+		return pointers.size();
 	}
 	
 	public void disposeExpiredRelative() {
@@ -192,6 +198,13 @@ public class OffHeapMemoryBuffer {
 	
 	public void disposeExpiredAbsolute() {
 		free(filter("free=false and expires > 0 and (expires) <= " + System.currentTimeMillis()));
+	}
+	
+	public long disposeExpired() {
+		int limit = 50;
+		long disposed = free(filter("free=false and expiresIn > 0 and (expiresIn+created) <= " + System.currentTimeMillis() + " limit 1, " + limit));
+		disposed += free(filter("free=false and expires > 0 and (expires) <= " + System.currentTimeMillis() + " limit 1, 100" + limit));
+		return disposed;
 	}
 	
 	public static long crc32(byte[] payload) {
