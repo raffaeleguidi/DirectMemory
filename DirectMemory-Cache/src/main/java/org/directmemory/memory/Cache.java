@@ -48,7 +48,16 @@ public class Cache {
 	}
 	
 	public static byte[] retrieve(String key) {
-  		return MemoryManager.retrieve(map.get(key));
+		Pointer ptr = get(key);
+		if (ptr.expired() || ptr.free) {
+			map.remove(key);
+			if (!ptr.free) { 
+				MemoryManager.free(ptr);
+			}
+			return null;
+		} else {
+	  		return MemoryManager.retrieve(ptr);
+		}
 	}
 	
 	public static Pointer get(String key) {
