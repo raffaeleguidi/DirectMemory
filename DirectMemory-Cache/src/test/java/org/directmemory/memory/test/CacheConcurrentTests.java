@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.Cache;
 import org.directmemory.memory.MemoryManager;
-import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

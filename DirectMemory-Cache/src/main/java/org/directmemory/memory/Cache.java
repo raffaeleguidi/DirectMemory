@@ -30,11 +30,14 @@ public class Cache {
 		logger.info("*** initializing *******************************\r\n" + Format.logo());
 		logger.info("************************************************");
 		MemoryManager.init(numberOfBuffers, size);
-		logger.info(Format.it("initialized with %1d buffers with %2d bytes each, initial capacity of %3d and a concurrency level of %4d", numberOfBuffers, size, initialCapacity, concurrencyLevel).toString());
+		logger.info("initialized");
+		logger.info(Format.it("number of buffer(s): \t%1d  with %2s each", numberOfBuffers, Ram.inMb(size)));
+		logger.info(Format.it("initial capacity: \t%1d", initialCapacity));
+		logger.info(Format.it("concurrency level: \t%1d", concurrencyLevel));
 	}
 
 	public static void init(int numberOfBuffers, int size) {
-		init(numberOfBuffers, size, DEFAULT_CONCURRENCY_LEVEL, DEFAULT_INITIAL_CAPACITY);
+		init(numberOfBuffers, size, DEFAULT_INITIAL_CAPACITY, DEFAULT_CONCURRENCY_LEVEL);
 	}
 
 	public static Pointer put(String key, byte[] payload, int expiresIn) {
