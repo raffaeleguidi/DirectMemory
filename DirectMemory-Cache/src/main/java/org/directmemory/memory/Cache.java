@@ -2,10 +2,16 @@ package org.directmemory.memory;
 
 import java.util.concurrent.ConcurrentMap;
 
+import org.directmemory.measures.Ram;
+import org.directmemory.misc.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.MapMaker;
 
 public class Cache {
 
+	private static Logger logger = LoggerFactory.getLogger(MemoryManager.class);
 	private static ConcurrentMap<String, Pointer> map;
 	
 	public static int DEFAULT_CONCURRENCY_LEVEL = 4;
@@ -20,17 +26,15 @@ public class Cache {
 			.concurrencyLevel(concurrencyLevel)
 			.initialCapacity(initialCapacity)
 			.makeMap();
-		
+
+		logger.info("*** initializing *******************************\r\n" + Format.logo());
+		logger.info("************************************************");
 		MemoryManager.init(numberOfBuffers, size);
+		logger.info(Format.it("initialized with %1d buffers with %2d bytes each, initial capacity of %3d and a concurrency level of %4d", numberOfBuffers, size, initialCapacity, concurrencyLevel).toString());
 	}
 
 	public static void init(int numberOfBuffers, int size) {
-		map = new MapMaker()
-			.concurrencyLevel(DEFAULT_CONCURRENCY_LEVEL)
-			.initialCapacity(DEFAULT_INITIAL_CAPACITY)
-			.makeMap();
-		
-		MemoryManager.init(numberOfBuffers, size);
+		init(numberOfBuffers, size, DEFAULT_CONCURRENCY_LEVEL, DEFAULT_INITIAL_CAPACITY);
 	}
 
 	public static Pointer put(String key, byte[] payload, int expiresIn) {
@@ -82,6 +86,27 @@ public class Cache {
 
 	public static long entries() {
 		return map.size();
+	}
+
+	private static void dump(OffHeapMemoryBuffer mem) {
+		logger.info(Format.it("off-heap - buffer: \t%1d", mem.bufferNumber));
+		logger.info(Format.it("off-heap - allocated: \t%1s", Ram.inMb(mem.capacity())));
+		logger.info(Format.it("off-heap - used:      \t%1s", Ram.inMb(mem.used())));
+		logger.info(Format.it("heap 	- max: \t%1s", Ram.inMb(Runtime.getRuntime().maxMemory())));
+		logger.info(Format.it("heap     - allocated: \t%1s", Ram.inMb(Runtime.getRuntime().totalMemory())));
+		logger.info(Format.it("heap     - free : \t%1s", Ram.inMb(Runtime.getRuntime().freeMemory())));
+		logger.info("************************************************");
+	}
+	
+	public static void dump() {
+		if (!logger.isInfoEnabled())
+			return;
+		
+		logger.info("*** DirectMemory statistics ********************");
+		
+		for (OffHeapMemoryBuffer mem : MemoryManager.buffers) {
+			dump(mem);
+		}
 	}
 
 }

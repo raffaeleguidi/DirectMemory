@@ -27,7 +27,7 @@ import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 @BenchmarkMethodChart()
 @BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 
-public class ConcurrentTests4 {
+public class CacheConcurrentTests {
 	
 	private final static int entries = 100000;
 	public static AtomicInteger count = new AtomicInteger();
@@ -176,29 +176,18 @@ public class ConcurrentTests4 {
 	public MethodRule benchmarkRun = new BenchmarkRule();
 
 
-	private static Logger logger = LoggerFactory.getLogger(ConcurrentTests4.class);
+	private static Logger logger = LoggerFactory.getLogger(CacheConcurrentTests.class);
 
-	private static void dump(OffHeapMemoryBuffer mem) {
-		logger.info("off-heap - buffer: " + mem.bufferNumber);
-		logger.info("off-heap - allocated: " + Ram.inMb(mem.capacity()));
-		logger.info("off-heap - used:      " + Ram.inMb(mem.used()));
-		logger.info("heap 	  - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
-		logger.info("heap     - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
-		logger.info("heap     - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
-		logger.info("************************************************");
-	}
-	
 	@BeforeClass
 	public static void init() {
 		Cache.init(1, Ram.Mb(512));
+		Cache.dump();
 	}
 	
 	@AfterClass
 	public static void dump() {
 		
-		for (OffHeapMemoryBuffer mem : MemoryManager.buffers) {
-			dump(mem);
-		}
+		Cache.dump();
 		
 		logger.info("************************************************");
 		logger.info("entries: " + entries);

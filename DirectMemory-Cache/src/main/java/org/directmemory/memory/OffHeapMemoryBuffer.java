@@ -9,12 +9,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import org.directmemory.memory.test.MallocTests;
 import org.josql.Query;
 import org.josql.QueryExecutionException;
 import org.josql.QueryParseException;
 import org.josql.QueryResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OffHeapMemoryBuffer {
+	private static Logger logger = LoggerFactory.getLogger(OffHeapMemoryBuffer.class);
 	protected ByteBuffer buffer;
 	public List<Pointer> pointers = new ArrayList<Pointer>();
 //	public List<Pointer> pointers = new CopyOnWriteArrayList<Pointer>();

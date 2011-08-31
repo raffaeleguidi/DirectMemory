@@ -3,7 +3,11 @@ package org.directmemory.memory;
 import java.util.List;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MemoryManager {
+	private static Logger logger = LoggerFactory.getLogger(MemoryManager.class);
 	public static List<OffHeapMemoryBuffer> buffers = new Vector<OffHeapMemoryBuffer>();
 	public static OffHeapMemoryBuffer activeBuffer = null;
 	
