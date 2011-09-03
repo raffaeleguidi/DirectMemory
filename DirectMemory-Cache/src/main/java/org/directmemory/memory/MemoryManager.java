@@ -3,6 +3,8 @@ package org.directmemory.memory;
 import java.util.List;
 import java.util.Vector;
 
+import org.directmemory.measures.Ram;
+import org.directmemory.misc.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ public class MemoryManager {
 			buffers.add(OffHeapMemoryBuffer.createNew(size, i));
 		}
 		activeBuffer = buffers.get(0);
+		logger.info(Format.it("MemoryManager initialized - %d buffers, %s each", numberOfBuffers, Ram.inMb(size)));
 	}
 	
 	public static Pointer store(byte[] payload, int expiresIn) {

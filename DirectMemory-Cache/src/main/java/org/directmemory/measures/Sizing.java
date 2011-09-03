@@ -17,13 +17,13 @@ public class Sizing {
 	public static int unlimited() {
 		return -1;
 	}
-	public static String inKb(long l) {		
-		return new Formatter().format("%(,.1fKb", (double)l/1024).toString();
+	public static String inKb(long bytes) {		
+		return new Formatter().format("%(,.1fKb", (double)bytes/1024).toString();
 	}
-	public static String inMb(long heapSize) {		
-		return new Formatter().format("%(,.1fMb", (double)heapSize/1024/1024).toString();
+	public static String inMb(long bytes) {		
+		return new Formatter().format("%(,.1fMb", (double)bytes/1024/1024).toString();
 	}
-	public static String inGb(long i) {		
-		return new Formatter().format("%(,.1fKb", (double)i/1024/1024/1024).toString();
+	public static String inGb(long bytes) {		
+		return new Formatter().format("%(,.1fKb", (double)bytes/1024/1024/1024).toString();
 	}
 }

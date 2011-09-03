@@ -1,8 +1,11 @@
-package org.directmemory.memory;
+package org.directmemory.cache;
 
 import java.util.concurrent.ConcurrentMap;
 
 import org.directmemory.measures.Ram;
+import org.directmemory.memory.MemoryManager;
+import org.directmemory.memory.OffHeapMemoryBuffer;
+import org.directmemory.memory.Pointer;
 import org.directmemory.misc.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +59,7 @@ public class Cache {
 	
 	public static byte[] retrieve(String key) {
 		Pointer ptr = get(key);
+		if (ptr == null) return null;
 		if (ptr.expired() || ptr.free) {
 			map.remove(key);
 			if (!ptr.free) { 
@@ -85,6 +89,7 @@ public class Cache {
 	public static void clear() {
 		map.clear();
 		MemoryManager.clear();
+		logger.info("Cache cleared");
 	}
 
 	public static long entries() {
@@ -111,5 +116,5 @@ public class Cache {
 			dump(mem);
 		}
 	}
-
+	
 }

@@ -9,7 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import org.directmemory.memory.test.MallocTests;
+import org.directmemory.measures.Ram;
+import org.directmemory.misc.Format;
 import org.josql.Query;
 import org.josql.QueryExecutionException;
 import org.josql.QueryParseException;
@@ -35,6 +36,7 @@ public class OffHeapMemoryBuffer {
 	}
 	
 	public static OffHeapMemoryBuffer createNew(int capacity, int bufferNumber) {
+		logger.info(Format.it("Creating OffHeapMemoryBuffer %d with a capacity of %s", bufferNumber, Ram.inMb(capacity)));
 		return new OffHeapMemoryBuffer(ByteBuffer.allocateDirect(capacity), bufferNumber); 
 	}
 	

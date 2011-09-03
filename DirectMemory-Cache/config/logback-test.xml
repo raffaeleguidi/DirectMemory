@@ -14,12 +14,12 @@
     </encoder>
   </appender>
   
-  <logger name="org.directmemory.memory.test" level="debug">
+  <logger name="org.directmemory.memory" level="test">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>
 
-  <logger name="org.directmemory.memory" level="debug">
+  <logger name="org.directmemory.cache" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </logger>

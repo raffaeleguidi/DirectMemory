@@ -1,7 +1,11 @@
 package org.directmemory.measures;
 
-import java.util.Formatter;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.directmemory.misc.Format;
 
 public class Monitor {
 	private AtomicLong hits = new AtomicLong(0);
@@ -9,6 +13,17 @@ public class Monitor {
 	private long min = -1;
 	private long max = -1;
 	private String name;
+	
+	public static Map<String, Monitor> monitors = new HashMap<String, Monitor>();
+	
+	public static Monitor get(String key) {
+		Monitor mon = monitors.get(key);
+		if (mon == null) {
+			mon = new Monitor(key);
+			monitors.put(key, mon);
+		}
+		return mon;
+	}
 	
 	public Monitor(String name) {
 		this.name = name;
@@ -36,6 +51,11 @@ public class Monitor {
 		return totalTime/hits.get();
 	}
 	public String toString() {
-		return new Formatter().format("%s - hits: %s, average: %ss ns, total: %s seconds", name, hits, average(), ((double)totalTime/1000000000)).toString();
+		return Format.it("%1$s - hits: %2$d, average: %3$s ms, total: %4$s seconds", 
+								name, 
+								hits.get(), 
+								new DecimalFormat("####.##").format((double)average()/1000000), 
+								new DecimalFormat("####.##").format((double)totalTime/1000000000)
+						);
 	}
 }
