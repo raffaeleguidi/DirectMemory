@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.cache.Cache;
+import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.Pointer;
@@ -67,7 +68,8 @@ public class CacheConcurrentTests {
 	
 	private void get(String key) {
   		Pointer p = Cache.get(key);
-  		byte [] check = Cache.retrieve(key);
+  		@SuppressWarnings("unused")
+		byte [] check = Cache.retrieve(key);
 		read.incrementAndGet();
   		if (p != null) {
   			got.incrementAndGet();
@@ -188,6 +190,7 @@ public class CacheConcurrentTests {
 	public static void dump() {
 		
 		Cache.dump();
+		Monitor.dump("cache");
 		
 		logger.info("************************************************");
 		logger.info("entries: " + entries);

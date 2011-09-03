@@ -8,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public aspect Performance {
-	public static final String cache_put = "cache.put"; 
-	public static final String cache_retrieve = "cache.retrieve"; 
-	public static final String cache_get = "cache.get"; 
+	public static final String cache_prefix = "cache";
+	public static final String cache_put = cache_prefix + ".put"; 
+	public static final String cache_retrieve = cache_prefix + ".retrieve"; 
+	public static final String cache_get = cache_prefix + ".get"; 
 	
 	private static Logger logger = LoggerFactory.getLogger(Cache.class);
 	
@@ -53,13 +54,4 @@ public aspect Performance {
 		return pointer;
 	}
 	
-	pointcut getMeasures() : 
-		execution(void org.directmemory.cache.Cache.dump());
-
-	after() : getMeasures() {
-		for (Monitor monitor : Monitor.monitors.values()) {
-			logger.info(monitor.toString());
-		}
-	}
-
 }

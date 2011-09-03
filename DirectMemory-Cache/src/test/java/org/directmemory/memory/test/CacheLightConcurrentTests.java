@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.cache.Cache;
+import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.Pointer;
@@ -188,6 +189,7 @@ public class CacheLightConcurrentTests {
 	public static void dump() {
 		
 		Cache.dump();
+		Monitor.dump("cache");
 		
 		logger.info("************************************************");
 		logger.info("entries: " + entries);

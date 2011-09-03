@@ -6,14 +6,17 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.directmemory.misc.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Monitor {
 	private AtomicLong hits = new AtomicLong(0);
 	private long totalTime = 0;
 	private long min = -1;
 	private long max = -1;
-	private String name;
+	public String name;
 	
+	private static Logger logger = LoggerFactory.getLogger(Monitor.class);
 	public static Map<String, Monitor> monitors = new HashMap<String, Monitor>();
 	
 	public static Monitor get(String key) {
@@ -51,11 +54,22 @@ public class Monitor {
 		return totalTime/hits.get();
 	}
 	public String toString() {
-		return Format.it("%1$s - hits: %2$d, average: %3$s ms, total: %4$s seconds", 
+		return Format.it("%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", 
 								name, 
 								hits.get(), 
-								new DecimalFormat("####.##").format((double)average()/1000000), 
-								new DecimalFormat("####.##").format((double)totalTime/1000000000)
+								new DecimalFormat("####.###").format((double)average()/1000000), 
+								new DecimalFormat("####.###").format((double)totalTime/1000000000)
 						);
+	}
+	
+	public static void dump(String prefix) {
+		for (Monitor monitor : Monitor.monitors.values()) {
+			if (monitor.name.startsWith(prefix))
+				logger.info(monitor.toString());
+		}
+	}
+	
+	public static void dump() {
+		dump("");
 	}
 }

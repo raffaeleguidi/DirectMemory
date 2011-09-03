@@ -1,19 +1,17 @@
 package org.directmemory.serialization.test;
 
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
+import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
 import org.directmemory.serialization.OldProtoStuffSerializer;
 import org.directmemory.serialization.ProtoStuffSerializer;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
-import org.javasimon.SimonManager;
-import org.javasimon.Split;
-import org.javasimon.Stopwatch;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +20,16 @@ public class SerializerTest {
 	private static Logger logger=LoggerFactory.getLogger(SerializerTest.class);
 	private void testSerializer(String name, Serializer serializer, int size, int howMany) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		logger.info("begin " + serializer.getClass().toString());
-        Stopwatch stopWatch = SimonManager.getStopwatch("serializer." + name + "." + size + "bytes");
-        Stopwatch stopWatch2 = SimonManager.getStopwatch("deserializer." + name + "." + size + "bytes");
+        Monitor stopWatch = Monitor.get("serializer." + name + "." + size + "bytes");
+        Monitor stopWatch2 = Monitor.get("deserializer." + name + "." + size + "bytes");
 		DummyPojo pojo = new DummyPojo("test", size);
 		for (int i = 0; i < howMany; i++) {
-	        Split split = stopWatch.start();
+	        long split = stopWatch.start();
 			final byte[] array = serializer.serialize(pojo, pojo.getClass());
-			split.stop();
-	        Split split2 = stopWatch2.start();
+			stopWatch.stop(split);
+			long split2 = stopWatch2.start();
 			DummyPojo check = (DummyPojo) serializer.deserialize(array, pojo.getClass());
-			split2.stop();
+			stopWatch2.stop(split2);
 			assertNotNull("object has not been serialized", check);
 			assertEquals(pojo.name, check.name);
 		}
