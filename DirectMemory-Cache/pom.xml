@@ -134,6 +134,7 @@
 
   <dependencies>
   
+	<!-- 
     <repositories>
       <repository>
           <id>lambdaj</id>
@@ -142,7 +143,7 @@
       </repository>
     </repositories>
     
-    <!-- instead of... -->
+	-->
   
     <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
@@ -228,4 +229,16 @@
       <optional>false</optional>
     </dependency>
   </dependencies>
+  
+  	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://github.com/raffaeleguidi/DirectMemory/raw/master/Misc/mvn-repo/releases</url>
+	    </repository>
+	    <snapshotRepository>
+	        <id>snapshot-repo</id>
+	        <url>https://github.com/raffaeleguidi/DirectMemory/raw/master/Misc/mvn-repo/snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+  
 </project>
