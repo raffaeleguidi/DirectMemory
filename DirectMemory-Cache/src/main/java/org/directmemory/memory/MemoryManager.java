@@ -80,12 +80,18 @@ public class MemoryManager {
 		return totalCapacity;
 	}
 
-	public static long disposeExpired() {
+	public static long collectExpired() {
 		long disposed = 0;
 		for (OffHeapMemoryBuffer buffer : buffers) {
-			disposed += buffer.disposeExpired();
+			disposed += buffer.collectExpired();
 		}
 		return disposed;
+	}
+
+	public static void collectLFU() {
+		for (OffHeapMemoryBuffer buf : MemoryManager.buffers) {
+			buf.collectLFU(-1);
+		}
 	}
 
 }

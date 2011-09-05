@@ -106,7 +106,7 @@ public class OffHeapMemoryBuffer {
 	}
 	
 	
-	public void free(Pointer pointer2free) {
+	public long free(Pointer pointer2free) {
 		pointer2free.free = true;
 		pointer2free.created = 0;
 		pointer2free.lastHit = 0;
@@ -114,6 +114,7 @@ public class OffHeapMemoryBuffer {
 		pointer2free.expiresIn = 0;
 		used.addAndGet(-( pointer2free.end-pointer2free.start));
 		pointers.add(pointer2free);
+		return pointer2free.end-pointer2free.start;
 	}
 	
 	public void clear() {
@@ -173,6 +174,33 @@ public class OffHeapMemoryBuffer {
 		return qr;
 	}
 	
+	private QueryResults selectOrderBy(String whereClause, String orderBy, String limit) throws QueryParseException, QueryExecutionException {
+		Query q = new Query ();
+		q.parse ("SELECT * FROM " + Pointer.class.getCanonicalName() + "  WHERE " + whereClause + " order by " + orderBy + " " + limit);
+		QueryResults qr = q.execute (pointers);
+		return qr;
+	}
+	
+	public long collectLFU(int limit) {
+		if (limit<=0) limit = pointers.size()/10;
+		QueryResults qr;
+		try {
+			qr = selectOrderBy("free=false", "frequency", "limit 1, " + limit);
+			@SuppressWarnings("unchecked")
+			List<Pointer> result = qr.getResults();
+			return free(result);
+		} catch (QueryParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QueryExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	} 
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	private List<Pointer> filter(final String whereClause) {
 		try {
@@ -186,10 +214,11 @@ public class OffHeapMemoryBuffer {
 	}
 	
 	private long free(List<Pointer> pointers) {
+		long howMuch = 0;
 		for (Pointer expired : pointers) {
-			free(expired);
+			howMuch += free(expired);
 		}
-		return pointers.size();
+		return howMuch;
 	}
 	
 	public void disposeExpiredRelative() {
@@ -200,7 +229,7 @@ public class OffHeapMemoryBuffer {
 		free(filter("free=false and expires > 0 and (expires) <= " + System.currentTimeMillis()));
 	}
 	
-	public long disposeExpired() {
+	public long collectExpired() {
 		int limit = 50;
 		long disposed = free(filter("free=false and expiresIn > 0 and (expiresIn+created) <= " + System.currentTimeMillis() + " limit 1, " + limit));
 		disposed += free(filter("free=false and expires > 0 and (expires) <= " + System.currentTimeMillis() + " limit 1, 100" + limit));

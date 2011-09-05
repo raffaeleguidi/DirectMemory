@@ -38,7 +38,7 @@ public class CacheConcurrentTests {
 	private static AtomicInteger read = new AtomicInteger();
 	private static AtomicInteger disposals = new AtomicInteger();
 
-	@BenchmarkOptions(benchmarkRounds = 100000, warmupRounds=0, concurrency=100)
+	@BenchmarkOptions(benchmarkRounds = 10000, warmupRounds=0, concurrency=1000)
   	@Test
   	public void store() {
   		final String key = "test-" + count.incrementAndGet();
@@ -126,7 +126,7 @@ public class CacheConcurrentTests {
   				if ( rndVal > 995) {
   					disposals.incrementAndGet();
   					final long start = System.currentTimeMillis();
-  					long howMany = MemoryManager.disposeExpired();
+  					long howMany = MemoryManager.collectExpired();
   					final long end = System.currentTimeMillis();
   					logger.info("" + howMany + " disposed in " + (end-start) + " milliseconds");
   				}

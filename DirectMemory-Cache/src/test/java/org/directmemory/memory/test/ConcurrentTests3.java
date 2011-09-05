@@ -131,7 +131,7 @@ public class ConcurrentTests3 {
   				if ( rndVal > 995) {
   					disposals.incrementAndGet();
   					final long start = System.currentTimeMillis();
-  					long howMany = MemoryManager.disposeExpired();
+  					long howMany = MemoryManager.collectExpired();
   					final long end = System.currentTimeMillis();
   					logger.info("" + howMany + " disposed in " + (end-start) + " milliseconds");
   				}

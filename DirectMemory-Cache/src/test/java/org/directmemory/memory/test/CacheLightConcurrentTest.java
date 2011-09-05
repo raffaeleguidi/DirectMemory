@@ -8,6 +8,8 @@ import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.Pointer;
+import org.josql.QueryExecutionException;
+import org.josql.QueryParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -27,7 +29,7 @@ import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 @BenchmarkMethodChart()
 @BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 
-public class CacheLightConcurrentTests {
+public class CacheLightConcurrentTest {
 	
 	private final static int entries = 10000;
 	public static AtomicInteger count = new AtomicInteger();
@@ -66,9 +68,16 @@ public class CacheLightConcurrentTests {
   		getAndRetrieve(key);
   	}
 	
+	@BenchmarkOptions(benchmarkRounds = 1, warmupRounds=0, concurrency=1)
+	@Test
+	public void LFUEviction() throws QueryParseException, QueryExecutionException {
+		Cache.collectAll();
+	}
+	
 	private void getAndRetrieve(String key) {
   		Pointer p = Cache.get(key);
-  		byte [] check = Cache.retrieve(key);
+  		@SuppressWarnings("unused")
+		byte [] check = Cache.retrieve(key);
 		read.incrementAndGet();
   		if (p != null) {
   			got.incrementAndGet();
@@ -125,7 +134,7 @@ public class CacheLightConcurrentTests {
   				if ( rndVal > 98) {
   					disposals.incrementAndGet();
   					final long start = System.currentTimeMillis();
-  					long howMany = MemoryManager.disposeExpired();
+  					long howMany = MemoryManager.collectExpired();
   					final long end = System.currentTimeMillis();
   					logger.info("" + howMany + " disposed in " + (end-start) + " milliseconds");
   				}
@@ -177,7 +186,7 @@ public class CacheLightConcurrentTests {
 	public MethodRule benchmarkRun = new BenchmarkRule();
 
 
-	private static Logger logger = LoggerFactory.getLogger(CacheLightConcurrentTests.class);
+	private static Logger logger = LoggerFactory.getLogger(CacheLightConcurrentTest.class);
 
 	@BeforeClass
 	public static void init() {

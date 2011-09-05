@@ -82,9 +82,26 @@ public class Cache {
 		}
 	}
 	
-	public static void disposeExpired() {
-		MemoryManager.disposeExpired();
+	public static void collectExpired() {
+		MemoryManager.collectExpired();
 	}
+	
+	public static void collectLFU() {
+		MemoryManager.collectLFU();
+	}
+	
+	public static void collectAll() {
+		 Thread thread = new Thread(){
+			 public void run(){
+				 logger.info("begin disposal");
+				 collectExpired();
+				 collectLFU();
+				 logger.info("disposal complete");
+			 }
+		 };
+		 thread.start();
+	}
+	
 	
 	public static void clear() {
 		map.clear();

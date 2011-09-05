@@ -21,4 +21,8 @@ public class Pointer {
 			return false;
 		}
 	}
+	
+	public float getFrequency() {
+		return (float)(System.currentTimeMillis()-created)/hits;
+	}
 }
