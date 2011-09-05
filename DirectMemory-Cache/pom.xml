@@ -233,11 +233,11 @@
   	<distributionManagement>
 	    <repository>
 	        <id>repo</id>
-	        <url>https://github.com/raffaeleguidi/DirectMemory/raw/master/Misc/mvn-repo/releases</url>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/releases</url>
 	    </repository>
 	    <snapshotRepository>
 	        <id>snapshot-repo</id>
-	        <url>https://github.com/raffaeleguidi/DirectMemory/raw/master/Misc/mvn-repo/snapshots</url>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/snapshots</url>
 	    </snapshotRepository>
 	</distributionManagement>
   
