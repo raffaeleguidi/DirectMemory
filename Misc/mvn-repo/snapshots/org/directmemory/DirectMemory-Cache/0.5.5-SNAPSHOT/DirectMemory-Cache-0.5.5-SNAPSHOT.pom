@@ -229,4 +229,16 @@
       <optional>false</optional>
     </dependency>
   </dependencies>
+  
+  	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/releases</url>
+	    </repository>
+	    <snapshotRepository>
+	        <id>snapshot-repo</id>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+  
 </project>
