@@ -1,5 +1,7 @@
 package org.directmemory.cache;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
 
 import org.directmemory.measures.Ram;
@@ -7,6 +9,8 @@ import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
 import org.directmemory.misc.Format;
+import org.directmemory.serialization.ProtoStuffSerializer;
+import org.directmemory.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +24,8 @@ public class Cache {
 	public static int DEFAULT_CONCURRENCY_LEVEL = 4;
 	public static int DEFAULT_INITIAL_CAPACITY = 100000;
 	
+	public static Serializer serializer = new ProtoStuffSerializer();
+
 	private Cache() {
 		// not instantiable
 	}
@@ -44,17 +50,43 @@ public class Cache {
 	}
 
 	public static Pointer put(String key, byte[] payload, int expiresIn) {
-  		return map.put(key, MemoryManager.store(payload, expiresIn));
+		Pointer ptr = MemoryManager.store(payload, expiresIn);
+		map.put(key, ptr);
+  		return ptr;
 	}
 	
 	public static Pointer put(String key, byte[] payload) {
   		return put(key, payload, 0);
 	}
 	
+	public static Pointer putObject(String key, Object object) {
+		try {
+			byte[] payload = serializer.serialize(object, object.getClass());
+			Pointer ptr = put(key, payload);
+			ptr.clazz = object.getClass();
+			return ptr; 
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
+	}
+	
 	public static Pointer update(String key, byte[] payload) {
 		Pointer p = map.get(key);
 		p = MemoryManager.update(p, payload);
   		return p;
+	}
+	
+	public static Pointer updateObject(String key, Object object) {
+		Pointer p = map.get(key);
+		try {
+			p = MemoryManager.update(p, serializer.serialize(object, object.getClass()));
+			p.clazz = object.getClass();
+	  		return p;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
 	}
 	
 	public static byte[] retrieve(String key) {
@@ -69,6 +101,33 @@ public class Cache {
 		} else {
 	  		return MemoryManager.retrieve(ptr);
 		}
+	}
+	
+	public static Object retrieveObject(String key) {
+		Pointer ptr = get(key);
+		if (ptr == null) return null;
+		if (ptr.expired() || ptr.free) {
+			map.remove(key);
+			if (!ptr.free) { 
+				MemoryManager.free(ptr);
+			}
+			return null;
+		} else {
+	  		try {
+				return serializer.deserialize(MemoryManager.retrieve(ptr),ptr.clazz);
+			} catch (EOFException e) {
+				logger.error(e.getMessage());
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			} catch (ClassNotFoundException e) {
+				logger.error(e.getMessage());
+			} catch (InstantiationException e) {
+				logger.error(e.getMessage());
+			} catch (IllegalAccessException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		return null;
 	}
 	
 	public static Pointer get(String key) {

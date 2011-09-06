@@ -10,6 +10,7 @@ public class Pointer {
 	public boolean free;
 	public long lastHit;
 	public int bufferNumber;
+	public Class<? extends Object> clazz;
 	
 	public byte[] content() {
 		return null;
