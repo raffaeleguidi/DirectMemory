@@ -2,8 +2,11 @@ package org.directmemory.cache;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentMap;
 
+import org.directmemory.measures.Every;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.OffHeapMemoryBuffer;
@@ -29,6 +32,21 @@ public class Cache {
 	private Cache() {
 		// not instantiable
 	}
+	
+	
+	private final static Timer timer = new Timer();
+
+    public static void scheduleDisposalEvery(long l) {
+        timer.schedule(new TimerTask() {
+            public void run() {
+				 logger.info("begin scheduled disposal");
+				 collectExpired();
+				 collectLFU();
+				 logger.info("scheduled disposal complete");
+            }
+        }, l);
+        logger.info("disposal scheduled every " + l + " milliseconds");
+    }	
 
 	public static void init(int numberOfBuffers, int size, int initialCapacity, int concurrencyLevel) {
 		map = new MapMaker()
@@ -43,6 +61,7 @@ public class Cache {
 		logger.info(Format.it("number of buffer(s): \t%1d  with %2s each", numberOfBuffers, Ram.inMb(size)));
 		logger.info(Format.it("initial capacity: \t%1d", initialCapacity));
 		logger.info(Format.it("concurrency level: \t%1d", concurrencyLevel));
+		scheduleDisposalEvery(Every.seconds(10));
 	}
 
 	public static void init(int numberOfBuffers, int size) {
@@ -167,7 +186,7 @@ public class Cache {
 		MemoryManager.clear();
 		logger.info("Cache cleared");
 	}
-
+	
 	public static long entries() {
 		return map.size();
 	}

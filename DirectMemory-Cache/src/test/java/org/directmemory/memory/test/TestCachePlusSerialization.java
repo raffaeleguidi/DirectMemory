@@ -30,6 +30,7 @@ public class TestCachePlusSerialization {
 	
 	@BeforeClass
 	public static void init() {
+		logger.info("test started");
 		Cache.init(1, Ram.Mb(100));
 	}
 	
@@ -37,6 +38,7 @@ public class TestCachePlusSerialization {
 	public static void end() {
 		Cache.dump();
 		Monitor.dump();
+		logger.info("test ended");
 	}
 	
 	@BenchmarkOptions(benchmarkRounds = 50000, warmupRounds=0, concurrency=1)

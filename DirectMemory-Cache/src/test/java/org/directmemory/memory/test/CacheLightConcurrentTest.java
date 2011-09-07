@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.cache.Cache;
+import org.directmemory.measures.Every;
 import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
@@ -191,6 +192,7 @@ public class CacheLightConcurrentTest {
 	@BeforeClass
 	public static void init() {
 		Cache.init(1, Ram.Mb(128));
+		Cache.scheduleDisposalEvery(Every.seconds(1));
 		Cache.dump();
 	}
 	
