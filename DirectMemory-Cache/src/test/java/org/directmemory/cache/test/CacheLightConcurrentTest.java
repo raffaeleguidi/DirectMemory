@@ -1,13 +1,16 @@
-package org.directmemory.memory.test;
+package org.directmemory.cache.test;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.directmemory.cache.Cache;
+import org.directmemory.measures.Every;
 import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.Pointer;
+import org.josql.QueryExecutionException;
+import org.josql.QueryParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -27,9 +30,9 @@ import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 @BenchmarkMethodChart()
 @BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 
-public class CacheConcurrentTests {
+public class CacheLightConcurrentTest {
 	
-	private final static int entries = 100000;
+	private final static int entries = 10000;
 	public static AtomicInteger count = new AtomicInteger();
 	private static AtomicInteger got = new AtomicInteger(); 
 	private static AtomicInteger missed = new AtomicInteger(); 
@@ -38,38 +41,44 @@ public class CacheConcurrentTests {
 	private static AtomicInteger read = new AtomicInteger();
 	private static AtomicInteger disposals = new AtomicInteger();
 
-	@BenchmarkOptions(benchmarkRounds = 10000, warmupRounds=0, concurrency=1000)
+	@BenchmarkOptions(benchmarkRounds = 10000, warmupRounds=0, concurrency=100)
   	@Test
   	public void store() {
   		final String key = "test-" + count.incrementAndGet();
   		put(key);
   	}
 	
-	@BenchmarkOptions(benchmarkRounds = 500, warmupRounds=0, concurrency=10)
+	@BenchmarkOptions(benchmarkRounds = 50, warmupRounds=0, concurrency=10)
   	@Test
   	public void storeSomeWithExpiry() {
   		final String key = "test-" + count.incrementAndGet();
   		putWithExpiry(key);
   	}
 	
-	@BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds=0, concurrency=100)
+	@BenchmarkOptions(benchmarkRounds = 100000, warmupRounds=0, concurrency=100)
   	@Test
   	public void retrieveCatchThemAll() {
   		String key = "test-" + (rndGen.nextInt(entries)+1);
-  		get(key);
+  		getAndRetrieve(key);
   	}
 	
-	@BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds=0, concurrency=100)
+	@BenchmarkOptions(benchmarkRounds = 100000, warmupRounds=0, concurrency=100)
   	@Test
   	public void retrieveCatchHalfOfThem() {
   		String key = "test-" + (rndGen.nextInt(entries*2)+1);
-  		get(key);
+  		getAndRetrieve(key);
   	}
 	
-	private void get(String key) {
-  		Pointer p = Cache.get(key);
+	@BenchmarkOptions(benchmarkRounds = 1, warmupRounds=0, concurrency=1)
+	@Test
+	public void LFUEviction() throws QueryParseException, QueryExecutionException {
+		Cache.collectAll();
+	}
+	
+	private void getAndRetrieve(String key) {
+  		Pointer p = Cache.getPointer(key);
   		@SuppressWarnings("unused")
-		byte [] check = Cache.retrieve(key);
+		byte [] check = Cache.retrieveByteArray(key);
 		read.incrementAndGet();
   		if (p != null) {
   			got.incrementAndGet();
@@ -88,7 +97,7 @@ public class CacheConcurrentTests {
 		for (int i = 0; i < 100; i++) {
 			bldr.append(key);
 		}
-		Cache.put(key,bldr.toString().getBytes());
+		Cache.putByteArray(key,bldr.toString().getBytes());
 	}
   
 	private void putWithExpiry(String key) {
@@ -96,11 +105,11 @@ public class CacheConcurrentTests {
 		for (int i = 0; i < 100; i++) {
 			bldr.append(key);
 		}
-		Cache.put(key, bldr.toString().getBytes(), rndGen.nextInt(2000));
+		Cache.putByteArray(key, bldr.toString().getBytes(), rndGen.nextInt(2000));
 	}
 
 
-	@BenchmarkOptions(benchmarkRounds = 50000, warmupRounds=0, concurrency=10)
+	@BenchmarkOptions(benchmarkRounds = 5000, warmupRounds=0, concurrency=10)
   	@Test
   	public void write1Read8AndSomeDisposal() {
   		String key = "test-" + (rndGen.nextInt(entries*2)+1);
@@ -119,11 +128,11 @@ public class CacheConcurrentTests {
 			case 6: 
 			case 7: 
 			case 8: 
-  				get(key);
+  				getAndRetrieve(key);
   				break;
   			default:
-  				final int rndVal = rndGen.nextInt(1000);
-  				if ( rndVal > 995) {
+  				final int rndVal = rndGen.nextInt(100);
+  				if ( rndVal > 98) {
   					disposals.incrementAndGet();
   					final long start = System.currentTimeMillis();
   					long howMany = MemoryManager.collectExpired();
@@ -134,7 +143,7 @@ public class CacheConcurrentTests {
   		
   	}
   
-	@BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds=0, concurrency=10)
+	@BenchmarkOptions(benchmarkRounds = 100000, warmupRounds=0, concurrency=10)
   	@Test
   	public void write3Read7() {
   		String key = "test-" + (rndGen.nextInt(entries*2)+1);
@@ -148,12 +157,12 @@ public class CacheConcurrentTests {
   				put(key);
   				break; 
   			default:
-  				get(key);
+  				getAndRetrieve(key);
   				break;		
   		}	
   	}
 
-	@BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds=0, concurrency=10)
+	@BenchmarkOptions(benchmarkRounds = 100000, warmupRounds=0, concurrency=10)
   	@Test
   	public void write1Read9() {
   		String key = "test-" + (rndGen.nextInt(entries*2)+1);
@@ -165,7 +174,7 @@ public class CacheConcurrentTests {
   				put(key);
   				break; 
   			default:
-  				get(key);
+  				getAndRetrieve(key);
   				break;
   				
   		}
@@ -178,11 +187,12 @@ public class CacheConcurrentTests {
 	public MethodRule benchmarkRun = new BenchmarkRule();
 
 
-	private static Logger logger = LoggerFactory.getLogger(CacheConcurrentTests.class);
+	private static Logger logger = LoggerFactory.getLogger(CacheLightConcurrentTest.class);
 
 	@BeforeClass
 	public static void init() {
-		Cache.init(1, Ram.Mb(512));
+		Cache.init(1, Ram.Mb(128));
+		Cache.scheduleDisposalEvery(Every.seconds(1));
 		Cache.dump();
 	}
 	

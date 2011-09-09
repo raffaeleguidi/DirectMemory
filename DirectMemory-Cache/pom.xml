@@ -193,9 +193,19 @@
     <dependency>
       <groupId>com.dyuproject.protostuff</groupId>
       <artifactId>protostuff-runtime</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <type>jar</type>
       <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-api</artifactId>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -210,16 +220,6 @@
       <version>0.9.26</version>
       <type>jar</type>
       <optional>false</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-core</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dyuproject.protostuff</groupId>
-      <artifactId>protostuff-api</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

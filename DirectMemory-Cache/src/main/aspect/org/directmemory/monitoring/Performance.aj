@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 public aspect Performance {
 	public static final String cache_prefix = "cache";
 
-	public static final String cache_put = cache_prefix + ".put"; 
-	public static final String cache_retrieve = cache_prefix + ".retrieve"; 
-	public static final String cache_get = cache_prefix + ".get"; 
+	public static final String cache_putByteArray = cache_prefix + ".putByteArray"; 
+	public static final String cache_retrieveByteArray = cache_prefix + ".retrieveByteArray"; 
+	public static final String cache_getPointer = cache_prefix + ".getPointer"; 
 
-	public static final String cache_putObject = cache_put + "object"; 
-	public static final String cache_retrieveObject = cache_retrieve + "object"; 
+	public static final String cache_putObject = cache_prefix + ".put"; 
+	public static final String cache_retrieveObject = cache_prefix + ".get"; 
 
 	public static final String cache_collectLFU = cache_prefix + ".collectLFU"; 
 	public static final String cache_collectExpired = cache_prefix + ".collectExpired"; 
@@ -25,24 +25,24 @@ public aspect Performance {
 
 	private static Logger logger = LoggerFactory.getLogger(Cache.class);
 	
-	pointcut putPointcut(String key, byte[] payload) : 
-		execution(Pointer org.directmemory.cache.Cache.put(String, byte[])) && 
+	pointcut putByteArrayPointcut(String key, byte[] payload) : 
+		execution(Pointer org.directmemory.cache.Cache.putByteArray(String, byte[])) && 
 		args(key, payload);
 	
-	pointcut putObjectPointcut(String key, Object object) : 
-		execution(Pointer org.directmemory.cache.Cache.putObject(String, Object)) && 
-		args(key, object);
+	pointcut putObjectPointcut(String key, Object object, int expiresIn) : 
+		execution(Pointer org.directmemory.cache.Cache.put(String, Object, int)) && 
+		args(key, object, expiresIn);
 	
-	pointcut retrievePointcut(String key) : 
-		execution(byte[] org.directmemory.cache.Cache.retrieve(String)) && 
+	pointcut retrieveByteArrayPointcut(String key) : 
+		execution(byte[] org.directmemory.cache.Cache.retrieveByteArray(String)) && 
 		args(key);
 	
 	pointcut retrieveObjectPointcut(String key) : 
-		execution(Object org.directmemory.cache.Cache.retrieveObject(String)) && 
+		execution(Object org.directmemory.cache.Cache.retrieve(String)) && 
 		args(key);
 	
 	pointcut getPointcut(String key) : 
-		execution(Pointer org.directmemory.cache.Cache.get(String)) && 
+		execution(Pointer org.directmemory.cache.Cache.getPointer(String)) && 
 		args(key);
 		
 	pointcut collectLFUPointcut() : 
@@ -59,8 +59,8 @@ public aspect Performance {
 		execution(Object org.directmemory.serialization.ProtoStuffSerializer.deserialize(byte[], Class)) && 
 		args(source, clazz); 
 		
-	Pointer around(String key, byte[] payload): putPointcut(key, payload) {
-		Monitor mon = Monitor.get(cache_put);
+	Pointer around(String key, byte[] payload): putByteArrayPointcut(key, payload) {
+		Monitor mon = Monitor.get(cache_putByteArray);
 		final long startedAt = mon.start();
 		Pointer entry = proceed(key, payload);
 		if (logger.isDebugEnabled()) logger.debug(Format.it("put: [%s] %d bytes", key, payload.length ));
@@ -68,17 +68,17 @@ public aspect Performance {
 		return entry;
     }
 	
-	Pointer around(String key, Object object): putObjectPointcut(key, object) {
+	Pointer around(String key, Object object, int expiresIn): putObjectPointcut(key, object, expiresIn) {
 		Monitor mon = Monitor.get(cache_putObject);
 		final long startedAt = mon.start();
-		Pointer entry = proceed(key, object);
+		Pointer entry = proceed(key, object, expiresIn);
 		if (logger.isDebugEnabled()) logger.debug(Format.it("put object: [%s]", key));
 		mon.stop(startedAt);
 		return entry;
     }
 	
-	byte[] around(String key): retrievePointcut(key) {
-		Monitor mon = Monitor.get(cache_retrieve);
+	byte[] around(String key): retrieveByteArrayPointcut(key) {
+		Monitor mon = Monitor.get(cache_retrieveByteArray);
 		final long startedAt = mon.start();
 		byte[] payload = proceed(key);
 		if (logger.isDebugEnabled()) logger.debug(Format.it("retrieve: [%s]", key ));
@@ -96,7 +96,7 @@ public aspect Performance {
 	}
 	
 	Pointer around(String key): getPointcut(key) {
-		Monitor mon = Monitor.get(cache_get);
+		Monitor mon = Monitor.get(cache_getPointer);
 		final long startedAt = mon.start();
 		Pointer pointer = proceed(key);
 		if (logger.isDebugEnabled()) logger.debug(Format.it("get: [%s]", key));

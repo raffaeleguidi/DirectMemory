@@ -1,4 +1,4 @@
-package org.directmemory.memory.test;
+package org.directmemory.cache.test;
 
 import static org.junit.Assert.*;
 
@@ -46,8 +46,8 @@ public class TestCachePlusSerialization {
 	public void basicBench() {
 		
 		DummyPojo d = new DummyPojo("test-" + rnd.nextInt(100000), 1024 + rnd.nextInt(1024));
-		Cache.putObject(d.name, d);
-		DummyPojo d2 = (DummyPojo) Cache.retrieveObject(d.name);
+		Cache.put(d.name, d);
+		DummyPojo d2 = (DummyPojo) Cache.retrieve(d.name);
 		
 		assertEquals(d.name, d2.name);
 

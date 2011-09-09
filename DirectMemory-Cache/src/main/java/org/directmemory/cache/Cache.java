@@ -68,20 +68,24 @@ public class Cache {
 		init(numberOfBuffers, size, DEFAULT_INITIAL_CAPACITY, DEFAULT_CONCURRENCY_LEVEL);
 	}
 
-	public static Pointer put(String key, byte[] payload, int expiresIn) {
+	public static Pointer putByteArray(String key, byte[] payload, int expiresIn) {
 		Pointer ptr = MemoryManager.store(payload, expiresIn);
 		map.put(key, ptr);
   		return ptr;
 	}
 	
-	public static Pointer put(String key, byte[] payload) {
-  		return put(key, payload, 0);
+	public static Pointer putByteArray(String key, byte[] payload) {
+  		return putByteArray(key, payload, 0);
 	}
 	
-	public static Pointer putObject(String key, Object object) {
+	public static Pointer put(String key, Object object) {
+		return put(key, object, 0);
+	}
+	
+	public static Pointer put(String key, Object object, int expiresIn) {
 		try {
 			byte[] payload = serializer.serialize(object, object.getClass());
-			Pointer ptr = put(key, payload);
+			Pointer ptr = putByteArray(key, payload);
 			ptr.clazz = object.getClass();
 			return ptr; 
 		} catch (IOException e) {
@@ -90,13 +94,13 @@ public class Cache {
 		}
 	}
 	
-	public static Pointer update(String key, byte[] payload) {
+	public static Pointer updateByteArray(String key, byte[] payload) {
 		Pointer p = map.get(key);
 		p = MemoryManager.update(p, payload);
   		return p;
 	}
 	
-	public static Pointer updateObject(String key, Object object) {
+	public static Pointer update(String key, Object object) {
 		Pointer p = map.get(key);
 		try {
 			p = MemoryManager.update(p, serializer.serialize(object, object.getClass()));
@@ -108,8 +112,8 @@ public class Cache {
 		}
 	}
 	
-	public static byte[] retrieve(String key) {
-		Pointer ptr = get(key);
+	public static byte[] retrieveByteArray(String key) {
+		Pointer ptr = getPointer(key);
 		if (ptr == null) return null;
 		if (ptr.expired() || ptr.free) {
 			map.remove(key);
@@ -122,8 +126,8 @@ public class Cache {
 		}
 	}
 	
-	public static Object retrieveObject(String key) {
-		Pointer ptr = get(key);
+	public static Object retrieve(String key) {
+		Pointer ptr = getPointer(key);
 		if (ptr == null) return null;
 		if (ptr.expired() || ptr.free) {
 			map.remove(key);
@@ -149,7 +153,7 @@ public class Cache {
 		return null;
 	}
 	
-	public static Pointer get(String key) {
+	public static Pointer getPointer(String key) {
   		return map.get(key);
 	}
 	
@@ -160,12 +164,18 @@ public class Cache {
 		}
 	}
 	
+	public static void free(Pointer pointer) {
+		MemoryManager.free(pointer);
+	}
+	
 	public static void collectExpired() {
 		MemoryManager.collectExpired();
+		// still have to look for orphan (storing references to freed pointers) map entries
 	}
 	
 	public static void collectLFU() {
 		MemoryManager.collectLFU();
+		// can possibly clear one whole buffer if it's too fragmented - investigate
 	}
 	
 	public static void collectAll() {

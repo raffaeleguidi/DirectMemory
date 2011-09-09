@@ -4,9 +4,8 @@
   <artifactId>DirectMemory-Cache</artifactId>
   <versioning>
     <versions>
-      <version>0.5.4-SNAPSHOT</version>
       <version>0.5.5-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20110905221317</lastUpdated>
+    <lastUpdated>20110909233744</lastUpdated>
   </versioning>
 </metadata>
