@@ -13,7 +13,6 @@ import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
 import org.directmemory.misc.Format;
 import org.directmemory.serialization.ProtoStuffSerializerV1;
-import org.directmemory.serialization.ProtoStuffWithLinkedBufferSerializer;
 import org.directmemory.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

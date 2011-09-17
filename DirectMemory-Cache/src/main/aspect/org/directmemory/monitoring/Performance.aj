@@ -52,11 +52,11 @@ public aspect Performance {
 		execution(void org.directmemory.cache.Cache.collectExpired()); 
 		
 	pointcut serializePointcut(Object obj, @SuppressWarnings("rawtypes") Class clazz) : 
-		execution(byte[] org.directmemory.serialization.ProtoStuffSerializer.serialize(Object, Class)) && 
+		execution(byte[] org.directmemory.serialization.ProtoStuffSerializerV1.serialize(Object, Class)) && 
 		args(obj, clazz); 
 		
 	pointcut deserializePointcut(byte[] source, @SuppressWarnings("rawtypes") Class clazz) : 
-		execution(Object org.directmemory.serialization.ProtoStuffSerializer.deserialize(byte[], Class)) && 
+		execution(Object org.directmemory.serialization.ProtoStuffSerializerV1.deserialize(byte[], Class)) && 
 		args(source, clazz); 
 		
 	Pointer around(String key, byte[] payload): putByteArrayPointcut(key, payload) {
