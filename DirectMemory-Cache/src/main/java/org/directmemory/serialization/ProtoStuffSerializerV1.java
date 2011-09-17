@@ -2,14 +2,17 @@ package org.directmemory.serialization;
 
 import java.io.IOException;
 
+import org.directmemory.measures.Ram;
+
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-public class OldProtoStuffSerializer implements Serializer {
+public class ProtoStuffSerializerV1 implements Serializer {
 	
-	static int serBufferSize = 300;
+	static int serBufferSize = Ram.Kb(3);
+//	static int serBufferSize = 300;
 	
 	/* (non-Javadoc)
 	 * @see org.directmemory.utils.Serializer#serialize(java.lang.Object, java.lang.Class)

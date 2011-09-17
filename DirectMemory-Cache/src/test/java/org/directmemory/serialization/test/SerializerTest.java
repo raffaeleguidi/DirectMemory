@@ -8,15 +8,33 @@ import java.io.IOException;
 import org.directmemory.measures.Monitor;
 import org.directmemory.measures.Ram;
 import org.directmemory.misc.DummyPojo;
-import org.directmemory.serialization.OldProtoStuffSerializer;
-import org.directmemory.serialization.ProtoStuffSerializer;
+import org.directmemory.serialization.ProtoStuffSerializerV1;
+import org.directmemory.serialization.ProtoStuffWithLinkedBufferSerializer;
 import org.directmemory.serialization.Serializer;
 import org.directmemory.serialization.StandardSerializer;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
+import com.carrotsearch.junitbenchmarks.BenchmarkRule;
+import com.carrotsearch.junitbenchmarks.annotation.AxisRange;
+import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
+import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
+import com.carrotsearch.junitbenchmarks.annotation.LabelType;
+
+@AxisRange(min = 0, max = 1)
+@BenchmarkMethodChart()
+@BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
+	@BenchmarkOptions(benchmarkRounds = 5, warmupRounds=1, concurrency=1)
+
 public class SerializerTest {
+
+	@Rule
+	public MethodRule benchmarkRun = new BenchmarkRule();
+
 	private static Logger logger=LoggerFactory.getLogger(SerializerTest.class);
 	private void testSerializer(String name, Serializer serializer, int size, int howMany) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		logger.info("begin " + serializer.getClass().toString());
@@ -39,18 +57,18 @@ public class SerializerTest {
 	
 	@Test
 	public void ProtostuffTest() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		testSerializer("protostuff-old", new OldProtoStuffSerializer(), Ram.Kb(1), 20000);
-		testSerializer("protostuff-old", new OldProtoStuffSerializer(), Ram.Kb(2), 20000);
-		testSerializer("protostuff-old", new OldProtoStuffSerializer(), Ram.Kb(3), 20000);
-		testSerializer("protostuff-old", new OldProtoStuffSerializer(), Ram.Kb(4), 20000);
+		testSerializer("protostuff-old", new ProtoStuffSerializerV1(), Ram.Kb(1), 20000);
+		testSerializer("protostuff-old", new ProtoStuffSerializerV1(), Ram.Kb(2), 20000);
+		testSerializer("protostuff-old", new ProtoStuffSerializerV1(), Ram.Kb(3), 20000);
+		testSerializer("protostuff-old", new ProtoStuffSerializerV1(), Ram.Kb(4), 20000);
 	}
 	@Test
 	public void ProtostuffV2Test() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(1), 20000);
-		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(2), 20000);
-		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(3), 20000);
-		testSerializer("protostuff-new", new ProtoStuffSerializer(), Ram.Kb(4), 20000);
-		testSerializer("cinquantamila", new ProtoStuffSerializer(), Ram.Kb(3), 50000);
+		testSerializer("protostuff-new", new ProtoStuffWithLinkedBufferSerializer(), Ram.Kb(1), 20000);
+		testSerializer("protostuff-new", new ProtoStuffWithLinkedBufferSerializer(), Ram.Kb(2), 20000);
+		testSerializer("protostuff-new", new ProtoStuffWithLinkedBufferSerializer(), Ram.Kb(3), 20000);
+		testSerializer("protostuff-new", new ProtoStuffWithLinkedBufferSerializer(), Ram.Kb(4), 20000);
+		testSerializer("cinquantamila", new ProtoStuffWithLinkedBufferSerializer(), Ram.Kb(3), 50000);
 	}
 	@Test
 	public void StandardTest() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {

@@ -1,0 +1,15 @@
+{
+"cols": [
+{"label": "Run", "type": "string"},
+{"label": "Custom key", "type": "string"},
+{"label": "Timestamp", "type": "string"},
+{"label": "ProtostuffTest", "type": "string"} ,
+{"label": "ProtostuffV2Test", "type": "string"} ,
+{"label": "StandardTest", "type": "string"} ],
+"rows": [
+{"c": [{"v": "1"}, {"v": "one run only"}, {"v": "2011-09-17 14:25:23.709"}, {"v": 2.487}, {"v": 3.242}, {"v": 9.225}, ]},
+{"c": [{"v": "2"}, {"v": "5 runs +1 warmup"}, {"v": "2011-09-17 14:29:23.094"}, {"v": 1.733}, {"v": 3.106}, {"v": 8.372}, ]},
+{"c": [{"v": "3"}, {"v": "5 runs +1 warmup"}, {"v": "2011-09-17 14:32:52.396"}, {"v": 1.662}, {"v": 3.489}, {"v": 8.128}, ]},
+{"c": [{"v": "4"}, {"v": "5 runs +1 warmup"}, {"v": "2011-09-17 14:37:21.226"}, {"v": 1.672}, {"v": 3.582}, {"v": 8.016}, ]},
+{"c": [{"v": "5"}, {"v": "5+1 (larger buffers in v1 and smaller in v2)"}, {"v": "2011-09-17 14:41:59.63"}, {"v": 1.597}, {"v": 2.443}, {"v": 8.02}, ]}
+]}

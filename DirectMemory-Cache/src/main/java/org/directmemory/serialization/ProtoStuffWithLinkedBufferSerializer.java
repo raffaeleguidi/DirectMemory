@@ -9,9 +9,9 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-public final class ProtoStuffSerializer implements Serializer {
+public final class ProtoStuffWithLinkedBufferSerializer implements Serializer {
 	
-	static int bufferSize = Ram.Kb(5);
+	static int bufferSize = Ram.Kb(3);
 	
 	
 	/*
@@ -38,13 +38,13 @@ public final class ProtoStuffSerializer implements Serializer {
 		}
 	};
 	
-	public ProtoStuffSerializer() {
+	public ProtoStuffWithLinkedBufferSerializer() {
 		
 	}
 	
 	
-	public ProtoStuffSerializer(int bufferSize) {
-		ProtoStuffSerializer.bufferSize =bufferSize; 
+	public ProtoStuffWithLinkedBufferSerializer(int bufferSize) {
+		ProtoStuffWithLinkedBufferSerializer.bufferSize =bufferSize; 
 	}
 	
 	

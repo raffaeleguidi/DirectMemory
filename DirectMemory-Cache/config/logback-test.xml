@@ -14,6 +14,11 @@
     </encoder>
   </appender>
   
+  <logger name="org.directmemory.serialization" level="warn">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
+
   <logger name="org.directmemory.measures" level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />

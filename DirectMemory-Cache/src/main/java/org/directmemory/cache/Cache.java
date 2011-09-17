@@ -12,7 +12,8 @@ import org.directmemory.memory.MemoryManager;
 import org.directmemory.memory.OffHeapMemoryBuffer;
 import org.directmemory.memory.Pointer;
 import org.directmemory.misc.Format;
-import org.directmemory.serialization.ProtoStuffSerializer;
+import org.directmemory.serialization.ProtoStuffSerializerV1;
+import org.directmemory.serialization.ProtoStuffWithLinkedBufferSerializer;
 import org.directmemory.serialization.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class Cache {
 	public static int DEFAULT_CONCURRENCY_LEVEL = 4;
 	public static int DEFAULT_INITIAL_CAPACITY = 100000;
 	
-	public static Serializer serializer = new ProtoStuffSerializer();
+	public static Serializer serializer = new ProtoStuffSerializerV1();
 
 	private Cache() {
 		// not instantiable

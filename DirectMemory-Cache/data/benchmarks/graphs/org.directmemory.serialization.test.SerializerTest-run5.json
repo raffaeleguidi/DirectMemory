@@ -1,0 +1,19 @@
+{
+"cols": [
+{"label": "method", "type": "string"},
+{"label": "Average time [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC average [s]", "type": "number"},
+{"label": "GC time [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC calls", "type": "number"},
+{"label": "benchmark rounds", "type": "number"},
+{"label": "warmup rounds", "type": "number"},
+{"label": "Total benchmark time", "type": "number"},
+{"label": "Total warmup time", "type": "number"}
+],
+"rows": [
+{"c": [{"v": "ProtostuffTest"}, {"v": 1.6}, {"v": 0.07}, {"v": 0.0}, {"v": 0.03}, {"v": 0.0}, {"v": 26}, {"v": 5}, {"v": 1}, {"v": 7.98}, {"v": 2.3}]},
+{"c": [{"v": "ProtostuffV2Test"}, {"v": 2.44}, {"v": 0.01}, {"v": 0.0}, {"v": 0.02}, {"v": 0.0}, {"v": 34}, {"v": 5}, {"v": 1}, {"v": 12.22}, {"v": 2.51}]},
+{"c": [{"v": "StandardTest"}, {"v": 8.02}, {"v": 0.12}, {"v": 0.0}, {"v": 0.05}, {"v": 0.0}, {"v": 91}, {"v": 5}, {"v": 1}, {"v": 40.1}, {"v": 9.08}]}
+]}
