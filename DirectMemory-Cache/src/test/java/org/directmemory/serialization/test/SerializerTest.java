@@ -28,7 +28,7 @@ import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 @AxisRange(min = 0, max = 1)
 @BenchmarkMethodChart()
 @BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
-	@BenchmarkOptions(benchmarkRounds = 5, warmupRounds=1, concurrency=1)
+	@BenchmarkOptions(benchmarkRounds = 2, warmupRounds=1, concurrency=1)
 
 public class SerializerTest {
 

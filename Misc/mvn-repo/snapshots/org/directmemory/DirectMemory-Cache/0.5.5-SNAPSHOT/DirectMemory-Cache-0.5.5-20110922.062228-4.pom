@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                      
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+  </properties>
+                      
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.directmemory</groupId>
+  <artifactId>DirectMemory-Cache</artifactId>
+  <packaging>jar</packaging>
+  <name>DirectMemory Cache</name>
+  <version>0.5.5-SNAPSHOT</version>
+  <description>DirectMemory Cache is a multi layered cache implementation featuring off-heap memory management (a-la BigMemory) to enable efficient handling of a large number of java objects without affecting jvm garbage collection performance</description>
+  <url>http://github.com/raffaeleguidi/DirectMemory</url>
+  <issueManagement>
+    <system>Github</system>
+    <url>http://github.com/raffaeleguidi/DirectMemory/issues</url>
+  </issueManagement>
+  <organization>
+    <name>Raffaele P. Guidi</name>
+    <url>http://twitter.com/raffaeleguidi</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+    </resources>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <targetPath>.</targetPath>
+        <filtering>false</filtering>
+        <directory>config</directory>
+        <includes>
+          <include>*</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+    
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>2.3.2</version>
+      <configuration>
+        <source>1.6</source>
+        <target>1.6</target>
+      </configuration>
+    </plugin>
+      
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>aspectj-maven-plugin</artifactId>
+      <version>1.4</version>
+      <configuration>
+        <source>1.6</source>
+        <target>1.6</target>
+      </configuration>
+      <executions>
+        <execution>
+          <goals>
+            <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+            <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+          </goals>
+        </execution>
+      </executions>
+  </plugin>
+      
+      
+  <plugin>
+      <version>2.9</version>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <configuration>
+        <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
+      </configuration>
+  </plugin>
+
+  <!-- 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+  <version>2.7.2</version>
+      </plugin>
+      <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>aspectj-maven-plugin</artifactId>
+         <version>1.3</version>
+                <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+       </configuration>
+         <executions>
+             <execution>
+                 <goals>
+                     <goal>compile</goal>
+                     <goal>test-compile</goal>
+                 </goals>
+             </execution>
+        </executions>
+    </plugin>
+    
+  -->
+    </plugins>
+  </build>
+  <repositories>
+   <repository>
+        <id>sonatype-nexus-public</id>
+        <name>SonaType public snapshots and releases repository</name>
+        <url>https://oss.sonatype.org/content/groups/public/</url>
+        <releases> 
+            <!-- set to true if you wish to fetch releases from this repo too. -->
+            <enabled>false</enabled>
+        </releases> 
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <!--
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+    -->
+    <repository>
+      <url>http://repo.fusesource.com/maven2</url>
+      <id>fusesource</id>
+    </repository>
+  </repositories>
+
+  <dependencies>
+  
+	<!-- 
+    <repositories>
+      <repository>
+          <id>lambdaj</id>
+          <name>Lambdaj Repository</name>
+          <url>http://lambdaj.googlecode.com/svn/repo/releases/</url>
+      </repository>
+    </repositories>
+    
+	-->
+  
+    <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.josql</artifactId>
+        <version>1.5_5</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.josql</groupId>
+      <artifactId>gentlyweb-utils</artifactId>
+      <version>1.5</version>
+    </dependency>
+    <!--
+      <dependency>
+      <groupId>net.sf.josql</groupId>
+      <artifactId>josql</artifactId>
+      <version>1.5</version>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.3.158</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <version>0.3.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+      <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>r09</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.6.11</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-runtime</artifactId>
+      <version>1.0.1</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-core</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.dyuproject.protostuff</groupId>
+      <artifactId>protostuff-api</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>0.9.26</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>0.9.26</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+  
+  	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/releases</url>
+	    </repository>
+	    <snapshotRepository>
+	        <id>snapshot-repo</id>
+	        <url>https://raw.github.com/raffaeleguidi/DirectMemory/master/Misc/mvn-repo/snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+  
+</project>
