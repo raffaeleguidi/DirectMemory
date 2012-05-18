@@ -51,7 +51,8 @@ public class Monitor {
 		return totalTime;
 	}
 	public long average() {
-		return totalTime/hits.get();
+		if ( hits.get() <= 0 ) return 0;
+		else return totalTime/hits.get();
 	}
 	public String toString() {
 		return Format.it("%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", 
